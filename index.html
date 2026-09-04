@@ -73,6 +73,19 @@ main{max-width:1500px;margin:auto;padding:14px}
   .toolbar button{font-size:13px;padding:8px 10px}
   .legend{grid-template-columns:1fr}
 }
+
+.source-card{margin-top:9px;border-top:1px solid #e1e6e8;padding-top:8px}
+.source-card img{display:block;width:100%;max-height:150px;object-fit:cover;object-position:top;border-radius:8px;border:1px solid #d7dfe3;background:#f4f5f5}
+.source-card button,.source-btn{margin-top:7px;border:1px solid #9fb1ba;background:#fff;color:#173f5f;border-radius:8px;padding:7px 9px;font-weight:700;cursor:pointer}
+.source-btn{width:100%;font-size:12px;text-align:left}
+.source-none{margin-top:7px;color:#7b878e;font-size:11px;font-style:italic}
+#sourceModal{display:none;position:fixed;inset:0;background:#000c;z-index:9999;padding:16px;align-items:center;justify-content:center}
+#sourceModal.open{display:flex}
+#sourceModal .modal-box{width:min(980px,96vw);max-height:92vh;background:#fff;border-radius:12px;padding:10px;overflow:auto;position:relative}
+#sourceModal img{display:block;width:100%;height:auto;border-radius:8px}
+#sourceModal .modal-title{font-weight:800;margin:3px 44px 8px 2px;color:#173f5f}
+#sourceModal .modal-close{position:absolute;right:10px;top:10px;width:38px;height:38px;border:0;border-radius:50%;background:#173f5f;color:#fff;font-size:22px;cursor:pointer}
+
 </style>
 </head>
 <body>
@@ -105,6 +118,15 @@ main{max-width:1500px;margin:auto;padding:14px}
   </div>
 </main>
 
+<div id="sourceModal" role="dialog" aria-modal="true" aria-label="Bronafbeelding">
+  <div class="modal-box">
+    <button type="button" class="modal-close" id="modalClose" aria-label="Sluiten">×</button>
+    <div class="modal-title" id="modalTitle">Bron</div>
+    <img id="modalImage" src="" alt="Bronafbeelding">
+  </div>
+</div>
+
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
@@ -128,6 +150,26 @@ const events=[
 {id:13,phase:'migratie',cat:'migratie',date:'april–mei 1951',title:'Somersetshire — zeereis',lat:12.5,lng:65.0,desc:'Schematisch anker midden op de gereconstrueerde vaarcorridor naar Europa. Dit punt is geen gedocumenteerde havenstop.',status:'route-schematisch',group:'sea'},
 {id:14,phase:'migratie',cat:'migratie',date:'15 mei 1951',title:'Amsterdam — aankomst',lat:52.3676,lng:4.9041,desc:'Aankomst van Daniel en zijn gezin in Amsterdam met de Somersetshire.',status:'sterk bevestigd',group:'amsterdam'}
 ];
+const sourceMeta={
+  1:{img:'assets/bron_stamboek_militaire_loopbaan.jpg',label:'Stamboek / militaire loopbaan: Ambon, 24 augustus 1941'},
+  2:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: krijgsgevangen te Halong, 31 januari 1942'},
+  3:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: vrijlating, 2 februari 1942'},
+  4:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: vlucht vanaf Ambon, 16 februari 1942'},
+  5:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: route via Ceram'},
+  6:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: Tual, maart 1942'},
+  7:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: verblijf Tual, 1942'},
+  8:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: overgebracht naar kamp Weduar, september 1942'},
+  9:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: krijgsgevangenschap Weduar tot 1945'},
+  10:{img:'assets/bron_stamboek_militaire_loopbaan.jpg',label:'Stamboek: 1 oktober 1948 overgegaan bij 2-Inf. IV te Malang'},
+  11:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — algemene bevestiging van dienst 1940–1945 en herstel orde en rust'},
+  12:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — algemene dienstbevestiging'},
+  13:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — context voorafgaand aan repatriëring'},
+  14:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — context voorafgaand aan vertrek naar Nederland'}
+};
+Object.keys(sourceMeta).forEach(id=>{
+  const e=events.find(x=>x.id===Number(id));
+  if(e) e.source=sourceMeta[id];
+});
 
 const map=L.map('map',{zoomControl:true,worldCopyJump:true}).setView([-4.7,130],6);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
@@ -161,7 +203,9 @@ function iconFor(e){
  return L.divIcon({className:'marker-wrap',html:`<div class="num-marker" style="background:${col}">${e.id}</div>`,iconSize:[32,32],iconAnchor:[16,16]});
 }
 function popup(e){
- return `<h3>${e.id}. ${e.title}</h3><div class="date">${e.date}</div><p>${e.desc}</p><span class="status">${e.status}</span>`;
+ const s=e.source;
+ const src=s ? `<div class="source-card"><img src="${s.img}" alt="${s.label}" loading="lazy"><button type="button" class="open-source" data-src="${s.img}" data-title="${s.label}">Bekijk bron groot</button></div>` : `<div class="source-none">Bronafbeelding nog niet beschikbaar</div>`;
+ return `<h3>${e.id}. ${e.title}</h3><div class="date">${e.date}</div><p>${e.desc}</p><span class="status">${e.status}</span>${src}`;
 }
 
 // Markers blijven altijd op hun echte geografische coördinaat.
@@ -218,7 +262,8 @@ function buildList(){
  events.forEach(e=>{
   const div=document.createElement('div');
   div.className='event'; div.dataset.phase=e.phase;
-  div.innerHTML=`<div class="top"><span class="badge" style="background:${C[e.cat]||C.open}">${e.id}</span><b>${e.title}</b></div><small>${e.date} — ${e.status}</small>`;
+  const src=e.source ? `<img src="${e.source.img}" alt="${e.source.label}" loading="lazy" style="width:100%;height:78px;object-fit:cover;object-position:top;border-radius:7px;margin-top:8px;border:1px solid #e1e6e8"><button type="button" class="source-btn open-source" data-src="${e.source.img}" data-title="${e.source.label}">Bekijk bron: ${e.source.label}</button>` : `<div class="source-none">Geen bronafbeelding gekoppeld</div>`;
+  div.innerHTML=`<div class="top"><span class="badge" style="background:${C[e.cat]||C.open}">${e.id}</span><b>${e.title}</b></div><small>${e.date} — ${e.status}</small>${src}`;
   div.addEventListener('click',()=>{
    const m=markers.get(e.id);
    if(m){
@@ -252,6 +297,34 @@ document.querySelectorAll('#filters button').forEach(btn=>{
 map.fitBounds(L.latLngBounds(events.slice(0,10).map(e=>[e.lat,e.lng])).pad(.12),{maxZoom:6});
 setTimeout(()=>map.invalidateSize(),150);
 window.addEventListener('resize',()=>map.invalidateSize());
+
+const sourceModal=document.getElementById('sourceModal');
+const modalImage=document.getElementById('modalImage');
+const modalTitle=document.getElementById('modalTitle');
+const modalClose=document.getElementById('modalClose');
+
+function openSource(src,title){
+  modalImage.src=src;
+  modalImage.alt=title||'Bronafbeelding';
+  modalTitle.textContent=title||'Bron';
+  sourceModal.classList.add('open');
+}
+function closeSource(){
+  sourceModal.classList.remove('open');
+  modalImage.src='';
+}
+document.addEventListener('click',ev=>{
+  const b=ev.target.closest('.open-source');
+  if(b){
+    ev.preventDefault();
+    ev.stopPropagation();
+    openSource(b.dataset.src,b.dataset.title);
+  }
+});
+modalClose.addEventListener('click',closeSource);
+sourceModal.addEventListener('click',ev=>{if(ev.target===sourceModal) closeSource();});
+document.addEventListener('keydown',ev=>{if(ev.key==='Escape' && sourceModal.classList.contains('open')) closeSource();});
+
 </script>
 </body>
 </html>
