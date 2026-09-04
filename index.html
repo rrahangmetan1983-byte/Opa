@@ -1,234 +1,28 @@
 <!doctype html>
-<html lang="nl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Interactieve kaart Daniel Rahangmetang 1941–1951</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
-<style>
-:root{
-  --ink:#20313b;--muted:#66757e;--paper:#f5f1e9;--panel:#fff;
-  --wo2:#b33a3a;--gev:#7c3f98;--na:#1f5f8b;--mig:#d07b19;--open:#66757e;
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif}
-header{padding:22px 18px;background:linear-gradient(120deg,#102f47,#1f5f78);color:#fff}
-header h1{margin:0;font:700 clamp(25px,4vw,44px)/1.08 Georgia,serif}
-header p{margin:7px 0 0;color:#dce8ed;max-width:1000px}
-main{max-width:1500px;margin:auto;padding:14px}
-.toolbar{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px}
-.toolbar button{border:1px solid #b9c4c9;background:#fff;border-radius:999px;padding:9px 13px;font-weight:650;cursor:pointer}
-.toolbar button.active{background:#173f5f;color:#fff;border-color:#173f5f}
-.layout{display:grid;grid-template-columns:minmax(0,2.25fr) minmax(290px,.85fr);gap:14px;align-items:start}
-#map{height:72vh;min-height:520px;max-height:820px;border-radius:15px;overflow:hidden;box-shadow:0 7px 24px #18303d22;background:#d9e0e3}
-.side{background:var(--panel);border-radius:15px;padding:16px;box-shadow:0 5px 18px #18303d18}
-.side h2{font:700 23px Georgia,serif;margin:0 0 8px}
-.side p{line-height:1.45;margin:7px 0}
-.legend{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:12px 0;font-size:13px}
-.legend span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c);margin-right:6px}
-.notice{background:#fff6e8;border-left:4px solid #d07b19;padding:10px 11px;margin-top:12px;font-size:13px;line-height:1.4}
-.events{display:grid;gap:8px;margin-top:14px;max-height:460px;overflow:auto;padding-right:2px}
-.event{border:1px solid #e1e6e8;border-radius:10px;padding:10px;background:#fff;cursor:pointer}
-.event:hover{border-color:#9fb1ba}
-.event .top{display:flex;align-items:center;gap:8px}
-.badge{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;flex:0 0 28px}
-.event b{font-size:14px}
-.event small{display:block;color:var(--muted);margin-top:4px;line-height:1.35}
-
-/* De Leaflet-marker blijft op de echte geografische coördinaat. Alleen het zichtbare rondje krijgt
-   een kleine scherm-offset als meerdere gebeurtenissen exact dezelfde plaats delen. */
-.marker-wrap{position:relative!important;background:transparent!important;border:none!important;overflow:visible!important}
-.num-marker{width:32px;height:32px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px #0008;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;transform:translate(var(--dx,0px),var(--dy,0px));transition:transform .15s ease}
-.leaflet-popup-content{margin:12px 16px;min-width:230px;max-width:330px}
-.leaflet-popup-content h3{margin:0 0 4px;color:#173f5f;font-size:17px}
-.leaflet-popup-content .date{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697780;margin-bottom:7px}
-.leaflet-popup-content p{margin:6px 0;line-height:1.35}
-.status{display:inline-block;font-size:11px;border-radius:99px;padding:3px 7px;background:#edf1f3;color:#43525b;margin-top:5px}
-.custom-cluster{background:transparent!important;border:none!important}
-.custom-cluster div{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#173f5f;color:#fff;border:3px solid #fff;box-shadow:0 2px 8px #0007;font-weight:800;font-size:13px;line-height:1.05;text-align:center}
-.map-note{position:absolute;z-index:500;left:10px;bottom:24px;background:#ffffffee;color:#33444d;border:1px solid #ccd6db;border-radius:8px;padding:6px 8px;font-size:11px;max-width:235px;pointer-events:none}
-
-/* Bron in popup: altijd de HELE bron zichtbaar, verkleind zonder afsnijden. */
-.source-card{margin-top:9px;border-top:1px solid #e1e6e8;padding-top:8px}
-.source-preview{height:178px;width:100%;display:flex;align-items:center;justify-content:center;background:#f3f1ec;border:1px solid #d7dfe3;border-radius:8px;overflow:hidden}
-.source-preview img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
-.source-card button,.source-btn{margin-top:7px;border:1px solid #9fb1ba;background:#fff;color:#173f5f;border-radius:8px;padding:7px 9px;font-weight:700;cursor:pointer}
-.source-btn{width:100%;font-size:12px;text-align:left}
-.source-none{margin-top:7px;color:#7b878e;font-size:11px;font-style:italic}
-.list-source-preview{height:125px;width:100%;display:flex;align-items:center;justify-content:center;background:#f3f1ec;border:1px solid #e1e6e8;border-radius:7px;margin-top:8px;overflow:hidden}
-.list-source-preview img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
-
-/* Grote bronviewer: titel blijft staan, afbeelding wordt op de originele pixelgrootte getoond.
-   De viewer scrollt in plaats van delen van de bron af te snijden. */
-#sourceModal{display:none;position:fixed;inset:0;background:#000c;z-index:9999;padding:12px;align-items:center;justify-content:center}
-#sourceModal.open{display:flex}
-#sourceModal .modal-box{width:min(1240px,98vw);height:min(94vh,1050px);background:#fff;border-radius:12px;padding:10px;position:relative;display:flex;flex-direction:column;overflow:hidden}
-#sourceModal .modal-title{font-weight:800;margin:3px 48px 3px 2px;color:#173f5f;flex:0 0 auto}
-#sourceModal .modal-hint{font-size:12px;color:#66757e;margin:0 48px 8px 2px;flex:0 0 auto}
-#sourceModal .image-scroll{flex:1 1 auto;min-height:0;overflow:auto;background:#ebe9e4;border-radius:8px;border:1px solid #d7dfe3;padding:8px}
-#sourceModal img{display:block;width:auto;height:auto;max-width:none;max-height:none;margin:0 auto;border-radius:6px;background:#fff}
-#sourceModal .modal-close{position:absolute;right:10px;top:10px;width:38px;height:38px;border:0;border-radius:50%;background:#173f5f;color:#fff;font-size:22px;cursor:pointer;z-index:2}
-
-@media(max-width:900px){
-  header{padding:16px 14px}header h1{font-size:30px}header p{font-size:14px;line-height:1.35}main{padding:9px}
-  .layout{grid-template-columns:1fr}#map{height:58vh;min-height:430px;border-radius:13px}.toolbar{gap:6px}.toolbar button{padding:9px 12px;font-size:14px}.side{padding:14px}.events{max-height:none}.leaflet-control-attribution{font-size:9px}
-  #sourceModal{padding:6px}#sourceModal .modal-box{width:99vw;height:96vh;padding:8px}.source-preview{height:160px}.list-source-preview{height:115px}
-}
-@media(max-width:420px){#map{height:56vh;min-height:400px}.toolbar button{font-size:13px;padding:8px 10px}.legend{grid-template-columns:1fr}.leaflet-popup-content{min-width:215px;max-width:285px}.source-preview{height:145px}}
-</style>
-</head>
-<body>
-<header>
-  <h1>Daniel Rahangmetang — interactieve routekaart</h1>
-  <p>Militaire en persoonlijke route 1941–1951. De kaartankers blijven geografisch correct; gebeurtenissen op dezelfde plaats worden visueel naast elkaar gezet zodat ze ook bij inzoomen leesbaar blijven.</p>
-</header>
-<main>
-  <div class="toolbar" id="filters">
-    <button class="active" data-filter="all">Alles</button>
-    <button data-filter="wo2">WOII</button>
-    <button data-filter="gevangen">Krijgsgevangenschap</button>
-    <button data-filter="naoorlogs">Na 1945</button>
-    <button data-filter="migratie">Somersetshire / Nederland</button>
-  </div>
-  <div class="layout">
-    <div style="position:relative;min-width:0"><div id="map"></div><div class="map-note">Meerdere gebeurtenissen op exact dezelfde plaats staan bewust iets naast elkaar. Hun kaartanker blijft op de echte locatie.</div></div>
-    <aside class="side">
-      <h2>Kaartgebruik</h2>
-      <p>Klik op een nummer voor datum, gebeurtenis en bewijsstatus. Bronafbeeldingen worden eerst volledig verkleind getoond; met “Bekijk bron groot” opent de originele afbeeldingsgrootte.</p>
-      <div class="legend">
-        <span style="--c:var(--wo2)">Oorlog</span><span style="--c:var(--gev)">Gevangenschap</span><span style="--c:var(--na)">Naoorlogs KNIL</span><span style="--c:var(--mig)">Migratie 1951</span>
-      </div>
-      <div class="notice"><b>Belangrijk:</b> Daniel is niet naar Australië gereisd. Australië staat daarom niet als routepunt op deze kaart. “Opdracht uit Australië” wordt alleen als tekstuele context genoemd. Ceram en Weduar zijn waar nodig als benaderde kaartlocaties aangegeven.</div>
-      <div class="events" id="eventList"></div>
-    </aside>
-  </div>
-</main>
-
-<div id="sourceModal" role="dialog" aria-modal="true" aria-label="Bronafbeelding">
-  <div class="modal-box">
-    <button type="button" class="modal-close" id="modalClose" aria-label="Sluiten">×</button>
-    <div class="modal-title" id="modalTitle">Bron</div>
-    <div class="modal-hint">Werkelijke afbeeldingsgrootte — scroll horizontaal of verticaal om de volledige bron te bekijken.</div>
-    <div class="image-scroll" id="modalScroll"><img id="modalImage" src="" alt="Bronafbeelding"></div>
-  </div>
-</div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-<script>
-const C={wo2:'#b33a3a',gevangen:'#7c3f98',naoorlogs:'#1f5f8b',migratie:'#d07b19',open:'#66757e'};
-const events=[
-{id:1,phase:'wo2',cat:'wo2',date:'24 augustus 1941',title:'Ambon — in dienst KNIL',lat:-3.6954,lng:128.1814,desc:'Inlijving / militaire dienst op Ambon.',status:'militaire gegevens / onderzoekstijdlijn',group:'ambon'},
-{id:2,phase:'wo2',cat:'gevangen',date:'31 januari 1942',title:'Halong, Ambon — krijgsgevangen',lat:-3.6548,lng:128.1992,desc:'Tijdens de Japanse aanval op Ambon wordt Daniel in Halong krijgsgevangen genomen.',status:'eigen verklaring',group:'halong'},
-{id:3,phase:'wo2',cat:'wo2',date:'2 februari 1942',title:'Ambon — vrijgelaten',lat:-3.6954,lng:128.1814,desc:'Door de Japanners vrijgelaten; terugkeer naar Ambon-stad.',status:'eigen verklaring',group:'ambon'},
-{id:4,phase:'wo2',cat:'wo2',date:'16 februari 1942',title:'Ambon — vertrek per boot',lat:-3.6954,lng:128.1814,desc:'Vertrek van Ambon met een groep Australiërs en Nederlandse militairen richting Ceram.',status:'eigen verklaring',group:'ambon'},
-{id:5,phase:'wo2',cat:'wo2',date:'februari–maart 1942',title:'Ceram — tussenroute',lat:-3.127,lng:129.37,desc:'Daniel noemt Ceram als onderdeel van de bootroute. Exacte aanlegplaats is niet vastgesteld.',status:'locatie benaderd / exacte plek open',group:'ceram'},
-{id:6,phase:'wo2',cat:'wo2',date:'maart 1942',title:'Tual, Kei-eilanden',lat:-5.6266,lng:132.7526,desc:'Aankomst in Tual. Daniel ontvangt hier een opdracht; hij blijft achter terwijl anderen verder reizen.',status:'eigen verklaring',group:'tual'},
-{id:7,phase:'wo2',cat:'open',date:'maart–september 1942',title:'Tual / Kei — onderzoeksleemte',lat:-5.6266,lng:132.7526,desc:'Wat Daniel in deze maanden precies deed, is nog onderwerp van onderzoek in archief 2.10.62 / 455 en 456.',status:'open onderzoek',group:'tual'},
-{id:8,phase:'gevangen',cat:'gevangen',date:'september 1942',title:'Weduar, Kei Besar — Kempeitai',lat:-5.82462,lng:132.94129,desc:'Naar een kamp in Weduar op Kei Besar gebracht, onder beheer van de Kempeitai. Het kaartanker staat nu bij het dorp Weduar; de exacte historische kampplaats moet nog worden vastgesteld.',status:'eigen verklaring; exacte kampcoördinaat nog te verifiëren',group:'weduar'},
-{id:9,phase:'gevangen',cat:'gevangen',date:'1942–1945',title:'Japanse bezetting — verblijf nog open',lat:-5.82462,lng:132.94129,desc:'Duur van gevangenschap en verblijfplaatsen tot de Japanse capitulatie zijn nog niet volledig gereconstrueerd.',status:'open onderzoek',group:'weduar'},
-{id:10,phase:'naoorlogs',cat:'naoorlogs',date:'vanaf 1 oktober 1948',title:'Malang — 2-Inf. IV',lat:-7.9826,lng:112.6308,desc:'Naoorlogse fase van het onderzoek: reconstructie van 2-Inf. IV in Malang en Oost-Java.',status:'onderzoeksfase; detailpunten worden verder aangevuld',group:'malang'},
-{id:11,phase:'migratie',cat:'migratie',date:'9/10 april 1951',title:'Vertrek Indonesië — bronconflict',lat:-7.2575,lng:112.7521,desc:'Openbare bronnen verschillen: vertrek wordt gekoppeld aan Jakarta (9 april) of Surabaya (10 april). Surabaya staat hier als vertrekanker; Jakarta is apart weergegeven.',status:'bronconflict',group:'surabaya'},
-{id:12,phase:'migratie',cat:'migratie',date:'9 april 1951',title:'Jakarta — alternatieve vertrekregistratie',lat:-6.2088,lng:106.8456,desc:'Nationaal Archief noemt Jakarta op 9 april als vertrekpunt. De oorspronkelijke passagierslijst / het scheepslogboek moet het conflict oplossen.',status:'bronconflict',group:'jakarta'},
-{id:13,phase:'migratie',cat:'migratie',date:'april–mei 1951',title:'Somersetshire — zeereis',lat:12.5,lng:65.0,desc:'Schematisch anker midden op de gereconstrueerde vaarcorridor naar Europa. Dit punt is geen gedocumenteerde havenstop.',status:'route-schematisch',group:'sea'},
-{id:14,phase:'migratie',cat:'migratie',date:'15 mei 1951',title:'Amsterdam — aankomst',lat:52.3676,lng:4.9041,desc:'Aankomst van Daniel en zijn gezin in Amsterdam met de Somersetshire.',status:'sterk bevestigd',group:'amsterdam'}
-];
-const sourceMeta={
-1:{img:'assets/bron_stamboek_militaire_loopbaan.jpg',label:'Stamboek / militaire loopbaan: Ambon, 24 augustus 1941'},
-2:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: krijgsgevangen te Halong, 31 januari 1942'},
-3:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: vrijlating, 2 februari 1942'},
-4:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: vlucht vanaf Ambon, 16 februari 1942'},
-5:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: route via Ceram'},
-6:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: Tual, maart 1942'},
-7:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: verblijf Tual, 1942'},
-8:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: overgebracht naar kamp Weduar, september 1942'},
-9:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: krijgsgevangenschap Weduar tot 1945'},
-10:{img:'assets/bron_stamboek_militaire_loopbaan.jpg',label:'Stamboek: 1 oktober 1948 overgegaan bij 2-Inf. IV te Malang'},
-11:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — algemene bevestiging van dienst 1940–1945 en herstel orde en rust'},
-12:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — algemene dienstbevestiging'},
-13:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — context voorafgaand aan repatriëring'},
-14:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — context voorafgaand aan vertrek naar Nederland'}
-};
-Object.keys(sourceMeta).forEach(id=>{const e=events.find(x=>x.id===Number(id));if(e)e.source=sourceMeta[id];});
-
-/* Scherm-offsets in pixels voor exact gelijke locaties. De lat/lng zelf verandert NIET. */
-const markerOffsets={
-  1:{x:-24,y:18},3:{x:24,y:18},4:{x:0,y:-25},
-  6:{x:-18,y:13},7:{x:18,y:-13},
-  8:{x:-18,y:13},9:{x:18,y:-13}
-};
-
-const map=L.map('map',{zoomControl:true,worldCopyJump:true}).setView([-4.7,130],6);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap-bijdragers'}).addTo(map);
-const markerLayer=L.markerClusterGroup({
-  showCoverageOnHover:false,spiderfyOnMaxZoom:true,zoomToBoundsOnClick:true,removeOutsideVisibleBounds:true,
-  disableClusteringAtZoom:10,maxClusterRadius:48,spiderfyDistanceMultiplier:1.35,
-  iconCreateFunction:function(cluster){const n=cluster.getChildCount();return L.divIcon({html:`<div>${n}<br><span style="font-size:9px;font-weight:650">punten</span></div>`,className:'custom-cluster',iconSize:[42,42],iconAnchor:[21,21]});}
-}).addTo(map);
-const routeLayer=L.layerGroup().addTo(map);
-const markers=new Map();
-let currentFilter='all';
-
-function iconFor(e){
- const col=C[e.cat]||C.open,o=markerOffsets[e.id]||{x:0,y:0};
- return L.divIcon({
-   className:'marker-wrap',
-   html:`<div class="num-marker" style="background:${col};--dx:${o.x}px;--dy:${o.y}px">${e.id}</div>`,
-   iconSize:[32,32],iconAnchor:[16,16],popupAnchor:[o.x,o.y-18]
- });
-}
-function popup(e){
- const s=e.source;
- const src=s?`<div class="source-card"><div class="source-preview"><img src="${s.img}" alt="${s.label}" loading="lazy"></div><button type="button" class="open-source" data-src="${s.img}" data-title="${s.label}">Bekijk bron groot</button></div>`:`<div class="source-none">Bronafbeelding nog niet beschikbaar</div>`;
- return `<h3>${e.id}. ${e.title}</h3><div class="date">${e.date}</div><p>${e.desc}</p><span class="status">${e.status}</span>${src}`;
-}
-function renderMarkers(){
- markerLayer.clearLayers();markers.clear();
- events.filter(e=>currentFilter==='all'||e.phase===currentFilter).forEach(e=>{
-   const m=L.marker([e.lat,e.lng],{icon:iconFor(e),title:e.title,riseOnHover:true}).bindPopup(popup(e),{maxWidth:340,autoPan:true,keepInView:true});
-   markerLayer.addLayer(m);markers.set(e.id,m);
- });
-}
-function curve(a,b,bend=.18,steps=28){
- const mx=(a.lng+b.lng)/2,my=(a.lat+b.lat)/2,dx=b.lng-a.lng,dy=b.lat-a.lat,cx=mx-dy*bend,cy=my+dx*bend,pts=[];
- for(let i=0;i<=steps;i++){const t=i/steps,u=1-t;pts.push([u*u*a.lat+2*u*t*cy+t*t*b.lat,u*u*a.lng+2*u*t*cx+t*t*b.lng]);}return pts;
-}
-function addRoute(a,b,opt={}){if(currentFilter!=='all'&&(a.phase!==currentFilter||b.phase!==currentFilter))return;L.polyline(curve(a,b,opt.bend||.12),{color:opt.color||'#556',weight:opt.weight||3,opacity:opt.opacity||.75,dashArray:opt.dash?'7 8':null,lineCap:'round'}).addTo(routeLayer);}
-function renderRoutes(){
- routeLayer.clearLayers();const E=id=>events.find(x=>x.id===id);
- addRoute(E(2),E(3),{color:C.wo2,bend:-.22});addRoute(E(4),E(5),{color:C.wo2,bend:.16,dash:true});addRoute(E(5),E(6),{color:C.wo2,bend:.10,dash:true});addRoute(E(6),E(8),{color:C.gevangen,bend:.10});
- addRoute(E(8),E(10),{color:C.naoorlogs,bend:.12,dash:true,opacity:.45});addRoute(E(11),E(13),{color:C.migratie,bend:-.08,dash:true});addRoute(E(12),E(13),{color:C.migratie,bend:.08,dash:true,opacity:.5});addRoute(E(13),E(14),{color:C.migratie,bend:.18,dash:true});
-}
-renderRoutes();renderMarkers();
-
-function buildList(){
- const el=document.getElementById('eventList');el.innerHTML='';
- events.forEach(e=>{
-  const div=document.createElement('div');div.className='event';div.dataset.phase=e.phase;
-  const src=e.source?`<div class="list-source-preview"><img src="${e.source.img}" alt="${e.source.label}" loading="lazy"></div><button type="button" class="source-btn open-source" data-src="${e.source.img}" data-title="${e.source.label}">Bekijk bron: ${e.source.label}</button>`:`<div class="source-none">Geen bronafbeelding gekoppeld</div>`;
-  div.innerHTML=`<div class="top"><span class="badge" style="background:${C[e.cat]||C.open}">${e.id}</span><b>${e.title}</b></div><small>${e.date} — ${e.status}</small>${src}`;
-  div.addEventListener('click',()=>{const m=markers.get(e.id);if(m){markerLayer.zoomToShowLayer(m,()=>{map.panTo(m.getLatLng(),{animate:true});m.openPopup();});}});
-  el.appendChild(div);
- });
-}
-buildList();
-
-document.querySelectorAll('#filters button').forEach(btn=>btn.addEventListener('click',()=>{
- document.querySelectorAll('#filters button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');currentFilter=btn.dataset.filter;renderMarkers();renderRoutes();
- document.querySelectorAll('.event').forEach(x=>x.style.display=(currentFilter==='all'||x.dataset.phase===currentFilter)?'block':'none');
- const vis=events.filter(e=>currentFilter==='all'||e.phase===currentFilter);if(vis.length>1){map.fitBounds(L.latLngBounds(vis.map(e=>[e.lat,e.lng])).pad(.18),{maxZoom:7});}else if(vis.length===1){map.setView([vis[0].lat,vis[0].lng],8);}
-}));
-
-map.fitBounds(L.latLngBounds(events.slice(0,10).map(e=>[e.lat,e.lng])).pad(.12),{maxZoom:6});
-setTimeout(()=>map.invalidateSize(),150);window.addEventListener('resize',()=>map.invalidateSize());
-
-const sourceModal=document.getElementById('sourceModal'),modalImage=document.getElementById('modalImage'),modalTitle=document.getElementById('modalTitle'),modalClose=document.getElementById('modalClose'),modalScroll=document.getElementById('modalScroll');
-function openSource(src,title){modalImage.src=src;modalImage.alt=title||'Bronafbeelding';modalTitle.textContent=title||'Bron';sourceModal.classList.add('open');document.body.style.overflow='hidden';requestAnimationFrame(()=>{modalScroll.scrollTop=0;modalScroll.scrollLeft=0;});}
-function closeSource(){sourceModal.classList.remove('open');modalImage.src='';document.body.style.overflow='';}
-document.addEventListener('click',ev=>{const b=ev.target.closest('.open-source');if(b){ev.preventDefault();ev.stopPropagation();openSource(b.dataset.src,b.dataset.title);}});
-modalClose.addEventListener('click',closeSource);sourceModal.addEventListener('click',ev=>{if(ev.target===sourceModal)closeSource();});document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&sourceModal.classList.contains('open'))closeSource();});
-</script>
-</body>
-</html>
+<html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Opa – Militaire loopbaan 1941–1951</title><link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"><style>:root{--blue:#15395b;--red:#a93d35;--purple:#713c91;--post:#28669b;--gold:#bd7b20}*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;color:#142b46;background:#eef3f6}header{height:64px;background:#fff;border-bottom:1px solid #d7e0e7;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}h1{font-size:21px;margin:0}header small{color:#50677e}.app{display:grid;grid-template-columns:290px 1fr 500px;height:calc(100vh - 64px)}.left,.detail{background:#fff;overflow:auto}.left{border-right:1px solid #d6e0e8;padding:12px}.detail{border-left:1px solid #d6e0e8;padding:16px}.filters{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.filters button,.tabs button{border:1px solid #d7e0e7;background:#fff;border-radius:18px;padding:7px 11px;cursor:pointer}.filters .active,.tabs .active{background:#1672d4;color:#fff}.event{display:flex;gap:9px;align-items:center;padding:9px 5px;border-bottom:1px solid #edf1f4;cursor:pointer}.event:hover,.event.active{background:#edf6ff}.badge{width:30px;height:30px;border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:800;flex:none}.event b{font-size:13px}.event small{display:block;color:#687b8c;margin-top:3px}.mapwrap{position:relative;min-width:0}#map{height:100%;width:100%}.mapnote{position:absolute;z-index:500;bottom:12px;left:12px;background:#ffffffed;padding:8px 10px;border-radius:8px;font-size:11px;box-shadow:0 2px 8px #0002}.num{width:34px;height:34px;border:3px solid #fff;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;box-shadow:0 2px 7px #0008;transform:translate(var(--x),var(--y))}.mi{background:transparent;border:0}.detail h2{font-size:20px;margin:0 0 3px}.date{color:#60758b;margin-bottom:12px}.tabs{display:flex;border-bottom:1px solid #dbe3e9;margin:0 -5px 14px}.tabs button{border:0;border-radius:0;background:none;color:#29445e;padding:10px 13px}.tabs .active{color:#0967c4;border-bottom:3px solid #1475d2;background:#f5f9fd}.pane{display:none}.pane.active{display:block}.context h3{font-size:15px;margin:13px 0 6px}.context p{font-size:13px;line-height:1.5;margin:5px 0}.importance{background:#fff5e7;border-left:4px solid #c98524;padding:10px;margin:13px 0}.timeline,.places{border:1px solid #dce4e9;border-radius:8px;padding:10px;margin:10px 0}.timeline div{font-size:12px;border-left:2px solid #2a7ac2;padding:4px 8px;margin-left:4px}.places li{font-size:12px;margin:6px}.source{margin-top:12px;border-top:1px solid #dce4e9;padding-top:10px}.preview{height:220px;border:1px solid #dce4e9;border-radius:8px;background:#eee;display:flex;align-items:center;justify-content:center;overflow:hidden}.preview img{width:100%;height:100%;object-fit:contain}.source button{width:100%;margin-top:7px;padding:8px;background:#fff;border:1px solid #9eb1c1;border-radius:7px;color:#173f5f;font-weight:700}.modal{display:none;position:fixed;inset:0;background:#000c;z-index:9999;padding:12px}.modal.open{display:flex}.box{margin:auto;width:98vw;height:95vh;background:#fff;border-radius:10px;padding:10px;display:flex;flex-direction:column}.boxbar{display:flex;justify-content:space-between;font-weight:700}.scroll{overflow:auto;flex:1;background:#ddd;margin-top:8px}.scroll img{display:block;width:auto;height:auto;max-width:none}.close{font-size:25px;border:0;background:none;cursor:pointer}@media(max-width:1050px){.app{grid-template-columns:260px 1fr}.detail{position:fixed;right:0;top:64px;bottom:0;width:min(500px,94vw);z-index:1000;box-shadow:-8px 0 24px #0003;display:none}.detail.open{display:block}}@media(max-width:650px){.app{grid-template-columns:1fr;grid-template-rows:42vh 1fr}.mapwrap{grid-row:1}.left{grid-row:2}.detail{top:0;width:100vw}.event{padding:8px}.mapnote{display:none}}</style></head><body><header><div><h1>Opa – Militaire loopbaan 1941–1951</h1><small>Waar · Wanneer · Wat · Waarom · Historische context</small></div><b>Daniel Rahangmetang</b></header><div class="app"><aside class="left"><b>Gebeurtenissen (14)</b><div class="filters"><button class="active">Alle</button><button>WO2</button><button>Gevangenschap</button><button>Na WO2</button></div><div id="list"></div></aside><main class="mapwrap"><div id="map"></div><div class="mapnote">Punten op dezelfde locatie staan naast elkaar; het geografische anker blijft gelijk.</div></main><aside class="detail" id="detail"><h2 id="dt"></h2><div class="date" id="dd"></div><div class="tabs"><button data-tab="story">Verhaal</button><button class="active" data-tab="context">Historische context</button><button data-tab="sources">Bronnen</button></div><section id="story" class="pane"><p id="storyText"></p></section><section id="context" class="pane active context"><h3>Wat gebeurde er toen?</h3><p id="contextText"></p><div class="importance"><b>Belang voor Daniel</b><p id="importanceText"></p></div><div class="timeline"><b>Tijdlijn – bredere kader</b><div>8 december 1941 — Japan valt Nederlands-Indië aan</div><div>30–31 januari 1942 — Japanse landing op Ambon</div><div>februari 1942 — capitulatie op Ambon; veel KNIL-militairen krijgsgevangen</div><div>1942–1945 — Japanse bezetting van Nederlands-Indië</div></div><div class="places"><b>Relevante plaatsen in de buurt</b><ul id="places"></ul></div></section><section id="sources" class="pane"><div class="source"><div class="preview"><img id="srcImg"></div><button id="openSrc">Bekijk bron groot</button></div></section></aside></div><div class="modal" id="modal"><div class="box"><div class="boxbar"><span id="modalTitle">Bron afbeelding</span><button class="close" id="close">×</button></div><div class="scroll"><img id="bigImg"></div></div></div><script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script><script>
+const C={wo2:'#a93d35',gev:'#713c91',na:'#28669b',mig:'#bd7b20',open:'#66757e'};
+const E=[
+{id:1,p:'wo2',c:'wo2',d:'24 augustus 1941',t:'Ambon — in dienst KNIL',lat:-3.6954,lng:128.1814,s:'Inlijving / militaire dienst op Ambon.',ctx:'In 1941 stond Nederlands-Indië onder toenemende oorlogsdreiging in de Pacific. Het KNIL bereidde de verdediging van strategische eilanden en havens voor.',imp:'Dit is het beginpunt van Daniels gedocumenteerde militaire loopbaan op Ambon.',pl:['Ambon-stad','Halong'],img:'assets/bron_stamboek_militaire_loopbaan.jpg'},
+{id:2,p:'wo2',c:'gev',d:'31 januari 1942',t:'Halong, Ambon — krijgsgevangen',lat:-3.6548,lng:128.1992,s:'Tijdens de Japanse aanval op Ambon wordt Daniel in Halong krijgsgevangen genomen.',ctx:'Op 30–31 januari 1942 landden Japanse troepen op Ambon. Nederlandse en geallieerde eenheden boden weerstand, maar de Japanse overmacht leidde snel tot de val van het eiland en grootschalige krijgsgevangenschap.',imp:'Daniels eigen verklaring plaatst zijn krijgsgevangenneming in Halong midden in deze aanval.',pl:['Halong','Ambon-stad','Laha'],img:'assets/bron_verklaring_gevangenschap.jpg'},
+{id:3,p:'wo2',c:'wo2',d:'2 februari 1942',t:'Ambon — vrijgelaten',lat:-3.6954,lng:128.1814,s:'Door de Japanners vrijgelaten; terugkeer naar Ambon-stad.',ctx:'De strijd om Ambon liep begin februari 1942 ten einde. De bezettingsmacht registreerde, scheidde en verplaatste militairen en burgers.',imp:'De verklaring noemt een vroege vrijlating, waarna Daniels route afwijkt van die van veel andere krijgsgevangenen.',pl:['Ambon-stad','Halong'],img:'assets/bron_verklaring_gevangenschap.jpg'},
+{id:4,p:'wo2',c:'wo2',d:'16 februari 1942',t:'Ambon — vertrek per boot',lat:-3.6954,lng:128.1814,s:'Vertrek met Australiërs en Nederlandse militairen richting Ceram.',ctx:'Na de Japanse verovering probeerden verspreide geallieerde militairen zich via de eilanden te verplaatsen en contact met geallieerde netwerken te behouden.',imp:'Daniels verklaring beschrijft een vertrek van Ambon via zee; dit vormt het begin van zijn route richting Ceram en Tual.',pl:['Ambon','Ceram'],img:'assets/bron_verklaring_gevangenschap.jpg'},
+{id:5,p:'wo2',c:'wo2',d:'februari–maart 1942',t:'Ceram — tussenroute',lat:-3.127,lng:129.37,s:'Ceram wordt genoemd als onderdeel van de bootroute.',ctx:'Ceram lag buiten het directe strijdtoneel van Ambon maar binnen de bredere Molukse archipel waarin vlucht-, inlichtingen- en verbindingsroutes liepen.',imp:'De precieze aanlegplaats is nog niet bewezen; Ceram is daarom als benaderd routepunt weergegeven.',pl:['Ceram','Ambon'],img:'assets/bron_verklaring_gevangenschap.jpg'},
+{id:6,p:'wo2',c:'wo2',d:'maart 1942',t:'Tual, Kei-eilanden',lat:-5.6266,lng:132.7526,s:'Aankomst in Tual; Daniel blijft achter.',ctx:'De Kei-eilanden lagen in 1942 op een strategische verbindingsroute tussen de Molukken en gebieden verder zuidoostelijk. De Japanse bezetting breidde zich in deze periode uit.',imp:'Tual is cruciaal omdat Daniel hier volgens zijn verklaring achterbleef terwijl anderen verder reisden.',pl:['Tual','Dullah','Kei Besar'],img:'assets/bron_verklaring_gevangenschap.jpg'},
+{id:7,p:'wo2',c:'open',d:'maart–september 1942',t:'Tual / Kei — onderzoeksleemte',lat:-5.6266,lng:132.7526,s:'Activiteiten in deze maanden zijn nog onderwerp van onderzoek.',ctx:'De bestuurlijke en militaire situatie op de Kei-eilanden veranderde snel tijdens de Japanse consolidatie van de Molukken.',imp:'Voor deze maanden ontbreekt nog een sluitende reconstructie. Archief 2.10.62, inventarisnummers 455 en 456, is hiervoor belangrijk onderzoeksmateriaal.',pl:['Tual','Kei Besar'],img:'assets/bron_verklaring_gevangenschap.jpg'},
+{id:8,p:'wo2',c:'gev',d:'september 1942',t:'Weduar, Kei Besar — Kempeitai',lat:-5.82462,lng:132.94129,s:'Overgebracht naar een kamp in Weduar onder beheer van de Kempeitai.',ctx:'De Japanse militaire politie, de Kempeitai, was tijdens de bezetting actief bij veiligheids-, inlichtingen- en repressietaken.',imp:'Daniels eigen verklaring verbindt zijn overbrenging expliciet met Weduar en de Kempeitai; de exacte historische kampcoördinaat is nog niet vastgesteld.',pl:['Weduar','Kei Besar','Tual'],img:'assets/bron_verklaring_gevangenschap.jpg'},
+{id:9,p:'wo2',c:'gev',d:'1942–1945',t:'Japanse bezetting — verblijf nog open',lat:-5.82462,lng:132.94129,s:'Duur en verblijfplaatsen zijn nog niet volledig gereconstrueerd.',ctx:'Van 1942 tot de Japanse capitulatie in augustus 1945 stond Nederlands-Indië onder Japanse bezetting.',imp:'Deze periode bevat nog belangrijke lacunes in Daniels persoonlijke tijdlijn en blijft daarom expliciet als open onderzoek gemarkeerd.',pl:['Kei Besar','Tual'],img:'assets/bron_verklaring_gevangenschap.jpg'},
+{id:10,p:'na',c:'na',d:'vanaf 1 oktober 1948',t:'Malang — 2-Inf. IV',lat:-7.9826,lng:112.6308,s:'Overgegaan bij 2-Inf. IV te Malang.',ctx:'In 1948 bevond Nederlands-Indië zich midden in de Indonesische onafhankelijkheidsoorlog. Nederlandse en KNIL-eenheden waren op Java ingezet tijdens een escalerend militair en politiek conflict.',imp:'Het stamboek plaatst Daniel vanaf 1 oktober 1948 bij 2-Inf. IV te Malang. Zijn concrete taken en verplaatsingen worden verder onderzocht.',pl:['Malang','Oost-Java'],img:'assets/bron_stamboek_militaire_loopbaan.jpg'},
+{id:11,p:'mig',c:'mig',d:'9/10 april 1951',t:'Vertrek Indonesië — bronconflict',lat:-7.2575,lng:112.7521,s:'Vertrekregistraties noemen Surabaya/Jakarta.',ctx:'Na de soevereiniteitsoverdracht van december 1949 werd het KNIL in 1950 opgeheven. In de daaropvolgende periode vertrokken veel voormalige KNIL-militairen en hun gezinnen naar Nederland.',imp:'Daniels vertrek in 1951 valt in deze bredere repatriërings- en migratieperiode; het exacte vertrekpunt blijft bronkritisch te controleren.',pl:['Surabaya','Jakarta'],img:'assets/bron_knil_verklaring_1950.jpg'},
+{id:12,p:'mig',c:'mig',d:'9 april 1951',t:'Jakarta — alternatieve vertrekregistratie',lat:-6.2088,lng:106.8456,s:'Alternatieve registratie noemt Jakarta.',ctx:'Jakarta was na de onafhankelijkheid een belangrijk bestuurlijk en logistiek knooppunt voor vertrek en repatriëring.',imp:'Deze registratie conflicteert met Surabaya als vertrekanker; de oorspronkelijke passagierslijst of het scheepslogboek moet doorslag geven.',pl:['Jakarta','Surabaya'],img:'assets/bron_knil_verklaring_1950.jpg'},
+{id:13,p:'mig',c:'mig',d:'april–mei 1951',t:'Somersetshire — zeereis',lat:12.5,lng:65,s:'Schematisch punt op de vaarcorridor naar Europa.',ctx:'In 1951 werden groepen voormalige KNIL-militairen en gezinnen per schip naar Nederland vervoerd. De zeereis duurde meerdere weken.',imp:'Dit kaartpunt is bewust schematisch en stelt geen bewezen havenstop voor.',pl:['Indische Oceaan','route naar Europa'],img:'assets/bron_knil_verklaring_1950.jpg'},
+{id:14,p:'mig',c:'mig',d:'15 mei 1951',t:'Amsterdam — aankomst',lat:52.3676,lng:4.9041,s:'Aankomst in Nederland met de Somersetshire.',ctx:'De aankomst in Nederland markeerde voor veel Molukse KNIL-gezinnen het begin van een ingrijpende nieuwe fase, tegen de achtergrond van demobilisatie en tijdelijke opvang die langdurige gevolgen kreeg.',imp:'Voor Daniel en zijn gezin vormt de aankomst het eindpunt van deze kaartperiode 1941–1951.',pl:['Amsterdam','Nederland'],img:'assets/bron_knil_verklaring_1950.jpg'}];
+const offsets={1:[-24,18],3:[24,18],4:[0,-25],6:[-18,13],7:[18,-13],8:[-18,13],9:[18,-13]};
+const map=L.map('map').setView([-4.7,130],6);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);const markers=new Map();
+function icon(e){let o=offsets[e.id]||[0,0];return L.divIcon({className:'mi',html:`<div class="num" style="background:${C[e.c]};--x:${o[0]}px;--y:${o[1]}px">${e.id}</div>`,iconSize:[34,34],iconAnchor:[17,17]})}
+E.forEach(e=>{let m=L.marker([e.lat,e.lng],{icon:icon(e)}).addTo(map).on('click',()=>select(e));markers.set(e.id,m)});
+function line(a,b,col,dash=false){L.polyline([[a.lat,a.lng],[b.lat,b.lng]],{color:col,weight:3,opacity:.65,dashArray:dash?'7 8':null}).addTo(map)}line(E[3],E[4],C.wo2,true);line(E[4],E[5],C.wo2,true);line(E[5],E[7],C.gev);line(E[7],E[9],C.na,true);line(E[10],E[12],C.mig,true);line(E[12],E[13],C.mig,true);
+const list=document.getElementById('list');E.forEach(e=>{let x=document.createElement('div');x.className='event';x.dataset.id=e.id;x.innerHTML=`<span class="badge" style="background:${C[e.c]}">${e.id}</span><div><b>${e.t}</b><small>${e.d}</small></div>`;x.onclick=()=>{select(e);map.setView([e.lat,e.lng],Math.max(map.getZoom(),8))};list.appendChild(x)});
+let current=E[1];function select(e){current=e;document.getElementById('detail').classList.add('open');document.getElementById('dt').textContent=e.id+'. '+e.t;document.getElementById('dd').textContent=e.d;storyText.textContent=e.s;contextText.textContent=e.ctx;importanceText.textContent=e.imp;places.innerHTML=e.pl.map(p=>`<li>${p}</li>`).join('');srcImg.src=e.img;document.querySelectorAll('.event').forEach(x=>x.classList.toggle('active',+x.dataset.id===e.id))}select(current);
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.pane').forEach(x=>x.classList.remove('active'));b.classList.add('active');document.getElementById(b.dataset.tab).classList.add('active')});
+openSrc.onclick=()=>{bigImg.src=current.img;modalTitle.textContent=current.t+' — bron';modal.classList.add('open')};close.onclick=()=>modal.classList.remove('open');modal.onclick=e=>{if(e.target===modal)modal.classList.remove('open')};
+</script></body></html>
