@@ -9,8 +9,8 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
 <style>
 :root{
-  --ink:#20313b; --muted:#66757e; --paper:#f5f1e9; --panel:#fff;
-  --wo2:#b33a3a; --gev:#7c3f98; --na:#1f5f8b; --mig:#d07b19; --open:#66757e;
+  --ink:#20313b;--muted:#66757e;--paper:#f5f1e9;--panel:#fff;
+  --wo2:#b33a3a;--gev:#7c3f98;--na:#1f5f8b;--mig:#d07b19;--open:#66757e;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif}
@@ -36,62 +36,53 @@ main{max-width:1500px;margin:auto;padding:14px}
 .badge{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;flex:0 0 28px}
 .event b{font-size:14px}
 .event small{display:block;color:var(--muted);margin-top:4px;line-height:1.35}
-.marker-wrap{position:relative}
-.num-marker{width:32px;height:32px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px #0008;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px}
-.leaflet-popup-content{margin:12px 16px;min-width:220px;max-width:310px}
+
+/* De Leaflet-marker blijft op de echte geografische coördinaat. Alleen het zichtbare rondje krijgt
+   een kleine scherm-offset als meerdere gebeurtenissen exact dezelfde plaats delen. */
+.marker-wrap{position:relative!important;background:transparent!important;border:none!important;overflow:visible!important}
+.num-marker{width:32px;height:32px;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px #0008;color:#fff;display:grid;place-items:center;font-weight:800;font-size:13px;transform:translate(var(--dx,0px),var(--dy,0px));transition:transform .15s ease}
+.leaflet-popup-content{margin:12px 16px;min-width:230px;max-width:330px}
 .leaflet-popup-content h3{margin:0 0 4px;color:#173f5f;font-size:17px}
 .leaflet-popup-content .date{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#697780;margin-bottom:7px}
 .leaflet-popup-content p{margin:6px 0;line-height:1.35}
 .status{display:inline-block;font-size:11px;border-radius:99px;padding:3px 7px;background:#edf1f3;color:#43525b;margin-top:5px}
-.route-label{background:#fff;border:1px solid #ccd6db;border-radius:7px;padding:4px 6px;color:#33444d;font-size:11px;box-shadow:0 2px 5px #0002}
 .custom-cluster{background:transparent!important;border:none!important}
-.custom-cluster div{
-  width:42px;height:42px;border-radius:50%;display:grid;place-items:center;
-  background:#173f5f;color:white;border:3px solid white;box-shadow:0 2px 8px #0007;
-  font-weight:800;font-size:13px;line-height:1.05;text-align:center
-}
-.map-note{
-  position:absolute;z-index:500;left:10px;bottom:24px;background:#ffffffee;color:#33444d;
-  border:1px solid #ccd6db;border-radius:8px;padding:6px 8px;font-size:11px;max-width:220px;
-  pointer-events:none
-}
-@media(max-width:900px){
-  header{padding:16px 14px}
-  header h1{font-size:30px}
-  header p{font-size:14px;line-height:1.35}
-  main{padding:9px}
-  .layout{grid-template-columns:1fr}
-  #map{height:58vh;min-height:430px;border-radius:13px}
-  .toolbar{gap:6px}
-  .toolbar button{padding:9px 12px;font-size:14px}
-  .side{padding:14px}
-  .events{max-height:none}
-  .leaflet-control-attribution{font-size:9px}
-}
-@media(max-width:420px){
-  #map{height:56vh;min-height:400px}
-  .toolbar button{font-size:13px;padding:8px 10px}
-  .legend{grid-template-columns:1fr}
-}
+.custom-cluster div{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#173f5f;color:#fff;border:3px solid #fff;box-shadow:0 2px 8px #0007;font-weight:800;font-size:13px;line-height:1.05;text-align:center}
+.map-note{position:absolute;z-index:500;left:10px;bottom:24px;background:#ffffffee;color:#33444d;border:1px solid #ccd6db;border-radius:8px;padding:6px 8px;font-size:11px;max-width:235px;pointer-events:none}
 
+/* Bron in popup: altijd de HELE bron zichtbaar, verkleind zonder afsnijden. */
 .source-card{margin-top:9px;border-top:1px solid #e1e6e8;padding-top:8px}
-.source-card img{display:block;width:100%;max-height:150px;object-fit:cover;object-position:top;border-radius:8px;border:1px solid #d7dfe3;background:#f4f5f5}
+.source-preview{height:178px;width:100%;display:flex;align-items:center;justify-content:center;background:#f3f1ec;border:1px solid #d7dfe3;border-radius:8px;overflow:hidden}
+.source-preview img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
 .source-card button,.source-btn{margin-top:7px;border:1px solid #9fb1ba;background:#fff;color:#173f5f;border-radius:8px;padding:7px 9px;font-weight:700;cursor:pointer}
 .source-btn{width:100%;font-size:12px;text-align:left}
 .source-none{margin-top:7px;color:#7b878e;font-size:11px;font-style:italic}
-#sourceModal{display:none;position:fixed;inset:0;background:#000c;z-index:9999;padding:16px;align-items:center;justify-content:center}
-#sourceModal.open{display:flex}
-#sourceModal .modal-box{width:min(980px,96vw);max-height:92vh;background:#fff;border-radius:12px;padding:10px;overflow:auto;position:relative}
-#sourceModal img{display:block;width:100%;height:auto;border-radius:8px}
-#sourceModal .modal-title{font-weight:800;margin:3px 44px 8px 2px;color:#173f5f}
-#sourceModal .modal-close{position:absolute;right:10px;top:10px;width:38px;height:38px;border:0;border-radius:50%;background:#173f5f;color:#fff;font-size:22px;cursor:pointer}
+.list-source-preview{height:125px;width:100%;display:flex;align-items:center;justify-content:center;background:#f3f1ec;border:1px solid #e1e6e8;border-radius:7px;margin-top:8px;overflow:hidden}
+.list-source-preview img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
 
+/* Grote bronviewer: titel blijft staan, afbeelding wordt op de originele pixelgrootte getoond.
+   De viewer scrollt in plaats van delen van de bron af te snijden. */
+#sourceModal{display:none;position:fixed;inset:0;background:#000c;z-index:9999;padding:12px;align-items:center;justify-content:center}
+#sourceModal.open{display:flex}
+#sourceModal .modal-box{width:min(1240px,98vw);height:min(94vh,1050px);background:#fff;border-radius:12px;padding:10px;position:relative;display:flex;flex-direction:column;overflow:hidden}
+#sourceModal .modal-title{font-weight:800;margin:3px 48px 3px 2px;color:#173f5f;flex:0 0 auto}
+#sourceModal .modal-hint{font-size:12px;color:#66757e;margin:0 48px 8px 2px;flex:0 0 auto}
+#sourceModal .image-scroll{flex:1 1 auto;min-height:0;overflow:auto;background:#ebe9e4;border-radius:8px;border:1px solid #d7dfe3;padding:8px}
+#sourceModal img{display:block;width:auto;height:auto;max-width:none;max-height:none;margin:0 auto;border-radius:6px;background:#fff}
+#sourceModal .modal-close{position:absolute;right:10px;top:10px;width:38px;height:38px;border:0;border-radius:50%;background:#173f5f;color:#fff;font-size:22px;cursor:pointer;z-index:2}
+
+@media(max-width:900px){
+  header{padding:16px 14px}header h1{font-size:30px}header p{font-size:14px;line-height:1.35}main{padding:9px}
+  .layout{grid-template-columns:1fr}#map{height:58vh;min-height:430px;border-radius:13px}.toolbar{gap:6px}.toolbar button{padding:9px 12px;font-size:14px}.side{padding:14px}.events{max-height:none}.leaflet-control-attribution{font-size:9px}
+  #sourceModal{padding:6px}#sourceModal .modal-box{width:99vw;height:96vh;padding:8px}.source-preview{height:160px}.list-source-preview{height:115px}
+}
+@media(max-width:420px){#map{height:56vh;min-height:400px}.toolbar button{font-size:13px;padding:8px 10px}.legend{grid-template-columns:1fr}.leaflet-popup-content{min-width:215px;max-width:285px}.source-preview{height:145px}}
 </style>
 </head>
 <body>
 <header>
   <h1>Daniel Rahangmetang — interactieve routekaart</h1>
-  <p>Militaire en persoonlijke route 1941–1951. Markers blijven op hun echte geografische positie. Bij overlap worden ze geclusterd en bij verder inzoomen automatisch opgesplitst.</p>
+  <p>Militaire en persoonlijke route 1941–1951. De kaartankers blijven geografisch correct; gebeurtenissen op dezelfde plaats worden visueel naast elkaar gezet zodat ze ook bij inzoomen leesbaar blijven.</p>
 </header>
 <main>
   <div class="toolbar" id="filters">
@@ -102,15 +93,12 @@ main{max-width:1500px;margin:auto;padding:14px}
     <button data-filter="migratie">Somersetshire / Nederland</button>
   </div>
   <div class="layout">
-    <div style="position:relative;min-width:0"><div id="map"></div><div class="map-note">Clusters houden punten op hun echte geografische locatie. Tik op een cluster om in te zoomen.</div></div>
+    <div style="position:relative;min-width:0"><div id="map"></div><div class="map-note">Meerdere gebeurtenissen op exact dezelfde plaats staan bewust iets naast elkaar. Hun kaartanker blijft op de echte locatie.</div></div>
     <aside class="side">
       <h2>Kaartgebruik</h2>
-      <p>Klik op een nummer voor datum, gebeurtenis en bewijsstatus. Tik op een cluster om in te zoomen. De route is chronologisch weergegeven; onzekere trajecten zijn gestippeld.</p>
+      <p>Klik op een nummer voor datum, gebeurtenis en bewijsstatus. Bronafbeeldingen worden eerst volledig verkleind getoond; met “Bekijk bron groot” opent de originele afbeeldingsgrootte.</p>
       <div class="legend">
-        <span style="--c:var(--wo2)">Oorlog</span>
-        <span style="--c:var(--gev)">Gevangenschap</span>
-        <span style="--c:var(--na)">Naoorlogs KNIL</span>
-        <span style="--c:var(--mig)">Migratie 1951</span>
+        <span style="--c:var(--wo2)">Oorlog</span><span style="--c:var(--gev)">Gevangenschap</span><span style="--c:var(--na)">Naoorlogs KNIL</span><span style="--c:var(--mig)">Migratie 1951</span>
       </div>
       <div class="notice"><b>Belangrijk:</b> Daniel is niet naar Australië gereisd. Australië staat daarom niet als routepunt op deze kaart. “Opdracht uit Australië” wordt alleen als tekstuele context genoemd. Ceram en Weduar zijn waar nodig als benaderde kaartlocaties aangegeven.</div>
       <div class="events" id="eventList"></div>
@@ -122,18 +110,15 @@ main{max-width:1500px;margin:auto;padding:14px}
   <div class="modal-box">
     <button type="button" class="modal-close" id="modalClose" aria-label="Sluiten">×</button>
     <div class="modal-title" id="modalTitle">Bron</div>
-    <img id="modalImage" src="" alt="Bronafbeelding">
+    <div class="modal-hint">Werkelijke afbeeldingsgrootte — scroll horizontaal of verticaal om de volledige bron te bekijken.</div>
+    <div class="image-scroll" id="modalScroll"><img id="modalImage" src="" alt="Bronafbeelding"></div>
   </div>
 </div>
-
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
 const C={wo2:'#b33a3a',gevangen:'#7c3f98',naoorlogs:'#1f5f8b',migratie:'#d07b19',open:'#66757e'};
-
-// De puntcoördinaten dienen als kaartankers. Bij locaties waarvan de exacte plek nog niet bewezen is,
-// wordt dat expliciet in de popup aangegeven.
 const events=[
 {id:1,phase:'wo2',cat:'wo2',date:'24 augustus 1941',title:'Ambon — in dienst KNIL',lat:-3.6954,lng:128.1814,desc:'Inlijving / militaire dienst op Ambon.',status:'militaire gegevens / onderzoekstijdlijn',group:'ambon'},
 {id:2,phase:'wo2',cat:'gevangen',date:'31 januari 1942',title:'Halong, Ambon — krijgsgevangen',lat:-3.6548,lng:128.1992,desc:'Tijdens de Japanse aanval op Ambon wordt Daniel in Halong krijgsgevangen genomen.',status:'eigen verklaring',group:'halong'},
@@ -142,8 +127,8 @@ const events=[
 {id:5,phase:'wo2',cat:'wo2',date:'februari–maart 1942',title:'Ceram — tussenroute',lat:-3.127,lng:129.37,desc:'Daniel noemt Ceram als onderdeel van de bootroute. Exacte aanlegplaats is niet vastgesteld.',status:'locatie benaderd / exacte plek open',group:'ceram'},
 {id:6,phase:'wo2',cat:'wo2',date:'maart 1942',title:'Tual, Kei-eilanden',lat:-5.6266,lng:132.7526,desc:'Aankomst in Tual. Daniel ontvangt hier een opdracht; hij blijft achter terwijl anderen verder reizen.',status:'eigen verklaring',group:'tual'},
 {id:7,phase:'wo2',cat:'open',date:'maart–september 1942',title:'Tual / Kei — onderzoeksleemte',lat:-5.6266,lng:132.7526,desc:'Wat Daniel in deze maanden precies deed, is nog onderwerp van onderzoek in archief 2.10.62 / 455 en 456.',status:'open onderzoek',group:'tual'},
-{id:8,phase:'gevangen',cat:'gevangen',date:'september 1942',title:'Weduar, Kei Besar — Kempeitai',lat:-5.82,lng:133.05,desc:'Naar een kamp in Weduar op Kei Besar gebracht, onder beheer van de Kempeitai. Kaartpunt is een benadering.',status:'eigen verklaring; exacte kampcoördinaat nog te verifiëren',group:'weduar'},
-{id:9,phase:'gevangen',cat:'gevangen',date:'1942–1945',title:'Japanse bezetting — verblijf nog open',lat:-5.82,lng:133.05,desc:'Duur van gevangenschap en verblijfplaatsen tot de Japanse capitulatie zijn nog niet volledig gereconstrueerd.',status:'open onderzoek',group:'weduar'},
+{id:8,phase:'gevangen',cat:'gevangen',date:'september 1942',title:'Weduar, Kei Besar — Kempeitai',lat:-5.82462,lng:132.94129,desc:'Naar een kamp in Weduar op Kei Besar gebracht, onder beheer van de Kempeitai. Het kaartanker staat nu bij het dorp Weduar; de exacte historische kampplaats moet nog worden vastgesteld.',status:'eigen verklaring; exacte kampcoördinaat nog te verifiëren',group:'weduar'},
+{id:9,phase:'gevangen',cat:'gevangen',date:'1942–1945',title:'Japanse bezetting — verblijf nog open',lat:-5.82462,lng:132.94129,desc:'Duur van gevangenschap en verblijfplaatsen tot de Japanse capitulatie zijn nog niet volledig gereconstrueerd.',status:'open onderzoek',group:'weduar'},
 {id:10,phase:'naoorlogs',cat:'naoorlogs',date:'vanaf 1 oktober 1948',title:'Malang — 2-Inf. IV',lat:-7.9826,lng:112.6308,desc:'Naoorlogse fase van het onderzoek: reconstructie van 2-Inf. IV in Malang en Oost-Java.',status:'onderzoeksfase; detailpunten worden verder aangevuld',group:'malang'},
 {id:11,phase:'migratie',cat:'migratie',date:'9/10 april 1951',title:'Vertrek Indonesië — bronconflict',lat:-7.2575,lng:112.7521,desc:'Openbare bronnen verschillen: vertrek wordt gekoppeld aan Jakarta (9 april) of Surabaya (10 april). Surabaya staat hier als vertrekanker; Jakarta is apart weergegeven.',status:'bronconflict',group:'surabaya'},
 {id:12,phase:'migratie',cat:'migratie',date:'9 april 1951',title:'Jakarta — alternatieve vertrekregistratie',lat:-6.2088,lng:106.8456,desc:'Nationaal Archief noemt Jakarta op 9 april als vertrekpunt. De oorspronkelijke passagierslijst / het scheepslogboek moet het conflict oplossen.',status:'bronconflict',group:'jakarta'},
@@ -151,180 +136,99 @@ const events=[
 {id:14,phase:'migratie',cat:'migratie',date:'15 mei 1951',title:'Amsterdam — aankomst',lat:52.3676,lng:4.9041,desc:'Aankomst van Daniel en zijn gezin in Amsterdam met de Somersetshire.',status:'sterk bevestigd',group:'amsterdam'}
 ];
 const sourceMeta={
-  1:{img:'assets/bron_stamboek_militaire_loopbaan.jpg',label:'Stamboek / militaire loopbaan: Ambon, 24 augustus 1941'},
-  2:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: krijgsgevangen te Halong, 31 januari 1942'},
-  3:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: vrijlating, 2 februari 1942'},
-  4:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: vlucht vanaf Ambon, 16 februari 1942'},
-  5:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: route via Ceram'},
-  6:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: Tual, maart 1942'},
-  7:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: verblijf Tual, 1942'},
-  8:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: overgebracht naar kamp Weduar, september 1942'},
-  9:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: krijgsgevangenschap Weduar tot 1945'},
-  10:{img:'assets/bron_stamboek_militaire_loopbaan.jpg',label:'Stamboek: 1 oktober 1948 overgegaan bij 2-Inf. IV te Malang'},
-  11:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — algemene bevestiging van dienst 1940–1945 en herstel orde en rust'},
-  12:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — algemene dienstbevestiging'},
-  13:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — context voorafgaand aan repatriëring'},
-  14:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — context voorafgaand aan vertrek naar Nederland'}
+1:{img:'assets/bron_stamboek_militaire_loopbaan.jpg',label:'Stamboek / militaire loopbaan: Ambon, 24 augustus 1941'},
+2:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: krijgsgevangen te Halong, 31 januari 1942'},
+3:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: vrijlating, 2 februari 1942'},
+4:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: vlucht vanaf Ambon, 16 februari 1942'},
+5:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: route via Ceram'},
+6:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: Tual, maart 1942'},
+7:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: verblijf Tual, 1942'},
+8:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: overgebracht naar kamp Weduar, september 1942'},
+9:{img:'assets/bron_verklaring_gevangenschap.jpg',label:'Toelichting internering: krijgsgevangenschap Weduar tot 1945'},
+10:{img:'assets/bron_stamboek_militaire_loopbaan.jpg',label:'Stamboek: 1 oktober 1948 overgegaan bij 2-Inf. IV te Malang'},
+11:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — algemene bevestiging van dienst 1940–1945 en herstel orde en rust'},
+12:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — algemene dienstbevestiging'},
+13:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — context voorafgaand aan repatriëring'},
+14:{img:'assets/bron_knil_verklaring_1950.jpg',label:'KNIL-verklaring, 24 juli 1950 — context voorafgaand aan vertrek naar Nederland'}
 };
-Object.keys(sourceMeta).forEach(id=>{
-  const e=events.find(x=>x.id===Number(id));
-  if(e) e.source=sourceMeta[id];
-});
+Object.keys(sourceMeta).forEach(id=>{const e=events.find(x=>x.id===Number(id));if(e)e.source=sourceMeta[id];});
+
+/* Scherm-offsets in pixels voor exact gelijke locaties. De lat/lng zelf verandert NIET. */
+const markerOffsets={
+  1:{x:-24,y:18},3:{x:24,y:18},4:{x:0,y:-25},
+  6:{x:-18,y:13},7:{x:18,y:-13},
+  8:{x:-18,y:13},9:{x:18,y:-13}
+};
 
 const map=L.map('map',{zoomControl:true,worldCopyJump:true}).setView([-4.7,130],6);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
- maxZoom:19, attribution:'© OpenStreetMap-bijdragers'
-}).addTo(map);
-
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap-bijdragers'}).addTo(map);
 const markerLayer=L.markerClusterGroup({
-  showCoverageOnHover:false,
-  spiderfyOnMaxZoom:true,
-  zoomToBoundsOnClick:true,
-  removeOutsideVisibleBounds:true,
-  disableClusteringAtZoom:10,
-  maxClusterRadius:48,
-  spiderfyDistanceMultiplier:1.35,
-  iconCreateFunction:function(cluster){
-    const n=cluster.getChildCount();
-    return L.divIcon({
-      html:`<div>${n}<br><span style="font-size:9px;font-weight:650">punten</span></div>`,
-      className:'custom-cluster',
-      iconSize:[42,42],
-      iconAnchor:[21,21]
-    });
-  }
+  showCoverageOnHover:false,spiderfyOnMaxZoom:true,zoomToBoundsOnClick:true,removeOutsideVisibleBounds:true,
+  disableClusteringAtZoom:10,maxClusterRadius:48,spiderfyDistanceMultiplier:1.35,
+  iconCreateFunction:function(cluster){const n=cluster.getChildCount();return L.divIcon({html:`<div>${n}<br><span style="font-size:9px;font-weight:650">punten</span></div>`,className:'custom-cluster',iconSize:[42,42],iconAnchor:[21,21]});}
 }).addTo(map);
 const routeLayer=L.layerGroup().addTo(map);
 const markers=new Map();
 let currentFilter='all';
 
 function iconFor(e){
- const col=C[e.cat]||C.open;
- return L.divIcon({className:'marker-wrap',html:`<div class="num-marker" style="background:${col}">${e.id}</div>`,iconSize:[32,32],iconAnchor:[16,16]});
+ const col=C[e.cat]||C.open,o=markerOffsets[e.id]||{x:0,y:0};
+ return L.divIcon({
+   className:'marker-wrap',
+   html:`<div class="num-marker" style="background:${col};--dx:${o.x}px;--dy:${o.y}px">${e.id}</div>`,
+   iconSize:[32,32],iconAnchor:[16,16],popupAnchor:[o.x,o.y-18]
+ });
 }
 function popup(e){
  const s=e.source;
- const src=s ? `<div class="source-card"><img src="${s.img}" alt="${s.label}" loading="lazy"><button type="button" class="open-source" data-src="${s.img}" data-title="${s.label}">Bekijk bron groot</button></div>` : `<div class="source-none">Bronafbeelding nog niet beschikbaar</div>`;
+ const src=s?`<div class="source-card"><div class="source-preview"><img src="${s.img}" alt="${s.label}" loading="lazy"></div><button type="button" class="open-source" data-src="${s.img}" data-title="${s.label}">Bekijk bron groot</button></div>`:`<div class="source-none">Bronafbeelding nog niet beschikbaar</div>`;
  return `<h3>${e.id}. ${e.title}</h3><div class="date">${e.date}</div><p>${e.desc}</p><span class="status">${e.status}</span>${src}`;
 }
-
-// Markers blijven altijd op hun echte geografische coördinaat.
 function renderMarkers(){
- markerLayer.clearLayers(); markers.clear();
- const visible=events.filter(e=>currentFilter==='all'||e.phase===currentFilter);
- visible.forEach(e=>{
-   const m=L.marker([e.lat,e.lng],{icon:iconFor(e),title:e.title})
-     .bindPopup(popup(e),{maxWidth:320});
-   markerLayer.addLayer(m);
-   markers.set(e.id,m);
+ markerLayer.clearLayers();markers.clear();
+ events.filter(e=>currentFilter==='all'||e.phase===currentFilter).forEach(e=>{
+   const m=L.marker([e.lat,e.lng],{icon:iconFor(e),title:e.title,riseOnHover:true}).bindPopup(popup(e),{maxWidth:340,autoPan:true,keepInView:true});
+   markerLayer.addLayer(m);markers.set(e.id,m);
  });
 }
-
-// curved polyline via sampled quadratic Bezier in lat/lng plane
-function curve(a,b,bend=0.18,steps=28){
- const mx=(a.lng+b.lng)/2, my=(a.lat+b.lat)/2;
- const dx=b.lng-a.lng, dy=b.lat-a.lat;
- const cx=mx-dy*bend, cy=my+dx*bend;
- const pts=[];
- for(let i=0;i<=steps;i++){
-  const t=i/steps, u=1-t;
-  pts.push([u*u*a.lat+2*u*t*cy+t*t*b.lat, u*u*a.lng+2*u*t*cx+t*t*b.lng]);
- }
- return pts;
+function curve(a,b,bend=.18,steps=28){
+ const mx=(a.lng+b.lng)/2,my=(a.lat+b.lat)/2,dx=b.lng-a.lng,dy=b.lat-a.lat,cx=mx-dy*bend,cy=my+dx*bend,pts=[];
+ for(let i=0;i<=steps;i++){const t=i/steps,u=1-t;pts.push([u*u*a.lat+2*u*t*cy+t*t*b.lat,u*u*a.lng+2*u*t*cx+t*t*b.lng]);}return pts;
 }
-function addRoute(a,b,opt={}){
- if(currentFilter!=='all' && (a.phase!==currentFilter || b.phase!==currentFilter)) return;
- L.polyline(curve(a,b,opt.bend||0.12),{
-   color:opt.color||'#556',weight:opt.weight||3,opacity:opt.opacity||.75,
-   dashArray:opt.dash?'7 8':null,lineCap:'round'
- }).addTo(routeLayer);
-}
+function addRoute(a,b,opt={}){if(currentFilter!=='all'&&(a.phase!==currentFilter||b.phase!==currentFilter))return;L.polyline(curve(a,b,opt.bend||.12),{color:opt.color||'#556',weight:opt.weight||3,opacity:opt.opacity||.75,dashArray:opt.dash?'7 8':null,lineCap:'round'}).addTo(routeLayer);}
 function renderRoutes(){
- routeLayer.clearLayers();
- const E=id=>events.find(x=>x.id===id);
- // WOII
- addRoute(E(2),E(3),{color:C.wo2,bend:-.22});
- addRoute(E(4),E(5),{color:C.wo2,bend:.16,dash:true});
- addRoute(E(5),E(6),{color:C.wo2,bend:.10,dash:true});
- addRoute(E(6),E(8),{color:C.gevangen,bend:.10});
- // Naoorlogs: alleen globale koppeling, niet doen alsof tussenliggende route bewezen is
- addRoute(E(8),E(10),{color:C.naoorlogs,bend:.12,dash:true,opacity:.45});
- // Migratie: beide vertreklezingen naar eenzelfde schematische zeecorridor
- addRoute(E(11),E(13),{color:C.migratie,bend:-.08,dash:true});
- addRoute(E(12),E(13),{color:C.migratie,bend:.08,dash:true,opacity:.5});
- addRoute(E(13),E(14),{color:C.migratie,bend:.18,dash:true});
+ routeLayer.clearLayers();const E=id=>events.find(x=>x.id===id);
+ addRoute(E(2),E(3),{color:C.wo2,bend:-.22});addRoute(E(4),E(5),{color:C.wo2,bend:.16,dash:true});addRoute(E(5),E(6),{color:C.wo2,bend:.10,dash:true});addRoute(E(6),E(8),{color:C.gevangen,bend:.10});
+ addRoute(E(8),E(10),{color:C.naoorlogs,bend:.12,dash:true,opacity:.45});addRoute(E(11),E(13),{color:C.migratie,bend:-.08,dash:true});addRoute(E(12),E(13),{color:C.migratie,bend:.08,dash:true,opacity:.5});addRoute(E(13),E(14),{color:C.migratie,bend:.18,dash:true});
 }
-renderRoutes();
-renderMarkers();
+renderRoutes();renderMarkers();
 
 function buildList(){
- const el=document.getElementById('eventList'); el.innerHTML='';
+ const el=document.getElementById('eventList');el.innerHTML='';
  events.forEach(e=>{
-  const div=document.createElement('div');
-  div.className='event'; div.dataset.phase=e.phase;
-  const src=e.source ? `<img src="${e.source.img}" alt="${e.source.label}" loading="lazy" style="width:100%;height:78px;object-fit:cover;object-position:top;border-radius:7px;margin-top:8px;border:1px solid #e1e6e8"><button type="button" class="source-btn open-source" data-src="${e.source.img}" data-title="${e.source.label}">Bekijk bron: ${e.source.label}</button>` : `<div class="source-none">Geen bronafbeelding gekoppeld</div>`;
+  const div=document.createElement('div');div.className='event';div.dataset.phase=e.phase;
+  const src=e.source?`<div class="list-source-preview"><img src="${e.source.img}" alt="${e.source.label}" loading="lazy"></div><button type="button" class="source-btn open-source" data-src="${e.source.img}" data-title="${e.source.label}">Bekijk bron: ${e.source.label}</button>`:`<div class="source-none">Geen bronafbeelding gekoppeld</div>`;
   div.innerHTML=`<div class="top"><span class="badge" style="background:${C[e.cat]||C.open}">${e.id}</span><b>${e.title}</b></div><small>${e.date} — ${e.status}</small>${src}`;
-  div.addEventListener('click',()=>{
-   const m=markers.get(e.id);
-   if(m){
-     markerLayer.zoomToShowLayer(m,()=>{
-       map.panTo(m.getLatLng(),{animate:true});
-       m.openPopup();
-     });
-   }
-  });
+  div.addEventListener('click',()=>{const m=markers.get(e.id);if(m){markerLayer.zoomToShowLayer(m,()=>{map.panTo(m.getLatLng(),{animate:true});m.openPopup();});}});
   el.appendChild(div);
  });
 }
 buildList();
 
-document.querySelectorAll('#filters button').forEach(btn=>{
- btn.addEventListener('click',()=>{
-  document.querySelectorAll('#filters button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active'); currentFilter=btn.dataset.filter;
-  renderMarkers();
-  renderRoutes();
-  document.querySelectorAll('.event').forEach(x=>x.style.display=(currentFilter==='all'||x.dataset.phase===currentFilter)?'block':'none');
-  const vis=events.filter(e=>currentFilter==='all'||e.phase===currentFilter);
-  if(vis.length>1){
-   const bounds=L.latLngBounds(vis.map(e=>[e.lat,e.lng]));
-   map.fitBounds(bounds.pad(.18),{maxZoom:7});
-  }else if(vis.length===1){map.setView([vis[0].lat,vis[0].lng],8);}
- });
-});
+document.querySelectorAll('#filters button').forEach(btn=>btn.addEventListener('click',()=>{
+ document.querySelectorAll('#filters button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');currentFilter=btn.dataset.filter;renderMarkers();renderRoutes();
+ document.querySelectorAll('.event').forEach(x=>x.style.display=(currentFilter==='all'||x.dataset.phase===currentFilter)?'block':'none');
+ const vis=events.filter(e=>currentFilter==='all'||e.phase===currentFilter);if(vis.length>1){map.fitBounds(L.latLngBounds(vis.map(e=>[e.lat,e.lng])).pad(.18),{maxZoom:7});}else if(vis.length===1){map.setView([vis[0].lat,vis[0].lng],8);}
+}));
 
-// Startview focust op Molukken/Oost-Java; gebruiker kan daarna uitzoomen naar Nederland.
 map.fitBounds(L.latLngBounds(events.slice(0,10).map(e=>[e.lat,e.lng])).pad(.12),{maxZoom:6});
-setTimeout(()=>map.invalidateSize(),150);
-window.addEventListener('resize',()=>map.invalidateSize());
+setTimeout(()=>map.invalidateSize(),150);window.addEventListener('resize',()=>map.invalidateSize());
 
-const sourceModal=document.getElementById('sourceModal');
-const modalImage=document.getElementById('modalImage');
-const modalTitle=document.getElementById('modalTitle');
-const modalClose=document.getElementById('modalClose');
-
-function openSource(src,title){
-  modalImage.src=src;
-  modalImage.alt=title||'Bronafbeelding';
-  modalTitle.textContent=title||'Bron';
-  sourceModal.classList.add('open');
-}
-function closeSource(){
-  sourceModal.classList.remove('open');
-  modalImage.src='';
-}
-document.addEventListener('click',ev=>{
-  const b=ev.target.closest('.open-source');
-  if(b){
-    ev.preventDefault();
-    ev.stopPropagation();
-    openSource(b.dataset.src,b.dataset.title);
-  }
-});
-modalClose.addEventListener('click',closeSource);
-sourceModal.addEventListener('click',ev=>{if(ev.target===sourceModal) closeSource();});
-document.addEventListener('keydown',ev=>{if(ev.key==='Escape' && sourceModal.classList.contains('open')) closeSource();});
-
+const sourceModal=document.getElementById('sourceModal'),modalImage=document.getElementById('modalImage'),modalTitle=document.getElementById('modalTitle'),modalClose=document.getElementById('modalClose'),modalScroll=document.getElementById('modalScroll');
+function openSource(src,title){modalImage.src=src;modalImage.alt=title||'Bronafbeelding';modalTitle.textContent=title||'Bron';sourceModal.classList.add('open');document.body.style.overflow='hidden';requestAnimationFrame(()=>{modalScroll.scrollTop=0;modalScroll.scrollLeft=0;});}
+function closeSource(){sourceModal.classList.remove('open');modalImage.src='';document.body.style.overflow='';}
+document.addEventListener('click',ev=>{const b=ev.target.closest('.open-source');if(b){ev.preventDefault();ev.stopPropagation();openSource(b.dataset.src,b.dataset.title);}});
+modalClose.addEventListener('click',closeSource);sourceModal.addEventListener('click',ev=>{if(ev.target===sourceModal)closeSource();});document.addEventListener('keydown',ev=>{if(ev.key==='Escape'&&sourceModal.classList.contains('open'))closeSource();});
 </script>
 </body>
 </html>
