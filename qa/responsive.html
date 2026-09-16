@@ -15,7 +15,7 @@ document.getElementById('result').textContent=JSON.stringify({
 viewport:[w.innerWidth,w.innerHeight],mode:d.body.className,pageOverflow:d.documentElement.scrollWidth>w.innerWidth||d.documentElement.scrollHeight>w.innerHeight,
 detailOpen:detail.classList.contains('open'),detailOverflow:detail.clientWidth>0&&detail.scrollWidth>detail.clientWidth,
 selectedPoint:d.querySelector('#dt').textContent,selectedMarkers:d.querySelectorAll('.selected-marker').length,
-markerVisible:!mr?null:mr.left>=0&&mr.right<=w.innerWidth&&mr.top>=rect(d.querySelector('.top')).bottom&&mr.bottom<=w.innerHeight&&(!detail.classList.contains('open')||!d.body.classList.contains('mobile-view')||mr.bottom<=dr.top),
+markerVisible:!mr?null:mr.left>=0&&mr.right<=w.innerWidth&&mr.top>=rect(d.querySelector('.top')).bottom&&mr.bottom<=w.innerHeight&&(!detail.classList.contains('open')||!d.body.classList.contains('mobile-view')||(dr.width<w.innerWidth*.9?mr.right<=dr.left:mr.bottom<=dr.top)),
 imagesRequested:images.length,brokenLoadedImages:images.filter(e=>e.complete&&!e.naturalWidth).map(e=>e.getAttribute('src'))
 },null,2)};
 </script></html>
