@@ -1,0 +1,21 @@
+<!doctype html><html lang="nl"><meta charset="utf-8"><meta name="robots" content="noindex"><title>Responsive controles — Opa</title>
+<style>body{font:15px Arial;margin:16px;background:#e8edf0;color:#102a4a}select,button{font:inherit;padding:8px;margin:4px}iframe{display:block;border:1px solid #789;background:white;margin-top:12px}pre{white-space:pre-wrap}label{font-weight:bold}</style>
+<label for="size">Schermformaat</label><select id="size"><option value="360,740">360 × 740</option><option value="390,844">390 × 844</option><option value="430,932">430 × 932</option><option value="844,390">844 × 390 liggend</option><option value="1280,800">1280 × 800 desktop</option></select>
+<button id="reload">Herlaad website</button><button id="check">Controleer indeling</button>
+<iframe id="site" title="Website onder test" width="360" height="740" src="../index.html?qa=baseline"></iframe><pre id="result" aria-live="polite"></pre>
+<script>
+const frame=document.getElementById('site'),size=document.getElementById('size');
+size.onchange=()=>{const [w,h]=size.value.split(',');frame.width=w;frame.height=h};
+document.getElementById('reload').onclick=()=>{frame.src='../index.html?qa='+Date.now()};
+document.getElementById('check').onclick=()=>{
+const d=frame.contentDocument,w=frame.contentWindow;const rect=e=>e?.getBoundingClientRect();
+const detail=d.querySelector('.detail'),dr=rect(detail),marker=d.querySelector('.selected-marker'),mr=rect(marker);
+const images=[...d.images].filter(e=>e.getAttribute('src'));
+document.getElementById('result').textContent=JSON.stringify({
+viewport:[w.innerWidth,w.innerHeight],mode:d.body.className,pageOverflow:d.documentElement.scrollWidth>w.innerWidth||d.documentElement.scrollHeight>w.innerHeight,
+detailOpen:detail.classList.contains('open'),detailOverflow:detail.clientWidth>0&&detail.scrollWidth>detail.clientWidth,
+selectedPoint:d.querySelector('#dt').textContent,selectedMarkers:d.querySelectorAll('.selected-marker').length,
+markerVisible:!mr?null:mr.left>=0&&mr.right<=w.innerWidth&&mr.top>=rect(d.querySelector('.top')).bottom&&mr.bottom<=w.innerHeight&&(!detail.classList.contains('open')||!d.body.classList.contains('mobile-view')||mr.bottom<=dr.top),
+imagesRequested:images.length,brokenLoadedImages:images.filter(e=>e.complete&&!e.naturalWidth).map(e=>e.getAttribute('src'))
+},null,2)};
+</script></html>
