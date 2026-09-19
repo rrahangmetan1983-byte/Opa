@@ -220,7 +220,7 @@ by('allRoute').onclick=()=>{
  current=null;
  document.querySelectorAll('.event').forEach(row=>{row.classList.remove('selected');row.setAttribute('aria-pressed','false')});
  closePointsOnMobile();
- setTimeout(()=>{map.invalidateSize();map.fitBounds(E.map(e=>[e.lat,e.lng]),{padding:[40,40],animate:false})},120);
+ setTimeout(()=>{if(current)return;map.invalidateSize();map.fitBounds(E.map(e=>[e.lat,e.lng]),{padding:[40,40],animate:false})},120);
 };
 </script></body></html>
 
