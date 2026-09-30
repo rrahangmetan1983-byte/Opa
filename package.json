@@ -1,0 +1,7 @@
+{
+  "name": "opa-besloten-familiesite",
+  "private": true,
+  "type": "module",
+  "scripts": { "start": "node server.mjs", "test": "node --test tests/access.test.mjs" },
+  "engines": { "node": ">=22" }
+}

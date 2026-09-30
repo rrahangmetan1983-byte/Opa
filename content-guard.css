@@ -1,0 +1,6 @@
+/* Discourages casual copying; access protection lives in server.mjs. */
+.brand,.event,.detail,.modal { user-select:none; -webkit-user-select:none; }
+img { -webkit-user-drag:none; user-select:none; -webkit-user-select:none; }
+input,textarea,[contenteditable="true"] { user-select:text; -webkit-user-select:text; }
+#familyLogout { position:fixed; bottom:12px; right:12px; z-index:1100; }
+#familyLogout button { padding:8px 12px; border:1px solid #8096aa; border-radius:8px; background:white; color:#17324d; cursor:pointer; }
