@@ -98,8 +98,10 @@
   function refreshMap() {
     if(!map)return;
     expandedCluster?.unspiderfy();map.invalidateSize();
-    if(current&&by('detail').classList.contains('open')&&coordinates(current)) {
-      center(current,map.getZoom());reveal();
+    if(current&&by('detail').classList.contains('open')) {
+      if(escapeEventIds.includes(current.id)&&escapeRouteVisible())fitEscapeRoute();
+      else if(coordinates(current))center(current,map.getZoom());
+      reveal();
     }
   }
   function clearSelection() {
@@ -181,8 +183,7 @@
     setTimeout(()=>{
       if(current!==e||!map)return;map.invalidateSize();
       if(escapeEventIds.includes(e.id)&&escapeRouteVisible()){
-        const [right,bottom]=detailCover();
-        map.fitBounds(L.latLngBounds(escapeRoute),{paddingTopLeft:[30,30],paddingBottomRight:[right+30,bottom+30],maxZoom:7,animate:false});
+        fitEscapeRoute();
         if(point)reveal();
       }else if(point){center(e,zoom);reveal();}
     },100);
@@ -205,6 +206,10 @@
   });
   function escapeRouteVisible(){
     return by('showRoutes').checked&&escapeRoute.every(Boolean)&&escapeEventIds.every(id=>visible.some(e=>e.id===id));
+  }
+  function fitEscapeRoute(){
+    const [right,bottom]=detailCover();
+    map.fitBounds(L.latLngBounds(escapeRoute),{paddingTopLeft:[30,30],paddingBottomRight:[right+30,bottom+30],maxZoom:7,animate:false});
   }
   function rebuildRoutes() {
     if(!map)return;routeGroup.clearLayers();
