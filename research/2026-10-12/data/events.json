@@ -152,6 +152,11 @@
     "date_precision": "interval",
     "title": "Ceram als tussenroute",
     "location_id": "seram",
+    "route_waypoint": {
+      "coordinates": [129, -3.1],
+      "coordinate_precision": "island_schematic",
+      "notes": "Globaal oriëntatiepunt in het eilandgebied, uitsluitend om de genoemde volgorde Ambon–Ceram–Tual schematisch te tekenen. Geen landingsplaats, verblijfplaats of bewezen vaartraject."
+    },
     "unit": null,
     "event_type": "transit",
     "evidence_level": "A",

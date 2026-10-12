@@ -98,8 +98,10 @@
   function refreshMap() {
     if(!map)return;
     expandedCluster?.unspiderfy();map.invalidateSize();
-    if(current&&by('detail').classList.contains('open')&&coordinates(current)) {
-      center(current,map.getZoom());reveal();
+    if(current&&by('detail').classList.contains('open')) {
+      if(escapeEventIds.includes(current.id)&&escapeRouteVisible())fitEscapeRoute();
+      else if(coordinates(current))center(current,map.getZoom());
+      reveal();
     }
   }
   function clearSelection() {
@@ -162,8 +164,8 @@
     by('proofSummary').textContent=`Bewijsniveau: ${labels[e.evidence_level]}. ${e.evidence_level==='B'?'Eenheidsgegevens in een periode van gedocumenteerd lidmaatschap; geen individueel actiebevel.':e.evidence_level==='C'?'Historisch beschreven gebeurtenis; Daniëls aanwezigheid of persoonlijke deelname niet bewezen.':e.source_ids.includes('S06')?'Daniëls eigen herinneringsverklaring; geen zelfstandig erkenningsbesluit gezien.':e.status==='bevestigd'?'Geregistreerd in de aangehaalde persoonlijke bron.':`Bewijskracht: ${e.status}.`}`;
     const point=coordinates(e);
     by('locationNote').textContent=point?(e.location_inferred?'Kaartplaats ontleend aan scheepscontext; het persoonlijke dienstblad noemt geen haven.':'Kaartpunt geeft de plaats of het gebied bij benadering weer, geen exacte verblijfplaats.'):'Geen voldoende gecontroleerde kaartcoördinaat. Deze gebeurtenis blijft in de tijdlijn zonder marker.';
-    by('routeNote').hidden=!e.topics.includes('voyage');
-    by('routeNote').textContent='De onderbroken Suezlijn is een vermoedelijk traject. Tussenstops en precieze vaarroutes zijn niet bewezen.';
+    by('routeNote').hidden=!e.topics.includes('voyage')&&!escapeEventIds.includes(e.id);
+    by('routeNote').textContent=escapeEventIds.includes(e.id)?'Ambon → Ceram → Tual volgens Daniëls latere verklaring (S06). De onderbroken lijn toont de plaatsvolgorde schematisch; het punt bij Ceram is alleen een oriëntatiepunt in het eilandgebied. Landingsplaats en precieze vaarroute zijn niet bewezen.':'De onderbroken Suezlijn is een vermoedelijk traject. Tussenstops en precieze vaarroutes zijn niet bewezen.';
     by('quoteBox').hidden=!e.original_excerpt;
     by('quoteLabel').textContent='Originele bronpassage';by('quoteText').textContent=e.original_excerpt||'';
     by('quoteNote').textContent='Lees de volledige bron en bewijsgrens in de tab Bronnen.';
@@ -178,7 +180,13 @@
     updateNavigation();
     showTab(keepTab?document.querySelector('.tabs .active')?.dataset.tab||'story':'story');
     if(isMobile())setPoints(false);
-    setTimeout(()=>{if(current!==e||!map)return;map.invalidateSize();if(point){center(e,zoom);reveal();}},100);
+    setTimeout(()=>{
+      if(current!==e||!map)return;map.invalidateSize();
+      if(escapeEventIds.includes(e.id)&&escapeRouteVisible()){
+        fitEscapeRoute();
+        if(point)reveal();
+      }else if(point){center(e,zoom);reveal();}
+    },100);
   }
   function updateNavigation() {
     const i=current?visible.findIndex(e=>e.id===current.id):-1;
@@ -190,6 +198,19 @@
     if(i>=0&&i<visible.length)select(visible[i],true);
   }
   const voyageRoute=[[-6.1,106.88],[-6.8,104.6],[-8.5,100],[-7,82],[11.9,50],[12.2,44],[16.9,41],[22,37.8],[27.6,34],[29.9,32.55],[30.3,32.45],[31.2,32.3],[33.2,28],[35,19],[37,9],[36,-5.7],[43,-10],[49,-5],[51.2,1.8],[52.5,4.55],[52.37,4.9]];
+  const escapeEventIds=['E007','E008','E009'];
+  // Ceram has no known landing site. Its route waypoint must never become a marker.
+  const escapeRoute=escapeEventIds.map(id=>{
+    const e=events.find(event=>event.id===id),waypoint=e.route_waypoint?.coordinates;
+    return waypoint?[waypoint[1],waypoint[0]]:coordinates(e);
+  });
+  function escapeRouteVisible(){
+    return by('showRoutes').checked&&escapeRoute.every(Boolean)&&escapeEventIds.every(id=>visible.some(e=>e.id===id));
+  }
+  function fitEscapeRoute(){
+    const [right,bottom]=detailCover();
+    map.fitBounds(L.latLngBounds(escapeRoute),{paddingTopLeft:[30,30],paddingBottomRight:[right+30,bottom+30],maxZoom:7,animate:false});
+  }
   function rebuildRoutes() {
     if(!map)return;routeGroup.clearLayers();
     if(!by('showRoutes').checked)return;
@@ -203,6 +224,7 @@
       }
       previous={event:e,point};
     }
+    if(escapeRouteVisible()) L.polyline(escapeRoute,{color:colors.occupation,weight:3,dashArray:'5 8',opacity:.75,researchRoute:'ambon-ceram-tual'}).bindTooltip('Ambon → Ceram → Tual · persoonlijke verklaring S06 · schematisch via eilandgebied; landingsplaats en vaarroute onbekend').addTo(routeGroup);
     if(visible.some(e=>e.id==='E032')&&visible.some(e=>e.id==='E034')&&!by('confirmedOnly').checked) L.polyline(voyageRoute,{color:colors.voyage,weight:3,dashArray:'8 9',opacity:.7}).bindTooltip('Vermoedelijk traject via Suez · tussenstops niet bevestigd').addTo(routeGroup);
   }
   function applyFilters() {
@@ -242,7 +264,7 @@
     markerGroup.on('spiderfied',e=>{expandedCluster=e.cluster;expandedMarkers=e.markers;highlight();});
     markerGroup.on('unspiderfied',()=>{expandedCluster=null;expandedMarkers=[];});
     markerGroup.addTo(map);applyFilters();
-    window.KNIL_APP={events,markers,map,markerGroup,get visible(){return visible;},get current(){return current;},select,applyFilters,voyageRoute};
+    window.KNIL_APP={events,markers,map,markerGroup,routeGroup,get visible(){return visible;},get current(){return current;},select,applyFilters,voyageRoute};
   }
   for(const e of events) {
     const row=document.createElement('button');row.type='button';row.className='event';row.dataset.eventId=e.id;row.setAttribute('aria-pressed','false');

@@ -27,6 +27,27 @@ async function main(){
     check(await page.locator('#dt').textContent(),id+' title renders');
   }
   await page.locator('#allRoute').click();await page.waitForTimeout(150);
+  const escapeState=()=>page.evaluate(()=>{
+    const route=KNIL_APP.routeGroup.getLayers().find(l=>l.options.researchRoute==='ambon-ceram-tual');
+    return route?{points:route.getLatLngs().map(p=>[p.lat,p.lng]),dash:route.options.dashArray,tooltip:route.getTooltip().getContent()}:null;
+  });
+  const escape=await escapeState();
+  check(escape?.points.length===3&&escape.points[0][1]<129&&escape.points[1][1]===129&&escape.points[2][1]>132,'Escape line connects Ambon through Ceram to Tual');
+  check(!!escape.dash&&escape.tooltip.includes('S06')&&escape.tooltip.includes('onbekend'),'Escape line labels testimony and uncertain route');
+  check(!await page.evaluate(()=>KNIL_APP.markers.has('E008')),'Ceram orientation does not invent a landing marker');
+  await page.evaluate(()=>KNIL_APP.select(KNIL_APP.events.find(e=>e.id==='E008')));await page.waitForTimeout(200);
+  check(await page.evaluate(()=>{
+    const route=KNIL_APP.routeGroup.getLayers().find(l=>l.options.researchRoute==='ambon-ceram-tual');
+    return route.getLatLngs().every(p=>KNIL_APP.map.getBounds().contains(p));
+  }),'Ceram selection frames the whole escape route');
+  check(await page.locator('#routeNote').isVisible()&&await page.locator('#routeNote').textContent().then(t=>t.includes('Landingsplaats')),'Escape detail explains geographic uncertainty');
+  await page.screenshot({path:path.join(output,'ambon-ceram-tual.png')});
+  await page.locator('#showRoutes').uncheck();check(!await escapeState(),'Connections toggle hides escape line');
+  await page.locator('#showRoutes').check();
+  await page.locator('#confirmedOnly').check();check(!await escapeState(),'Confirmed-only hides testimony route');
+  await page.locator('#confirmedOnly').uncheck();
+  await page.locator('#pointSearch').fill('E007');check(!await escapeState(),'Filtered-out escape events hide their connection');
+  await page.locator('#allRoute').click();
   for(const topic of ['personal','military','occupation','independence','voyage','netherlands']){
     await page.locator('#phaseFilter').selectOption(topic);
     const state=await page.evaluate(()=>({visible:KNIL_APP.visible.length,rows:[...document.querySelectorAll('.event')].filter(r=>!r.hidden).length,markers:KNIL_APP.markerGroup.getLayers().length,expected:KNIL_APP.visible.filter(e=>KNIL_APP.markers.has(e.id)).length}));
@@ -71,6 +92,17 @@ async function main(){
     await mobile.locator('[data-tab="sources"]').click();await mobile.locator('[data-source-image="S03"]').click();await mobile.locator('#bigImg').evaluate(img=>img.decode());check(await mobile.locator('#modalClose').isVisible(),'Mobile source viewer');await mobile.keyboard.press('Escape');
     await mobile.locator('[data-tab="context"]').click();await mobile.locator('#detail').evaluate(e=>e.scrollTop=0);if(width===390||width===844)await mobile.screenshot({path:path.join(output,width===390?'mobile.png':'landscape.png')});
     await mobile.locator('#sheetSize').click();check(await mobile.locator('#sheetSize').getAttribute('aria-expanded')==='true','Expanded reading panel');
+    await mobile.locator('#sheetSize').click();await mobile.locator('#allRoute').click();
+    await mobile.evaluate(()=>KNIL_APP.select(KNIL_APP.events.find(e=>e.id==='E008')));await mobile.waitForTimeout(200);
+    check(await mobile.evaluate(()=>{
+      const route=KNIL_APP.routeGroup.getLayers().find(l=>l.options.researchRoute==='ambon-ceram-tual');
+      const rect=document.querySelector('#map').getBoundingClientRect(),detail=document.querySelector('#detail').getBoundingClientRect();
+      return route.getLatLngs().every(p=>{
+        const pixel=KNIL_APP.map.latLngToContainerPoint(p),x=pixel.x+rect.left,y=pixel.y+rect.top;
+        return x>=rect.left&&x<=rect.right&&y>=rect.top&&y<=rect.bottom&&(detail.width<innerWidth*.9?x<detail.left:y<detail.top);
+      });
+    }),`${width}x${height} full escape route remains above/beside reading panel`);
+    if(width===390)await mobile.screenshot({path:path.join(output,'ambon-ceram-tual-mobile.png')});
     await mobile.close();
   }
   const broken=await page.locator('img[src]:not(.leaflet-tile)').evaluateAll(imgs=>imgs.filter(i=>i.complete&&!i.naturalWidth).map(i=>i.src));check(broken.length===0,'No broken loaded source images: '+broken.join(', '));
