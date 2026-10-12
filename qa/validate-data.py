@@ -27,6 +27,13 @@ for l in locations:
     c=l['coordinates']
     if c:assert len(c)==2 and -180<=c[0]<=180 and -90<=c[1]<=90 and l['coordinate_precision']
 by_id={e['id']:e for e in events}
+ceram=next(l for l in locations if l['id']=='seram')
+assert ceram['coordinates'] is None,'Ceram has no proven landing-site marker'
+waypoint=by_id['E008']['route_waypoint']
+assert waypoint['coordinate_precision']=='island_schematic'
+assert len(waypoint['coordinates'])==2 and all(isinstance(v,(int,float)) for v in waypoint['coordinates'])
+assert 127<=waypoint['coordinates'][0]<=132 and -4<=waypoint['coordinates'][1]<=-2
+assert all(by_id[i]['source_ids']==['S06'] and by_id[i]['status']!='bevestigd' for i in ['E007','E008','E009'])
 assert by_id['E014']['date']=='1946-07-10'
 assert by_id['E015']['date']=='1946-09-24' and by_id['E015']['unit']=='XXIe Bataljon Infanterie'
 assert by_id['E021']['unit']=='Inf. XXIII M.C.'
