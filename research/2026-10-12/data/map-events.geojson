@@ -1,0 +1,310 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "E004",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          128.18,
+          -3.7
+        ]
+      },
+      "properties": {
+        "event_id": "E004",
+        "title": "Inlijving militie en werkelijke dienst",
+        "date": "1941-08-24",
+        "source_ids": [
+          "S02",
+          "S03"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E014",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          128.18,
+          -3.7
+        ]
+      },
+      "properties": {
+        "event_id": "E014",
+        "title": "Melding en indeling bij L.O.C. Ambon",
+        "date": "1946-07-10",
+        "source_ids": [
+          "S02",
+          "S03",
+          "S06"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E015",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          128.18,
+          -3.7
+        ]
+      },
+      "properties": {
+        "event_id": "E015",
+        "title": "Reorganisatie naar XXIe Bataljon, Ambon",
+        "date": "1946-09-24",
+        "source_ids": [
+          "S02",
+          "S03"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E016",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          119.43,
+          -5.15
+        ]
+      },
+      "properties": {
+        "event_id": "E016",
+        "title": "Overgang naar XVIIe Bataljon, Makassar",
+        "date": "1946-10-17",
+        "source_ids": [
+          "S02",
+          "S03"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E017",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          119.63,
+          -4.01
+        ]
+      },
+      "properties": {
+        "event_id": "E017",
+        "title": "Overgang naar XVe Bataljon, Pare-Pare",
+        "date": "1946-11-23",
+        "source_ids": [
+          "S03"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E018",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          119.63,
+          -4.01
+        ]
+      },
+      "properties": {
+        "event_id": "E018",
+        "title": "Vrijwillige verbintenis voor drie jaar, Inf XV",
+        "date": "1946-12-06",
+        "source_ids": [
+          "S02",
+          "S03"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E019",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          119.63,
+          -4.01
+        ]
+      },
+      "properties": {
+        "event_id": "E019",
+        "title": "Reorganisatie naar 7-Inf. XV",
+        "date": "1947-10-13",
+        "source_ids": [
+          "S03"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E020",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.75,
+          -7.26
+        ]
+      },
+      "properties": {
+        "event_id": "E020",
+        "title": "Overgang naar territoriale troepen Oost-Java",
+        "date": "1947-11-21",
+        "source_ids": [
+          "S02",
+          "S03"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E022",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.63,
+          -7.98
+        ]
+      },
+      "properties": {
+        "event_id": "E022",
+        "title": "Overgang naar 2-Inf. IV te Malang",
+        "date": "1948-10-01",
+        "source_ids": [
+          "S02",
+          "S03"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E023",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.63,
+          -7.98
+        ]
+      },
+      "properties": {
+        "event_id": "E023",
+        "title": "Soldaat eerste klasse",
+        "date": "1949-11-15",
+        "source_ids": [
+          "S02",
+          "S03"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E028",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.63,
+          -7.98
+        ]
+      },
+      "properties": {
+        "event_id": "E028",
+        "title": "Overgang naar 5-Inf. XXIII te Malang",
+        "date": "1950-08-28",
+        "source_ids": [
+          "S05"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E029",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.63,
+          -7.98
+        ]
+      },
+      "properties": {
+        "event_id": "E029",
+        "title": "Overgang naar 2-Inf. XXIII te Malang",
+        "date": "1950-09-23",
+        "source_ids": [
+          "S05"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E030",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          112.75,
+          -7.26
+        ]
+      },
+      "properties": {
+        "event_id": "E030",
+        "title": "Overgang naar DGK te Soerabaia",
+        "date": "1950-10-05",
+        "source_ids": [
+          "S05"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "E034",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.9,
+          52.37
+        ]
+      },
+      "properties": {
+        "event_id": "E034",
+        "title": "Aankomst Nederland; beëindiging tijdelijke KL-dienst",
+        "date": "1951-05-15",
+        "source_ids": [
+          "S05",
+          "S21",
+          "S22"
+        ],
+        "coordinate_precision": "city_approximate",
+        "presence_limit": "Administratieve plaatsing; geen dagelijkse beweging bewezen."
+      }
+    }
+  ]
+}

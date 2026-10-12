@@ -1,0 +1,61 @@
+[
+  {
+    "id": "H01",
+    "claim": "M.C. betekent mitrailleurcompagnie",
+    "status": "aannemelijk",
+    "needed": "Formatieorder Inf.XXIII en personeelsorder1dec1947",
+    "source_ids": [
+      "S03"
+    ]
+  },
+  {
+    "id": "H02",
+    "claim": "2-,5-,7- zijn compagnienummers",
+    "status": "aannemelijk",
+    "needed": "Eenheidsformatie en dagorders uit betreffende jaren",
+    "source_ids": [
+      "S03",
+      "S05"
+    ]
+  },
+  {
+    "id": "H03",
+    "claim": "Daniëlsvlucht ging viaAmahai/Geser metJinkins",
+    "status": "onbewezen",
+    "needed": "Naam- of persoonsbeschrijving van Daniël in vluchtverslag; overeenkomende vertrekdata",
+    "source_ids": [
+      "S06",
+      "S12",
+      "S15"
+    ]
+  },
+  {
+    "id": "H04",
+    "claim": "Overtocht1951 ging viaSuez",
+    "status": "aannemelijk",
+    "needed": "Scheepsjournaal, COT-reisrapport of dated scheepsberichten voor deze reis",
+    "source_ids": [
+      "S31"
+    ]
+  },
+  {
+    "id": "H05",
+    "claim": "VerblijfLaarbrug enEerde in een specifieke volgorde",
+    "status": "onbewezen",
+    "needed": "CAZ725,mutatiekaarten en gemeentelijke vestigingsgegevens",
+    "source_ids": [
+      "S25",
+      "S29"
+    ]
+  },
+  {
+    "id": "H06",
+    "claim": "2-InfIV liep door tot28aug1950",
+    "status": "aannemelijk",
+    "needed": "Mutatiestaat1950,personeelsorders en volledigstamboek",
+    "source_ids": [
+      "S03",
+      "S05"
+    ]
+  }
+]

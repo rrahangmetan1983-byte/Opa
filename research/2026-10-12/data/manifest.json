@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "research_date": "2026-10-12",
+  "status": "onderzoeksrapport_met_explicitiete_hiaten",
+  "canonical_person_id": "daniel-rahangmetang-171301443",
+  "files": {
+    "events": "events.json",
+    "placements": "placements.json",
+    "sources": "sources.json",
+    "locations": "locations.json",
+    "units": "units.json",
+    "hypotheses": "hypotheses.json",
+    "conflicts": "conflicts.json",
+    "map_events": "map-events.geojson",
+    "family": "family-transport.json"
+  },
+  "evidence_classes": {
+    "A": "persoonlijke militaire registratie, of persoonlijke getuigenbron met apart betrouwbaarheidslabel",
+    "B": "eenheid in aantoonbare lidmaatschapsperiode, geen persoonlijk actiebevel",
+    "C": "historische/geografischecontext",
+    "D": "hypothese,naamgenoot of hiaat"
+  },
+  "update_policy": "IDsbehouden;nieuwe bronlezingalsnieuweassertie toevoegen;tegenstrijdigheidniet overschrijven;wijzigingenloggen inCHANGELOG.md",
+  "map_policy": "GeoJSON bevatalleenbevestigdeeventsmetglobaleoriëntatiecoördinaat.Geenvaarroutes ofonbevestigdekampplaatsen tekenen als exacte route."
+}

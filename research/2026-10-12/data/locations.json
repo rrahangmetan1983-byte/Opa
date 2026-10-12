@@ -1,0 +1,130 @@
+[
+  {
+    "id": "ohoirenan",
+    "label": "Ohoirenan, Kei-Besar",
+    "coordinates": null,
+    "coordinate_precision": "unlocated",
+    "coordinate_source": null
+  },
+  {
+    "id": "ambon",
+    "label": "Ambon",
+    "coordinates": [
+      128.18,
+      -3.7
+    ],
+    "coordinate_precision": "city_approximate",
+    "coordinate_source": "Projectkaart, afgerond tot circa stadsniveau; Zwolle globale kaartoriëntatie. Geen historisch exact garnizoen of kamp gegeocodeerd."
+  },
+  {
+    "id": "halong",
+    "label": "Halong, Ambon",
+    "coordinates": [
+      128.22,
+      -3.65
+    ],
+    "coordinate_precision": "area_approximate",
+    "coordinate_source": "Projectkaart, afgerond tot circa stadsniveau; Zwolle globale kaartoriëntatie. Geen historisch exact garnizoen of kamp gegeocodeerd."
+  },
+  {
+    "id": "seram",
+    "label": "Ceram/Seram",
+    "coordinates": null,
+    "coordinate_precision": "island_only",
+    "coordinate_source": null
+  },
+  {
+    "id": "tual",
+    "label": "Toeal/Tual",
+    "coordinates": [
+      132.75,
+      -5.63
+    ],
+    "coordinate_precision": "city_approximate",
+    "coordinate_source": "Projectkaart, afgerond tot circa stadsniveau; Zwolle globale kaartoriëntatie. Geen historisch exact garnizoen of kamp gegeocodeerd."
+  },
+  {
+    "id": "weduar",
+    "label": "Weduar, Kei",
+    "coordinates": null,
+    "coordinate_precision": "unverified_site",
+    "coordinate_source": null
+  },
+  {
+    "id": "makassar",
+    "label": "Makassar",
+    "coordinates": [
+      119.43,
+      -5.15
+    ],
+    "coordinate_precision": "city_approximate",
+    "coordinate_source": "Projectkaart, afgerond tot circa stadsniveau; Zwolle globale kaartoriëntatie. Geen historisch exact garnizoen of kamp gegeocodeerd."
+  },
+  {
+    "id": "parepare",
+    "label": "Pare-Pare",
+    "coordinates": [
+      119.63,
+      -4.01
+    ],
+    "coordinate_precision": "city_approximate",
+    "coordinate_source": "Projectkaart, afgerond tot circa stadsniveau; Zwolle globale kaartoriëntatie. Geen historisch exact garnizoen of kamp gegeocodeerd."
+  },
+  {
+    "id": "surabaya",
+    "label": "Soerabaia/Surabaya",
+    "coordinates": [
+      112.75,
+      -7.26
+    ],
+    "coordinate_precision": "city_approximate",
+    "coordinate_source": "Projectkaart, afgerond tot circa stadsniveau; Zwolle globale kaartoriëntatie. Geen historisch exact garnizoen of kamp gegeocodeerd."
+  },
+  {
+    "id": "east-java",
+    "label": "Oost-Java",
+    "coordinates": null,
+    "coordinate_precision": "region_only",
+    "coordinate_source": null
+  },
+  {
+    "id": "malang",
+    "label": "Malang",
+    "coordinates": [
+      112.63,
+      -7.98
+    ],
+    "coordinate_precision": "city_approximate",
+    "coordinate_source": "Projectkaart, afgerond tot circa stadsniveau; Zwolle globale kaartoriëntatie. Geen historisch exact garnizoen of kamp gegeocodeerd."
+  },
+  {
+    "id": "amsterdam",
+    "label": "Amsterdam",
+    "coordinates": [
+      4.9,
+      52.37
+    ],
+    "coordinate_precision": "city_approximate",
+    "coordinate_source": "Projectkaart, afgerond tot circa stadsniveau; Zwolle globale kaartoriëntatie. Geen historisch exact garnizoen of kamp gegeocodeerd."
+  },
+  {
+    "id": "zwolle",
+    "label": "Zwolle",
+    "coordinates": [
+      6.09,
+      52.51
+    ],
+    "coordinate_precision": "city_approximate",
+    "coordinate_source": "Projectkaart, afgerond tot circa stadsniveau; Zwolle globale kaartoriëntatie. Geen historisch exact garnizoen of kamp gegeocodeerd."
+  },
+  {
+    "id": "jakarta-harbor",
+    "label": "Jakarta / Tanjung Priok (scheepscontext)",
+    "coordinates": [
+      106.88,
+      -6.1
+    ],
+    "coordinate_precision": "harbor_approximate",
+    "coordinate_source": "Bestaande projectkaart, globaal havengebied. De bestemming in scheepscontext, niet in persoonlijk dienstblad."
+  }
+]

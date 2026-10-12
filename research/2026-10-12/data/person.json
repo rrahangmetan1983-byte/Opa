@@ -1,0 +1,41 @@
+{
+  "id": "daniel-rahangmetang-171301443",
+  "name": "Daniël Rahangmetang",
+  "canonical_army_number": "171301443",
+  "birth_year": 1917,
+  "birth_date_candidates": [
+    {
+      "value": "1917-01-01",
+      "source_ids": [
+        "S04",
+        "S07"
+      ]
+    },
+    {
+      "value": "1917-01-13",
+      "source_ids": [
+        "S19",
+        "S30"
+      ]
+    }
+  ],
+  "birthplace": "Ohoirenan (Kei-Besar)",
+  "parents": {
+    "father": "Kamasan",
+    "mother": "Rensina Rahangnjaan"
+  },
+  "spouse": "Orpa Oebra",
+  "aliases": [
+    "Rahangmetang",
+    "Rahangmetan",
+    "Rahang Metang",
+    "Rahang-Metang"
+  ],
+  "identity_policy": "121616309 niet gebruiken als identificatie. Het afwijkende indexveld blijft alleen in de bronsnapshot als fout vastgelegd. Voor bronkoppeling meerdere familiegegevens en persoonlijk reisblad combineren.",
+  "source_ids": [
+    "S01",
+    "S03",
+    "S04",
+    "S07"
+  ]
+}

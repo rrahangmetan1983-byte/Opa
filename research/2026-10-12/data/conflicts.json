@@ -1,0 +1,74 @@
+[
+  {
+    "id": "K01",
+    "subject": "Geboortedag",
+    "readings": "S04/S07:1 januari1917;S19/S30:13 januari1917;S01:jaar1917",
+    "resolution": "Dag niet beslecht; beide behouden."
+  },
+  {
+    "id": "K02",
+    "subject": "Indiensttreding",
+    "readings": "S02/S03:24 augustus1941;S06:25 september1941",
+    "resolution": "Voorkeur twee militaire registraties; verklaring als afwijkende herinnering bewaren."
+  },
+  {
+    "id": "K03",
+    "subject": "Gevangenschap Ambon",
+    "readings": "S06:gevangen31januari, vrij2februari;S02:capitulatie2februari,niet krijgsgevangen;S03:8maart niet in registratie",
+    "resolution": "Administratieve afwezigheid uit registratie weerlegt eigen later relaas niet. Exact31januari onbeslist."
+  },
+  {
+    "id": "K04",
+    "subject": "Bezetting/arrestatie Tual",
+    "readings": "S06:mei1942;S09–S11:bezetting30juli1942",
+    "resolution": "30juli voor aanval; eigen arrestatiedatum niet stilzwijgend herschrijven."
+  },
+  {
+    "id": "K05",
+    "subject": "Bataljon en septembermutatie1946",
+    "readings": "S02:24sep,XXI;S03:14sep,XX;kaart:4sep,XX",
+    "resolution": "VoorkeurorigineleS02;XX/14sep als tegenlezing."
+  },
+  {
+    "id": "K06",
+    "subject": "Kaartdatums",
+    "readings": "Kaart6jul1946/7okt1946/3nov1946/3okt1947/1nov1947;S03:10jul/17okt/23nov/13okt/21nov",
+    "resolution": "Transcriptiecorrecties, geen nieuwe gebeurtenissen."
+  },
+  {
+    "id": "K07",
+    "subject": "Compagnie december1947",
+    "readings": "Kaart:InfXXIII IIecompagnie;bron:M.C.",
+    "resolution": "LetterlijkeM.C. behouden; waarschijnlijkeuitwerking apart."
+  },
+  {
+    "id": "K08",
+    "subject": "Vertrek Somersetshire",
+    "readings": "PersoonlijkS05/NA9april;AmsterdamMuseum10april;OmbaPikulSurabaya",
+    "resolution": "Vertrekdatum9april administratie; feitelijkeuitvaart/inscheping/havens onzeker."
+  },
+  {
+    "id": "K09",
+    "subject": "Aankomst Somersetshire",
+    "readings": "S05/NA/AmsterdamMuseum15mei;MuseumMalukutabel16mei",
+    "resolution": "15mei voorkeur; geen onbewezen inschepings-/ontschepingsverklaring voor afwijking."
+  },
+  {
+    "id": "K10",
+    "subject": "Legernummer aankomstindex",
+    "readings": "S19 heeft verboden foutveld121616309;persoonlijke bronnen171301443",
+    "resolution": "Foutveld niet als identifier. Samengesteldeidentificatie met gezin, reis en broncontext;originelepassagierslijst nog controleren."
+  },
+  {
+    "id": "K11",
+    "subject": "Orde en Vredecertificaat",
+    "readings": "Gespen1946–1949;afgiftedatering lijkt12februari1949;rangEKLpas15nov1949 in dienststaat",
+    "resolution": "Mogelijkeaanvulling/heruitgifte niet bewezen;geen dapperheidsclaim."
+  },
+  {
+    "id": "K12",
+    "subject": "Einddatum2-InfIV",
+    "readings": "Gebruikersaanknopingspunt eind1949;volgende gedateerde eenheidsmutatie28aug1950",
+    "resolution": "Niet bewezen dat hij eind1949 verliet;1950voortzetting plausibel,niet dagelijkseaanwezigheid."
+  }
+]
