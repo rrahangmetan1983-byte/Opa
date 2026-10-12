@@ -1,0 +1,355 @@
+[
+  {
+    "id": "P-E004",
+    "event_id": "E004",
+    "date": "1941-08-24",
+    "date_precision": "day",
+    "departure_location": "ohoirenan",
+    "departure_unit": null,
+    "destination_location": "ambon",
+    "destination_unit": "IIe Depot Bataljon Infanterie",
+    "rank": "militie-soldaat TKL",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "status": "bevestigd",
+    "type": "placement",
+    "notes": "Persoonlijke verklaring S06 noemt 25 september 1941: conflict K02.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E011",
+    "event_id": "E011",
+    "date": "1942-09",
+    "date_precision": "month",
+    "departure_location": "tual",
+    "departure_unit": null,
+    "destination_location": "weduar",
+    "destination_unit": null,
+    "rank": "onbekend",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S06"
+    ],
+    "status": "aannemelijk",
+    "type": "captivity_transfer",
+    "notes": "Geen gevangenentransportlijst of onafhankelijk kampdocument met zijn naam gezien.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E013",
+    "event_id": "E013",
+    "date": {
+      "start": "1945",
+      "end": "1946-07-10"
+    },
+    "date_precision": "interval",
+    "departure_location": "ambon",
+    "departure_unit": "IIe Depot Bataljon Infanterie",
+    "destination_location": null,
+    "destination_unit": null,
+    "rank": "onbekend",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S06",
+      "S02"
+    ],
+    "status": "onbewezen",
+    "type": "gap",
+    "notes": "Geboorte Jacoba te Ambon op 3 juni 1946 is geen zelfstandig bewijs van vaders aanwezigheid daar op die dag.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E014",
+    "event_id": "E014",
+    "date": "1946-07-10",
+    "date_precision": "day",
+    "departure_location": null,
+    "departure_unit": null,
+    "destination_location": "ambon",
+    "destination_unit": "L.O.C.",
+    "rank": "militie-soldaat TKL",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S02",
+      "S03",
+      "S06"
+    ],
+    "status": "bevestigd",
+    "type": "placement",
+    "notes": "10 juli op volledige uittrekselfoto én originele dienststaat. Kaart vermeldt ten onrechte 6 juli.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E015",
+    "event_id": "E015",
+    "date": "1946-09-24",
+    "date_precision": "day",
+    "departure_location": "ambon",
+    "departure_unit": "L.O.C.",
+    "destination_location": "ambon",
+    "destination_unit": "XXIe Bataljon Infanterie",
+    "rank": "militie-soldaat TKL",
+    "function": null,
+    "reason": "reorganisatie",
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "status": "bevestigd",
+    "type": "reorganization",
+    "notes": "S02: 24 september, XXI. S03: 14 september, XX. Beide lezingen bewaard, voorkeur S02; geen geografische verplaatsing bewezen.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E016",
+    "event_id": "E016",
+    "date": "1946-10-17",
+    "date_precision": "day",
+    "departure_location": "ambon",
+    "departure_unit": "XXIe Bataljon Infanterie",
+    "destination_location": "makassar",
+    "destination_unit": "XVIIe Bataljon Infanterie",
+    "rank": "militie-soldaat TKL",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "status": "bevestigd",
+    "type": "transfer",
+    "notes": "Makassar expliciet in uittreksel; originele staat noemt eenheid zonder plaats. Reisdatum/vaartuig onbekend.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E017",
+    "event_id": "E017",
+    "date": "1946-11-23",
+    "date_precision": "day",
+    "departure_location": "makassar",
+    "departure_unit": "XVIIe Bataljon Infanterie",
+    "destination_location": "parepare",
+    "destination_unit": "XVe Bataljon Infanterie",
+    "rank": "militie-soldaat TKL",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S03"
+    ],
+    "status": "bevestigd",
+    "type": "transfer",
+    "notes": "Oorspronkelijke S02 slaat deze tussenmutatie over; geen tegenspraak met plaatsing Inf XV op 6 december.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E018",
+    "event_id": "E018",
+    "date": "1946-12-06",
+    "date_precision": "day",
+    "departure_location": "parepare",
+    "departure_unit": "XVe Bataljon Infanterie",
+    "destination_location": "parepare",
+    "destination_unit": "Inf. XV",
+    "rank": "soldaat TKL",
+    "function": null,
+    "reason": "vrijwillige verbintenis",
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "status": "bevestigd",
+    "type": "service_contract",
+    "notes": "Dienstverbandwijziging op dezelfde plaats; geen nieuw transport.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E019",
+    "event_id": "E019",
+    "date": "1947-10-13",
+    "date_precision": "day",
+    "departure_location": "parepare",
+    "departure_unit": "Inf. XV",
+    "destination_location": "parepare",
+    "destination_unit": "7-Inf. XV",
+    "rank": "soldaat TKL",
+    "function": null,
+    "reason": "reorganisatie",
+    "source_ids": [
+      "S03"
+    ],
+    "status": "bevestigd",
+    "type": "reorganization",
+    "notes": "Interpretatie als 7e compagnie aannemelijk, maar exacte organisatie alleen met formatieorders te bevestigen.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E020",
+    "event_id": "E020",
+    "date": "1947-11-21",
+    "date_precision": "day",
+    "departure_location": "parepare",
+    "departure_unit": "7-Inf. XV",
+    "destination_location": "surabaya",
+    "destination_unit": "Terr. tvs. Tpn. Co. Oost-Java",
+    "rank": "soldaat TKL",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "status": "bevestigd",
+    "type": "transfer",
+    "notes": "t.n.i. vermoedelijk ter nadere indeling; geen Indonesische TNI-aansluiting. Datum21, niet1 november.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E021",
+    "event_id": "E021",
+    "date": "1947-12-01",
+    "date_precision": "day",
+    "departure_location": "surabaya",
+    "departure_unit": "Terr. tvs. Tpn. Co. Oost-Java",
+    "destination_location": "east-java",
+    "destination_unit": "Inf. XXIII M.C.",
+    "rank": "soldaat TKL",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S03"
+    ],
+    "status": "bevestigd",
+    "type": "administrative_transfer",
+    "notes": "M.C. waarschijnlijk mitrailleurcompagnie, niet IIe compagnie. Nieuwe geografische standplaats niet genoemd. Administratieve binding Oost-Java is bewezen; niet als fysieke verhuizing tekenen.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E022",
+    "event_id": "E022",
+    "date": "1948-10-01",
+    "date_precision": "day",
+    "departure_location": "east-java",
+    "departure_unit": "Inf. XXIII M.C.",
+    "destination_location": "malang",
+    "destination_unit": "2-Inf. IV",
+    "rank": "soldaat TKL",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "status": "bevestigd",
+    "type": "transfer",
+    "notes": "S02 vermeldt Inf.IV; uittreksel specificeert2-. Geen persoonlijke bewijzen voor eerdere locaties van oud Inf.IV.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E028",
+    "event_id": "E028",
+    "date": "1950-08-28",
+    "date_precision": "day",
+    "departure_location": "malang",
+    "departure_unit": "2-Inf. IV",
+    "destination_location": "malang",
+    "destination_unit": "5-Inf. XXIII",
+    "rank": "soldaat EKL",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S05"
+    ],
+    "status": "bevestigd",
+    "type": "transfer",
+    "notes": "Standplaats blijft gelijk volgens registraties; organisatorische mutatie, geen bewijs van fysiek transport.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E029",
+    "event_id": "E029",
+    "date": "1950-09-23",
+    "date_precision": "day",
+    "departure_location": "malang",
+    "departure_unit": "5-Inf. XXIII",
+    "destination_location": "malang",
+    "destination_unit": "2-Inf. XXIII",
+    "rank": "soldaat EKL",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S05"
+    ],
+    "status": "bevestigd",
+    "type": "transfer",
+    "notes": "",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E030",
+    "event_id": "E030",
+    "date": "1950-10-05",
+    "date_precision": "day",
+    "departure_location": "malang",
+    "departure_unit": "2-Inf. XXIII",
+    "destination_location": "surabaya",
+    "destination_unit": "DGK",
+    "rank": "soldaat EKL",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S05"
+    ],
+    "status": "bevestigd",
+    "type": "transfer",
+    "notes": "Uitgeschreven korpsnaam en precieze kazerne niet vastgesteld; niet automatisch Kromhoutkazerne.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  },
+  {
+    "id": "P-E031",
+    "event_id": "E031",
+    "date": {
+      "start": "1950-10-05",
+      "end": "1951-04-09"
+    },
+    "date_precision": "interval",
+    "departure_location": "surabaya",
+    "departure_unit": "DGK",
+    "destination_location": null,
+    "destination_unit": null,
+    "rank": "onbekend",
+    "function": null,
+    "reason": null,
+    "source_ids": [
+      "S05",
+      "S21",
+      "S22"
+    ],
+    "status": "onbewezen",
+    "type": "gap",
+    "notes": "Surabaya naar Jakarta/Tanjung Priok aannemelijke verbindingsschakel; geen persoonsgebonden transportorder.",
+    "physical_transport_proven": false,
+    "departure_inferred_from_last_record": true
+  }
+]

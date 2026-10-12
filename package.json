@@ -1,0 +1,12 @@
+{
+  "name": "opa-knil-family-archive",
+  "private": true,
+  "scripts": {
+    "build:data": "python scripts/build-data.py",
+    "test:data": "python qa/validate-data.py",
+    "test:browser": "node qa/browser-tests.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.56.1"
+  }
+}

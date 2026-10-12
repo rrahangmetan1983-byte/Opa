@@ -1,0 +1,68 @@
+[
+  {
+    "record_id": "3111c31e-e091-11e5-a914-00505693001d",
+    "linked_name": "Daniël Rahangmetang",
+    "birth_date": null,
+    "role": "gezinshoofd",
+    "ship": "Somersetshire",
+    "linkage_basis": "aannemelijk ondanks indexfout; reis persoonlijk bewezen",
+    "source_path": "sources/3111c31e.json",
+    "url": "https://www.nationaalarchief.nl/onderzoeken/index/nt00336/3111c31e-e091-11e5-a914-00505693001d",
+    "primary_passenger_list_scan_seen": false
+  },
+  {
+    "record_id": "3111c396-e091-11e5-a914-00505693001d",
+    "linked_name": "Orpa Oebra",
+    "birth_date": null,
+    "role": "echtgenote",
+    "ship": "Somersetshire",
+    "linkage_basis": "identificatie door huwelijk inS01/S04; index noemtgeenvoornaam",
+    "source_path": "sources/3111c396.json",
+    "url": "https://www.nationaalarchief.nl/onderzoeken/index/nt00336/3111c396-e091-11e5-a914-00505693001d",
+    "primary_passenger_list_scan_seen": false
+  },
+  {
+    "record_id": "3111c40e-e091-11e5-a914-00505693001d",
+    "linked_name": "Johannis",
+    "birth_date": "1941-01-21",
+    "role": "zoon",
+    "ship": "Somersetshire",
+    "linkage_basis": "geboortedatum eninitialJ sluiten aan",
+    "source_path": "sources/3111c40e.json",
+    "url": "https://www.nationaalarchief.nl/onderzoeken/index/nt00336/3111c40e-e091-11e5-a914-00505693001d",
+    "primary_passenger_list_scan_seen": false
+  },
+  {
+    "record_id": "3111c472-e091-11e5-a914-00505693001d",
+    "linked_name": "Justus/Jantje",
+    "birth_date": "1943-01-28",
+    "role": "zoon",
+    "ship": "Somersetshire",
+    "linkage_basis": "geboortedatum sluitaan;indexgeenvoornaam",
+    "source_path": "sources/3111c472.json",
+    "url": "https://www.nationaalarchief.nl/onderzoeken/index/nt00336/3111c472-e091-11e5-a914-00505693001d",
+    "primary_passenger_list_scan_seen": false
+  },
+  {
+    "record_id": "3111c4e0-e091-11e5-a914-00505693001d",
+    "linked_name": "Jacoba",
+    "birth_date": "1946-06-03",
+    "role": "dochter",
+    "ship": "Somersetshire",
+    "linkage_basis": "geboortedatum sluitaan;indexgeenvoornaam",
+    "source_path": "sources/3111c4e0.json",
+    "url": "https://www.nationaalarchief.nl/onderzoeken/index/nt00336/3111c4e0-e091-11e5-a914-00505693001d",
+    "primary_passenger_list_scan_seen": false
+  },
+  {
+    "record_id": "3111c544-e091-11e5-a914-00505693001d",
+    "linked_name": "Perentjina",
+    "birth_date": "1950-03-28",
+    "role": "dochter",
+    "ship": "Somersetshire",
+    "linkage_basis": "geboortedatum sluitaan bijS04;indexgeenvoornaam",
+    "source_path": "sources/3111c544.json",
+    "url": "https://www.nationaalarchief.nl/onderzoeken/index/nt00336/3111c544-e091-11e5-a914-00505693001d",
+    "primary_passenger_list_scan_seen": false
+  }
+]

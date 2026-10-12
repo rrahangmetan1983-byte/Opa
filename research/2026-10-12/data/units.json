@@ -1,0 +1,133 @@
+[
+  {
+    "id": "U01",
+    "name": "IIe Depot Bataljon Infanterie",
+    "documented_or_inferred_period": "1941-08-24 – oorlog 1942",
+    "location_id": "ambon",
+    "commanders_proven_for_daniel": null,
+    "notes": "S13 noemt Depot Battalion circa300 man, kapitein Hesterman. Exacte gelijkstelling met IIe Depot Bataljon niet volledig bewezen.",
+    "source_ids": [
+      "S02",
+      "S03",
+      "S13"
+    ]
+  },
+  {
+    "id": "U02",
+    "name": "L.O.C.",
+    "documented_or_inferred_period": "1946-07-10 – 1946-09",
+    "location_id": "ambon",
+    "commanders_proven_for_daniel": null,
+    "notes": "Indeling militie bevestigd. Uitgeschreven naam en commandant Ambon niet in persoonlijke bron.",
+    "source_ids": [
+      "S02",
+      "S03"
+    ]
+  },
+  {
+    "id": "U03",
+    "name": "XXIe Bataljon Infanterie",
+    "documented_or_inferred_period": "vanaf1946-09-24 tot1946-10-17",
+    "location_id": "ambon",
+    "commanders_proven_for_daniel": null,
+    "notes": "Uittreksel noemtXX/14sep; originele staatXXI/24sep voorkeur.",
+    "source_ids": [
+      "S02",
+      "S03"
+    ]
+  },
+  {
+    "id": "U04",
+    "name": "XVIIe Bataljon Infanterie",
+    "documented_or_inferred_period": "1946-10-17 – 1946-11-23",
+    "location_id": "makassar",
+    "commanders_proven_for_daniel": null,
+    "notes": "Eenheids- en standplaatsmutatie bevestigd; organisatie, commandant en operaties niet individueel vastgesteld.",
+    "source_ids": [
+      "S02",
+      "S03"
+    ]
+  },
+  {
+    "id": "U05",
+    "name": "XVe Bataljon / Inf. XV / 7-Inf. XV",
+    "documented_or_inferred_period": "1946-11-23 – 1947-11-21",
+    "location_id": "parepare",
+    "commanders_proven_for_daniel": null,
+    "notes": "6dec vrijwillige verbintenis;13okt1947 reorganisatie7-. Exactecompagnieformatie niet gezien. Korpsdossier3363 niet digitaal.",
+    "source_ids": [
+      "S03",
+      "S26"
+    ]
+  },
+  {
+    "id": "U06",
+    "name": "Terr. tvs. Tpn. Co. Oost-Java",
+    "documented_or_inferred_period": "1947-11-21; administratieve binding vanaf1947-12-01",
+    "location_id": "surabaya",
+    "commanders_proven_for_daniel": null,
+    "notes": "t.n.i. niet met Indonesische TNI verwarren.",
+    "source_ids": [
+      "S02",
+      "S03"
+    ]
+  },
+  {
+    "id": "U07",
+    "name": "Inf. XXIII M.C.",
+    "documented_or_inferred_period": "1947-12-01 – 1948-10-01",
+    "location_id": "east-java",
+    "commanders_proven_for_daniel": null,
+    "notes": "Mitrailleurcompagnie waarschijnlijke uitwerking, functionele taak Daniël onbekend.",
+    "source_ids": [
+      "S03"
+    ]
+  },
+  {
+    "id": "U08",
+    "name": "2-Inf. IV",
+    "documented_or_inferred_period": "1948-10-01 – ten minste1949; waarschijnlijk tot1950-08-28",
+    "location_id": "malang",
+    "commanders_proven_for_daniel": null,
+    "notes": "2- waarschijnlijk2ecompagnie. S23 maakt onderscheid oudInfIV(opgeheven24maart1948) en nieuwInfIV(najaar1948). Commandanten1945–maart1948 niet op DaniëlsMalangtijd toepassen. Persoonlijke patrouilles onbekend.",
+    "source_ids": [
+      "S02",
+      "S03",
+      "S05",
+      "S23"
+    ]
+  },
+  {
+    "id": "U09",
+    "name": "5-Inf. XXIII",
+    "documented_or_inferred_period": "1950-08-28 – 1950-09-23",
+    "location_id": "malang",
+    "commanders_proven_for_daniel": null,
+    "notes": "Nieuwecompagnieplaatsing, zelfdestad; geen transport bewezen.",
+    "source_ids": [
+      "S05"
+    ]
+  },
+  {
+    "id": "U10",
+    "name": "2-Inf. XXIII",
+    "documented_or_inferred_period": "1950-09-23 – 1950-10-05",
+    "location_id": "malang",
+    "commanders_proven_for_daniel": null,
+    "notes": "Nieuwecompagnieplaatsing, zelfdestad.",
+    "source_ids": [
+      "S05"
+    ]
+  },
+  {
+    "id": "U11",
+    "name": "DGK",
+    "documented_or_inferred_period": "1950-10-05 – reis1951, tussentijdse mutaties onbekend",
+    "location_id": "surabaya",
+    "commanders_proven_for_daniel": null,
+    "notes": "Afkorting niet met zekerheid uitgeschreven. Kazerne en commandant onbekend.",
+    "source_ids": [
+      "S05"
+    ]
+  }
+]

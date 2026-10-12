@@ -1,0 +1,51 @@
+name: Validate family archive
+
+on:
+  pull_request:
+  push:
+    branches: [main, feature/knil-research-2026-10-12]
+
+permissions:
+  contents: read
+
+jobs:
+  historical-data-and-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install browser test dependencies
+        run: |
+          npm install --ignore-scripts --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: Validate sources, chronology and original images
+        run: |
+          python qa/validate-data.py
+          python scripts/build-data.py
+          git diff --exit-code -- data/research.js
+          node --check app.js
+      - name: Browser interaction and responsive checks
+        run: |
+          python -m http.server 8765 --bind 127.0.0.1 > /tmp/knil-http.log 2>&1 &
+          node qa/browser-tests.cjs
+      - name: Verify published website
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          python qa/wait-for-pages.py
+          KNIL_TEST_URL=https://rrahangmetan1983-byte.github.io/Opa/ node qa/browser-tests.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-evidence
+          path: |
+            qa/screenshots/*.png
+            qa/test-results.json
+          retention-days: 14

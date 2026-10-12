@@ -1,0 +1,755 @@
+[
+  {
+    "id": "E001",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1917",
+    "date_precision": "year",
+    "title": "Geboorte te Ohoirenan, Kei-Besar",
+    "location_id": "ohoirenan",
+    "unit": null,
+    "event_type": "personal_event",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S01",
+      "S04"
+    ],
+    "original_excerpt": null,
+    "notes": "S01: alleen jaar. S04: 1 januari. S19/S30: 13 januari. Exacte dag onbeslist."
+  },
+  {
+    "id": "E002",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": null,
+    "date_precision": "unknown",
+    "title": "Zes jaar Maleise school; laatste woonplaats Ohoirenan",
+    "location_id": "ohoirenan",
+    "unit": null,
+    "event_type": "personal_event",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S01"
+    ],
+    "original_excerpt": "Mal.School (6 jr.)",
+    "notes": "Geen schoolnaam, diploma of schooljaren vastgesteld."
+  },
+  {
+    "id": "E003",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1940-09-20",
+    "date_precision": "day",
+    "title": "Huwelijk met Orpa Oebra",
+    "location_id": "ohoirenan",
+    "unit": null,
+    "event_type": "personal_event",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S04"
+    ],
+    "original_excerpt": "Gehuwd te Ohoirenan de 20 september 1940",
+    "notes": "S01 alleen 1940. Ons Land vult 1 januari 1940 in; niet als exact huwelijk gebruikt."
+  },
+  {
+    "id": "E004",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1941-08-24",
+    "date_precision": "day",
+    "title": "Inlijving militie en werkelijke dienst",
+    "location_id": "ambon",
+    "unit": "IIe Depot Bataljon Infanterie",
+    "event_type": "placement",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "original_excerpt": "Te Ambon ingelijfd in de stand van militie-soldaat TKL.",
+    "notes": "Persoonlijke verklaring S06 noemt 25 september 1941: conflict K02."
+  },
+  {
+    "id": "C001",
+    "person_id": null,
+    "date": "1942-01-31",
+    "date_precision": "day",
+    "title": "Japanse landing op Ambon — historische context",
+    "location_id": "ambon",
+    "unit": null,
+    "event_type": "historical_context",
+    "evidence_level": "C",
+    "status": "bevestigd",
+    "source_ids": [
+      "S15",
+      "S16"
+    ],
+    "original_excerpt": null,
+    "notes": "De Australische militaire rapportage en de naoorlogse Japanse reconstructie plaatsen de landing op 31 januari. Dit is context; geen individueel bewijs van Daniëls gevangenneming op die dag.",
+    "topics": [
+      "occupation"
+    ]
+  },
+  {
+    "id": "E005",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1942-01-31",
+    "date_precision": "day",
+    "title": "Krijgsgevangenneming te Halong volgens eigen verklaring",
+    "location_id": "halong",
+    "unit": null,
+    "event_type": "captivity",
+    "evidence_level": "A",
+    "status": "aannemelijk",
+    "source_ids": [
+      "S06"
+    ],
+    "original_excerpt": "Bij de capitulatie krijgsgevangen te Halong-Ambon.",
+    "notes": "Niet onafhankelijk individueel bevestigd. Algemene capitulatiechronologie ligt later; datumconflict K03."
+  },
+  {
+    "id": "E006",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1942-02-02",
+    "date_precision": "day",
+    "title": "Vrijlating van Indonesische militairen volgens verklaring",
+    "location_id": "ambon",
+    "unit": null,
+    "event_type": "status_change",
+    "evidence_level": "A",
+    "status": "aannemelijk",
+    "source_ids": [
+      "S06",
+      "S02"
+    ],
+    "original_excerpt": null,
+    "notes": "S02 noemt capitulatie en niet in Japanse krijgsgevangenschap. Dat kan administratieve toestand op die datum zijn; niet bewijs dat latere gevangenschap niet bestond."
+  },
+  {
+    "id": "E007",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1942-02-16",
+    "date_precision": "day",
+    "title": "Vlucht per prauw, via Ceram richting Australië",
+    "location_id": "ambon",
+    "unit": null,
+    "event_type": "escape",
+    "evidence_level": "A",
+    "status": "aannemelijk",
+    "source_ids": [
+      "S06"
+    ],
+    "original_excerpt": null,
+    "notes": "Getuigenverklaring noemt onbenoemde Australische kapitein, luitenant, soldaten en Nederlandse soldaten. Geen identificatie met Jinkins vastgesteld."
+  },
+  {
+    "id": "E008",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": {
+      "start": "1942-02-16",
+      "end": "1942-03-31"
+    },
+    "date_precision": "interval",
+    "title": "Ceram als tussenroute",
+    "location_id": "seram",
+    "unit": null,
+    "event_type": "transit",
+    "evidence_level": "A",
+    "status": "aannemelijk",
+    "source_ids": [
+      "S06"
+    ],
+    "original_excerpt": null,
+    "notes": "Geen landingsplaats of dag. Amahai en Geser niet automatisch persoonlijke route."
+  },
+  {
+    "id": "E009",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1942-03",
+    "date_precision": "month",
+    "title": "Aankomst Tual; achtergebleven na vertrek anderen",
+    "location_id": "tual",
+    "unit": null,
+    "event_type": "transit",
+    "evidence_level": "A",
+    "status": "aannemelijk",
+    "source_ids": [
+      "S06"
+    ],
+    "original_excerpt": "alleen ik ben achtergebleven op Tual.",
+    "notes": "Opdracht tot ondergronds verzet in verklaring; geen onafhankelijk opdrachtbericht of wapenlevering gevonden."
+  },
+  {
+    "id": "E010",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1942-05",
+    "date_precision": "month",
+    "title": "Melding en opsluiting Tual volgens verklaring",
+    "location_id": "tual",
+    "unit": null,
+    "event_type": "captivity",
+    "evidence_level": "A",
+    "status": "aannemelijk",
+    "source_ids": [
+      "S06"
+    ],
+    "original_excerpt": null,
+    "notes": "Bezettingscontext S09–S11 noemt 30 juli. Mei als eigen datering bewaard; arrestatiedag onbekend."
+  },
+  {
+    "id": "C002",
+    "person_id": null,
+    "date": "1942-07-30",
+    "date_precision": "day",
+    "title": "Japanse bezetting Tual — historische context",
+    "location_id": "tual",
+    "unit": null,
+    "event_type": "historical_context",
+    "evidence_level": "C",
+    "status": "bevestigd",
+    "source_ids": [
+      "S09",
+      "S10",
+      "S11"
+    ],
+    "original_excerpt": null,
+    "notes": "Het rapport van Reinderhoff, gebaseerd op Arroo en Brouwer, plaatst de Japanse bezetting op 30 juli 1942. Het noemt Daniël niet in de gebruikte passages. Zijn eigen arrestatiemaand blijft een afzonderlijke, onzekere lezing.",
+    "topics": [
+      "occupation"
+    ]
+  },
+  {
+    "id": "E011",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1942-09",
+    "date_precision": "month",
+    "title": "Van Tual naar Kimpitai-kamp Weduar volgens verklaring",
+    "location_id": "weduar",
+    "unit": null,
+    "event_type": "captivity_transfer",
+    "evidence_level": "A",
+    "status": "aannemelijk",
+    "source_ids": [
+      "S06"
+    ],
+    "original_excerpt": "Overgebracht van Tual naar Kimpitai-kamp te Weduar",
+    "notes": "Geen gevangenentransportlijst of onafhankelijk kampdocument met zijn naam gezien."
+  },
+  {
+    "id": "E012",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1945",
+    "date_precision": "year",
+    "title": "Einde gevangenschap te Weduar volgens verklaring",
+    "location_id": "weduar",
+    "unit": null,
+    "event_type": "release",
+    "evidence_level": "A",
+    "status": "aannemelijk",
+    "source_ids": [
+      "S06"
+    ],
+    "original_excerpt": "Uit de krijgsgevangenschap te Weduar.",
+    "notes": ""
+  },
+  {
+    "id": "E013",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": {
+      "start": "1945",
+      "end": "1946-07-10"
+    },
+    "date_precision": "interval",
+    "title": "Verblijf en reis naar Ambon onbekend",
+    "location_id": null,
+    "unit": null,
+    "event_type": "gap",
+    "evidence_level": "D",
+    "status": "onbewezen",
+    "source_ids": [
+      "S06",
+      "S02"
+    ],
+    "original_excerpt": null,
+    "notes": "Verblijf na vrijlating en reis naar Ambon niet vastgesteld. De geboorte van Jacoba te Ambon op 3 juni 1946 bewijst vaders aanwezigheid daar niet zelfstandig."
+  },
+  {
+    "id": "E014",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1946-07-10",
+    "date_precision": "day",
+    "title": "Melding en indeling bij L.O.C. Ambon",
+    "location_id": "ambon",
+    "unit": "L.O.C.",
+    "event_type": "placement",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S02",
+      "S03",
+      "S06"
+    ],
+    "original_excerpt": "Gemeld bij het L.O.C. te Ambon en ingedeeld aldaar.",
+    "notes": "10 juli op volledige uittrekselfoto én originele dienststaat. Kaart vermeldt ten onrechte 6 juli."
+  },
+  {
+    "id": "E015",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1946-09-24",
+    "date_precision": "day",
+    "title": "Reorganisatie naar XXIe Bataljon, Ambon",
+    "location_id": "ambon",
+    "unit": "XXIe Bataljon Infanterie",
+    "event_type": "reorganization",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "original_excerpt": "Bij reorganisatie overgegaan bij het XXIe Bat.Inf. te AMBON.",
+    "notes": "S02: 24 september, XXI. S03: 14 september, XX. Beide lezingen bewaard, voorkeur S02; geen geografische verplaatsing bewezen."
+  },
+  {
+    "id": "E016",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1946-10-17",
+    "date_precision": "day",
+    "title": "Overgang naar XVIIe Bataljon, Makassar",
+    "location_id": "makassar",
+    "unit": "XVIIe Bataljon Infanterie",
+    "event_type": "transfer",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "original_excerpt": "Overgegaan bij het XVIIe Bat. Inf. te Makassar.",
+    "notes": "Makassar expliciet in uittreksel; originele staat noemt eenheid zonder plaats. Reisdatum/vaartuig onbekend."
+  },
+  {
+    "id": "E017",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1946-11-23",
+    "date_precision": "day",
+    "title": "Overgang naar XVe Bataljon, Pare-Pare",
+    "location_id": "parepare",
+    "unit": "XVe Bataljon Infanterie",
+    "event_type": "transfer",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S03"
+    ],
+    "original_excerpt": "Overgegaan bij het XVe Bat. Inf. te Pare-Pare.",
+    "notes": "Oorspronkelijke S02 slaat deze tussenmutatie over; geen tegenspraak met plaatsing Inf XV op 6 december."
+  },
+  {
+    "id": "E018",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1946-12-06",
+    "date_precision": "day",
+    "title": "Vrijwillige verbintenis voor drie jaar, Inf XV",
+    "location_id": "parepare",
+    "unit": "Inf. XV",
+    "event_type": "service_contract",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "original_excerpt": "vrijwillig verbonden voor drie jaren bij het KNIL als soldaat TKL",
+    "notes": "Dienstverbandwijziging op dezelfde plaats; geen nieuw transport."
+  },
+  {
+    "id": "E019",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1947-10-13",
+    "date_precision": "day",
+    "title": "Reorganisatie naar 7-Inf. XV",
+    "location_id": "parepare",
+    "unit": "7-Inf. XV",
+    "event_type": "reorganization",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S03"
+    ],
+    "original_excerpt": "Bij reorganisatie overgegaan bij 7-Inf. XV te Pare-Pare.",
+    "notes": "Interpretatie als 7e compagnie aannemelijk, maar exacte organisatie alleen met formatieorders te bevestigen."
+  },
+  {
+    "id": "E020",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1947-11-21",
+    "date_precision": "day",
+    "title": "Overgang naar territoriale troepen Oost-Java",
+    "location_id": "surabaya",
+    "unit": "Terr. tvs. Tpn. Co. Oost-Java",
+    "event_type": "transfer",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "original_excerpt": "Overgegaan bij Terr.tvs-Tpn. Co.Oost-Java te Soerabaia t.n.i.",
+    "notes": "t.n.i. vermoedelijk ter nadere indeling; geen Indonesische TNI-aansluiting. Datum21, niet1 november."
+  },
+  {
+    "id": "E021",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1947-12-01",
+    "date_precision": "day",
+    "title": "Overgang naar Inf. XXIII M.C.",
+    "location_id": "east-java",
+    "unit": "Inf. XXIII M.C.",
+    "event_type": "administrative_transfer",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S03"
+    ],
+    "original_excerpt": "Overgegaan bij Inf. XXIII M.C. (blijft in adm. bij Tpn.Co.O.Java)",
+    "notes": "M.C. waarschijnlijk mitrailleurcompagnie, niet IIe compagnie. Nieuwe geografische standplaats niet genoemd."
+  },
+  {
+    "id": "E022",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1948-10-01",
+    "date_precision": "day",
+    "title": "Overgang naar 2-Inf. IV te Malang",
+    "location_id": "malang",
+    "unit": "2-Inf. IV",
+    "event_type": "transfer",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "original_excerpt": "Overgegaan bij 2-Inf. IV te Malang.",
+    "notes": "S02 vermeldt Inf.IV; uittreksel specificeert2-. Geen persoonlijke bewijzen voor eerdere locaties van oud Inf.IV."
+  },
+  {
+    "id": "B001",
+    "person_id": null,
+    "date": {
+      "start": "1948-10",
+      "end": "1949"
+    },
+    "date_precision": "interval",
+    "title": "Infanterie IV in Malang — eenheidscontext",
+    "location_id": "malang",
+    "unit": "Inf. IV",
+    "event_type": "unit_context",
+    "evidence_level": "B",
+    "status": "bevestigd",
+    "source_ids": [
+      "S02",
+      "S03",
+      "S23",
+      "S26"
+    ],
+    "original_excerpt": null,
+    "notes": "De secundaire korpsgeschiedenis onderscheidt het oude Inf. IV (opgeheven maart 1948) en het opnieuw gevormde bataljon in het najaar van 1948 te Malang. Daniëls plaatsing bij 2-Inf. IV staat in zijn uittreksel. De geschiedenis vermeldt compagnie-inzet; de inzet van zijn eigen compagnie en individuele acties zijn niet vastgesteld.",
+    "topics": [
+      "military",
+      "independence"
+    ]
+  },
+  {
+    "id": "E023",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1949-11-15",
+    "date_precision": "day",
+    "title": "Soldaat eerste klasse",
+    "location_id": "malang",
+    "unit": null,
+    "event_type": "rank_change",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S02",
+      "S03"
+    ],
+    "original_excerpt": "SOLDAAT EERSTE KLASSE.",
+    "notes": "Standplaats overgenomen uit laatste plaatsing, niet nieuwe locatieregistratie. Geen bevel met persoonlijke patrouillefunctie gezien."
+  },
+  {
+    "id": "E024",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1950-05",
+    "date_precision": "month",
+    "title": "Toegestaan eervol ontslag met KDV-gratificatie",
+    "location_id": null,
+    "unit": null,
+    "event_type": "administrative_status",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S03",
+      "S05"
+    ],
+    "original_excerpt": null,
+    "notes": "Datumkolom in beschikbaar foto-einde niet volledig zichtbaar (…7 mei); beschikking noemt27-5-1950 en F1250. Toestaan van ontslag niet gelijk aan feitelijk vertrek op die datum."
+  },
+  {
+    "id": "E025",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1950-07-24",
+    "date_precision": "day",
+    "title": "Tijdelijke dienst bij Koninklijke Landmacht",
+    "location_id": null,
+    "unit": null,
+    "event_type": "status_change",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S05"
+    ],
+    "original_excerpt": "Verricht tijdelijke dienst bij de K.L.",
+    "notes": "Geen nieuwe standplaats op die regel. Plaats Malang kan niet uit afgifteplaats Batavia worden afgeleid."
+  },
+  {
+    "id": "E026",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1950-07-24",
+    "date_precision": "day",
+    "title": "Verklaring recht op KNIL-insigne",
+    "location_id": null,
+    "unit": null,
+    "event_type": "award",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S07"
+    ],
+    "original_excerpt": "laatstelijk als soldaat-EKL",
+    "notes": "Batavia afgifteplaats. Geen individuele dapperheidsonderscheiding of bewijs van specifieke strijdhandeling."
+  },
+  {
+    "id": "E027",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1950-07-25",
+    "date_precision": "day",
+    "title": "Eervol ontslag uit KNIL wegens opheffing",
+    "location_id": null,
+    "unit": null,
+    "event_type": "status_change",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S05"
+    ],
+    "original_excerpt": "Wegens opheffing van het KNIL, eervol uit de militaire dienst bij het KNIL ontslagen.",
+    "notes": "Persoonlijke registratiedatum25 juli behouden; algemene opheffingsdatum niet in plaats hiervan gezet."
+  },
+  {
+    "id": "E028",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1950-08-28",
+    "date_precision": "day",
+    "title": "Overgang naar 5-Inf. XXIII te Malang",
+    "location_id": "malang",
+    "unit": "5-Inf. XXIII",
+    "event_type": "transfer",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S05"
+    ],
+    "original_excerpt": "Overgegaan bij 5-Inf. XXIII te Malang.",
+    "notes": "Standplaats blijft gelijk volgens registraties; organisatorische mutatie, geen bewijs van fysiek transport."
+  },
+  {
+    "id": "E029",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1950-09-23",
+    "date_precision": "day",
+    "title": "Overgang naar 2-Inf. XXIII te Malang",
+    "location_id": "malang",
+    "unit": "2-Inf. XXIII",
+    "event_type": "transfer",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S05"
+    ],
+    "original_excerpt": "Overgegaan bij 2-Inf. XXIII te Malang.",
+    "notes": ""
+  },
+  {
+    "id": "E030",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1950-10-05",
+    "date_precision": "day",
+    "title": "Overgang naar DGK te Soerabaia",
+    "location_id": "surabaya",
+    "unit": "DGK",
+    "event_type": "transfer",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S05"
+    ],
+    "original_excerpt": "Overgegaan bij het DGK te Soerabaia.",
+    "notes": "Uitgeschreven korpsnaam en precieze kazerne niet vastgesteld; niet automatisch Kromhoutkazerne."
+  },
+  {
+    "id": "E031",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": {
+      "start": "1950-10-05",
+      "end": "1951-04-09"
+    },
+    "date_precision": "interval",
+    "title": "Overbrenging naar inschepingshaven onbekend",
+    "location_id": null,
+    "unit": null,
+    "event_type": "gap",
+    "evidence_level": "D",
+    "status": "onbewezen",
+    "source_ids": [
+      "S05",
+      "S21",
+      "S22"
+    ],
+    "original_excerpt": null,
+    "notes": "Surabaya naar Jakarta/Tanjung Priok aannemelijke verbindingsschakel; geen persoonsgebonden transportorder."
+  },
+  {
+    "id": "E032",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1951-04-09",
+    "date_precision": "day",
+    "title": "Vertrek naar Nederland per Somersetshire",
+    "location_id": null,
+    "unit": null,
+    "event_type": "migration",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S05",
+      "S19",
+      "S21",
+      "S22"
+    ],
+    "original_excerpt": "Naar Nederland vertrokken per ms. \"Somersetshire\".",
+    "notes": "Persoonlijk dienstblad9 april; NA noemtJakarta9 april; Amsterdam Museum Tanjung Priok10 april. Inschepingsdag en werkelijk uitvaren niet gelijkgesteld.",
+    "map_location_id": "jakarta-harbor",
+    "location_inferred": true,
+    "location_evidence_level": "C"
+  },
+  {
+    "id": "E033",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": {
+      "start": "1951-04-09",
+      "end": "1951-05-15"
+    },
+    "date_precision": "interval",
+    "title": "Scheepsroute via Suez aannemelijk, tussenhavens niet persoonlijk bevestigd",
+    "location_id": null,
+    "unit": null,
+    "event_type": "route_hypothesis",
+    "evidence_level": "D",
+    "status": "aannemelijk",
+    "source_ids": [
+      "S31"
+    ],
+    "original_excerpt": null,
+    "notes": "Port Said genoemd in schipartikel; geen scheepsjournaal of tijdstempels gelezen. Geen geverifieerde dagelijkse route."
+  },
+  {
+    "id": "E034",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1951-05-15",
+    "date_precision": "day",
+    "title": "Aankomst Nederland; beëindiging tijdelijke KL-dienst",
+    "location_id": "amsterdam",
+    "unit": null,
+    "event_type": "migration",
+    "evidence_level": "A",
+    "status": "bevestigd",
+    "source_ids": [
+      "S05",
+      "S21",
+      "S22"
+    ],
+    "original_excerpt": "In Nederland aangekomen en op dato de tijdelijke dienstverrichting bij de K.L. beëindigd.",
+    "notes": "Dienstblad bewijst Nederland; Amsterdam komt uit scheepscontext. Museumtabel noemt16 mei, andere bronconflict K09."
+  },
+  {
+    "id": "E035",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": null,
+    "date_precision": "unknown",
+    "title": "Laarbrug — woonperiode nog te onderzoeken",
+    "location_id": null,
+    "unit": null,
+    "event_type": "residence_lead",
+    "evidence_level": "D",
+    "status": "onbewezen",
+    "source_ids": [
+      "S25",
+      "S29"
+    ],
+    "original_excerpt": null,
+    "notes": "Gebruikersaanknopingspunt; geen persoonsregel. Ook Amersfoort niet als bewezen persoonlijke stap toegevoegd."
+  },
+  {
+    "id": "E036",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": null,
+    "date_precision": "unknown",
+    "title": "Eerde — woonvolgorde nog te onderzoeken",
+    "location_id": null,
+    "unit": null,
+    "event_type": "residence_lead",
+    "evidence_level": "D",
+    "status": "onbewezen",
+    "source_ids": [
+      "S25",
+      "S29"
+    ],
+    "original_excerpt": null,
+    "notes": "Eerde als woonoord pas vanaf1952 in context. Volgorde met Laarbrug niet vastgesteld."
+  },
+  {
+    "id": "E037",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": null,
+    "date_precision": "unknown",
+    "title": "Later woonachtig in Zwolle",
+    "location_id": "zwolle",
+    "unit": null,
+    "event_type": "residence",
+    "evidence_level": "A",
+    "status": "aannemelijk",
+    "source_ids": [
+      "S06"
+    ],
+    "original_excerpt": null,
+    "notes": "Adres op eigen verklaring; geen vestigingsdatum. Adres niet als geografisch openbaar kaartpunt uitgewerkt."
+  },
+  {
+    "id": "E038",
+    "person_id": "daniel-rahangmetang-171301443",
+    "date": "1995-08-05",
+    "date_precision": "day",
+    "title": "Overlijden volgens begraafplaatsenindex",
+    "location_id": "zwolle",
+    "unit": null,
+    "event_type": "death",
+    "evidence_level": "D",
+    "status": "aannemelijk",
+    "source_ids": [
+      "S30"
+    ],
+    "original_excerpt": null,
+    "notes": "Nog niet bevestigd met grafsteen of burgerlijke akte; Zwolle is begraafplaatscontext, geen bewezen overlijdensplaats."
+  }
+]
