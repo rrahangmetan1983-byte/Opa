@@ -1,313 +1,70 @@
 'use strict';
 (() => {
-  const data = window.KNIL_RESEARCH;
-  const by = id => document.getElementById(id);
-  const escape = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const sources = new Map(data.sources.map(s => [s.id, s]));
-  const locations = new Map(data.locations.map(l => [l.id, l]));
-  const labels = {A:'Persoonlijk bevestigd', B:'Eenheid bevestigd', C:'Historische context', D:'Hypothese / onderzoeksvraag'};
-  const colors = {personal:'#53647a', military:'#28669b', occupation:'#b43b32', independence:'#805d36', voyage:'#bd7b20', netherlands:'#526f55'};
-  const topicNames = {personal:'Persoonlijke geschiedenis', military:'Militaire eenheden en overplaatsingen', occupation:'Japanse bezetting', independence:'Indonesische onafhankelijkheidsoorlog', voyage:'Overtocht naar Nederland', netherlands:'Leven in Nederland'};
-  function topics(e) {
-    const number = Number(e.id.slice(1));
-    if (number <= 3) return ['personal'];
-    if (number <= 12) return number === 4 ? ['military','occupation'] : ['occupation'];
-    if (number <= 30) return ['military','independence'];
-    if (number <= 34) return ['voyage'];
-    return ['netherlands','personal'];
-  }
-  const events = data.events.map((e, i) => ({...e, number:i+1, topics:e.topics||topics(e)}));
-  const sourceKind = {primary_scan:'originele archiefscan', project_primary_copy:'militair document uit familieproject', personal_testimony:'persoonlijke verklaring', archive_index:'archiefindex; geen originele lijstscan', institutional_context:'institutionele context', secondary_unit_history:'secundaire korpsgeschiedenis', research_context:'historisch onderzoek', catalogue_only:'cataloguslead; dossierinhoud niet gelezen', primary_map:'historische kaart', local_history:'plaatselijke geschiedenis', secondary_index:'secundaire index', secondary_context:'secundaire context', retrospective_military_account:'naoorlogse militaire reconstructie', project_primary_scan:'archiefbeeld uit project'};
-  function formatDateValue(value) {
-    if (/^\d{4}-\d\d-\d\d$/.test(value)) return new Intl.DateTimeFormat('nl-NL', {day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(value+'T12:00:00Z'));
-    if (/^\d{4}-\d\d$/.test(value)) return new Intl.DateTimeFormat('nl-NL', {month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(value+'-01T12:00:00Z'));
-    return value;
-  }
-  function dateLabel(e) {
-    if (!e.date) return 'Datum niet vastgesteld';
-    if (typeof e.date === 'object') return `${formatDateValue(e.date.start)} – ${formatDateValue(e.date.end)}`;
-    return formatDateValue(e.date);
-  }
-  function badge(e) {
-    if (e.source_ids.includes('S06') && e.status !== 'bevestigd') return {text:'Persoonlijke verklaring · details onzeker', cls:'personal'};
-    if (e.evidence_level === 'D') return {text:e.status === 'aannemelijk' ? 'Hypothese · aannemelijk' : 'Hypothese · niet bevestigd', cls:'personal'};
-    return {text:labels[e.evidence_level], cls:e.evidence_level === 'A' ? 'direct' : 'mixed'};
-  }
-  let current = null;
-  let visible = [...events];
-  let selectedMarker = null;
-  let expandedCluster = null;
-  let expandedMarkers = [];
-  let layoutMode = matchMedia('(max-width:850px)').matches ? 'mobile' : 'desktop';
-  let map, markerGroup, routeGroup;
-  const markers = new Map();
-  const rows = new Map();
-  function mapLocation(e) { return locations.get(e.map_location_id || e.location_id); }
-  function coordinates(e) {
-    const loc = mapLocation(e);
-    return loc?.coordinates ? [loc.coordinates[1],loc.coordinates[0]] : null;
-  }
-  function isMobile() { return layoutMode === 'mobile'; }
-  function setPoints(open) {
-    if (isMobile()) by('left').classList.toggle('open',open);
-    else document.body.classList.toggle('points-hidden',!open);
-    by('pointsBtn').setAttribute('aria-expanded',String(open));
-    by('pointsBtn').textContent = open ? '✕ Sluit punten' : '☰ Punten';
-    setTimeout(refreshMap,80);
-  }
-  function closeDetails() {
-    by('detail').classList.remove('open','expanded');
-    document.body.classList.remove('detail-open');
-    by('sheetSize').textContent='Meer lezen';
-    by('sheetSize').setAttribute('aria-expanded','false');
-    setTimeout(refreshMap,60);
-  }
-  function applyLayout(mode) {
-    layoutMode=mode;
-    document.body.classList.toggle('mobile-view',isMobile());
-    document.body.classList.toggle('desktop-view',!isMobile());
-    by('left').classList.remove('open');
-    document.body.classList.remove('points-hidden');
-    by('pointsBtn').setAttribute('aria-expanded',String(!isMobile()));
-    by('pointsBtn').textContent=isMobile()?'☰ Punten':'✕ Sluit punten';
-    by('viewBtn').textContent=isMobile()?'🖥 Desktop':'📱 Mobiel';
-    by('viewBtn').setAttribute('aria-pressed',String(isMobile()));
-    setTimeout(refreshMap,100);
-  }
-  function detailCover() {
-    if (!map || !isMobile() || !by('detail').classList.contains('open')) return [0,0];
-    const d=by('detail').getBoundingClientRect(),m=by('map').getBoundingClientRect();
-    return d.width<m.width*.9?[d.width,0]:[0,d.height];
-  }
-  function center(e, zoom) {
-    const point=coordinates(e);if(!point||!map)return;
-    const [right,bottom]=detailCover();
-    const target=map.project(point,zoom).add([right/2,bottom/2]);
-    map.setView(map.unproject(target,zoom),zoom,{animate:false});
-  }
-  function highlight() {
-    selectedMarker?.setZIndexOffset(2000);
-    selectedMarker?.getElement()?.classList.add('selected-marker');
-  }
-  function reveal() {
-    if (!selectedMarker||!markerGroup)return;
-    const parent=markerGroup.getVisibleParent(selectedMarker);
-    if(parent&&parent!==selectedMarker)parent.spiderfy();
-    highlight();
-  }
-  function refreshMap() {
-    if(!map)return;
-    expandedCluster?.unspiderfy();map.invalidateSize();
-    if(current&&by('detail').classList.contains('open')) {
-      if(escapeEventIds.includes(current.id)&&escapeRouteVisible())fitEscapeRoute();
-      else if(coordinates(current))center(current,map.getZoom());
-      reveal();
-    }
-  }
-  function clearSelection() {
-    selectedMarker?.getElement()?.classList.remove('selected-marker');
-    selectedMarker?.setZIndexOffset(0);expandedCluster?.unspiderfy();selectedMarker=null;
-  }
-  function showTab(name) {
-    document.querySelectorAll('.tabs button').forEach(b=>{const selected=b.dataset.tab===name;b.classList.toggle('active',selected);b.setAttribute('aria-selected',String(selected));});
-    document.querySelectorAll('.pane').forEach(p=>p.classList.toggle('active',p.id===name));
-    document.querySelectorAll('.pane.active img[data-src]').forEach(img=>{img.src=img.dataset.src;delete img.dataset.src;});
-  }
-  function sourceLink(s) {
-    if(!s.url)return '';
-    return `<a target="_blank" rel="noopener noreferrer" href="${escape(s.url)}">${escape(s.id)} · Open originele bron ↗</a>`;
-  }
-  function renderSources(e) {
-    by('sourceGallery').innerHTML='';
-    const orderedSources=[...e.source_ids].sort((a,b)=>Number(!!data.source_details?.[b])-Number(!!data.source_details?.[a]));
-    by('sourceLinks').innerHTML=orderedSources.map(id=>{
-      const s=sources.get(id),img=data.source_images[id],detail=data.source_details?.[id];
-      const archive=s.archive_access?`Nationaal Archief · ${s.archive_access} · inv. ${s.inventory??'niet vastgesteld'}`:'Archiefgegevens: '+(sourceKind[s.kind]||s.kind);
-      if(detail)return `<article class="card research-source archive-source" data-source-id="${escape(id)}"><h3>${escape(id)} · ${escape(s.title)}</h3><p>${escape(archive)} · bestand ${escape(detail.id)} · gedrukte pagina ${escape(detail.page)}</p><p class="source-note">Eenheidscontext · geen bewijs van persoonlijke deelname</p><button type="button" class="scan-button crop-button" data-archive-crop="${escape(id)}"><img loading="lazy" data-src="${escape(detail.crop)}" alt="Relevante uitsnede: ${escape(detail.title)}"><span>Open relevante uitsnede groot</span></button><p class="source-note">Uitsnede op oorspronkelijke resolutie; geen kunstmatige vergroting.</p><h4>Transcriptie</h4><pre class="source-transcript">${escape(detail.transcript)}</pre><h4>Historisch kader</h4><p>${escape(detail.context)}</p><p class="proof-limit"><strong>Betekenis voor Daniël:</strong> ${escape(detail.boundary)}</p><p><button type="button" class="original-source-button" data-source-image="${escape(id)}">Bekijk volledig origineel</button></p><p><a href="${escape(detail.source_url)}" target="_blank" rel="noopener">Nationaal Archief · exacte bron ↗</a></p><p><a href="${escape(s.url)}" target="_blank" rel="noopener">Volledige bronpresentatie en herkomst ↗</a></p></article>`;
-      return `<article class="card research-source" data-source-id="${escape(id)}"><h3>${escape(id)} · ${escape(s.title)}</h3><p>${escape(archive)}${s.scan_page?` · scan/pagina ${escape(s.scan_page)}`:''}</p><p class="source-note">${escape(sourceKind[s.kind]||s.kind)}</p>${img?`<button type="button" class="scan-button" data-source-image="${escape(id)}"><img loading="lazy" data-src="${escape(img)}" alt="${escape(s.title)}"><span>Bekijk dit bronbeeld groot</span></button>`:''}${sourceLink(s)}<p class="proof-limit">${escape(s.note)}</p>${s.kind==='catalogue_only'?'<p><b>Alleen onderzoekslead: de inhoud van het dossier is niet ingezien.</b></p>':''}</article>`;
-    }).join('');
-    by('sourceLinks').querySelectorAll('[data-source-image]').forEach(button=>button.onclick=()=>openSource(data.source_images[button.dataset.sourceImage],sources.get(button.dataset.sourceImage).title));
-    by('sourceLinks').querySelectorAll('[data-archive-crop]').forEach(button=>button.onclick=()=>openSource(data.source_details[button.dataset.archiveCrop].crop,'Relevante uitsnede · '+sources.get(button.dataset.archiveCrop).title));
-      by('sourceLinks').insertAdjacentHTML('beforeend',`<p class="source-note"><a href="${data.rights_url}" target="_blank" rel="noopener">Verantwoording beeldgebruik</a> · <a href="research/archiefbronnen-1947.html">Archiefscans 1947: originelen, uitsneden en transcripties</a></p>`);
-  }
-  const contexts={
-    personal:{text:'Daniëls herkomst en gezin worden beschreven in zijn militaire persoonsgegevens. Administratieve geboorte- en huwelijksdatums verschillen soms van latere indexen.',ids:['S01','S04','S19']},
-    occupation:{text:'Ambon werd eind januari 1942 door Japan aangevallen. NFIS-rapporten, Australische militaire stukken en een naoorlogse Japanse reconstructie beschrijven de verdediging en capitulatie. Het rapport over Tual plaatst de Japanse bezetting op 30 juli. Deze bronnen bevestigen Daniëls persoonlijke gevangenneming of exacte vluchtroute niet zelfstandig.',ids:['S09','S11','S12','S13','S15','S16','S17','S18']},
-    military:{text:'De naoorlogse plaatsingen laten een reeks militaire en administratieve wijzigingen zien. “Overgegaan” bewijst de geregistreerde indeling. Reorganisatie of een ander compagnienummer op dezelfde plaats bewijst geen afzonderlijk vervoer.',ids:['S02','S03','S05','S26']},
-    independence:{text:'Daniëls dienst op Sulawesi en Oost-Java viel in de Indonesische onafhankelijkheidsoorlog. Nederland trachtte het koloniale gezag te herstellen; Indonesië verdedigde zijn onafhankelijkheid. NIOD/KITLV/NIMH beschrijven structureel extreem Nederlands geweld en gevolgen voor burgers. Geen specifiek incident wordt zonder individueel bewijs aan Daniël toegeschreven.',ids:['S24','S26']},
-    voyage:{text:'Het persoonlijke vervolgblad noemt de Somersetshire: vertrek 9 april en aankomst 15 mei 1951. De scheepscontext noemt Jakarta/Tanjung Priok, maar vertrekdatums verschillen. De index koppelt een echtgenote en vier kinderen aan zijn gezin. De oorspronkelijke passagierslijstscan en het scheepsjournaal zijn nog niet ingezien. Het traject via Suez blijft een aannemelijke reconstructie.',ids:['S05','S19','S20','S21','S22','S31','S32']},
-    netherlands:{text:'Laarbrug en Eerde zijn belangrijke aanknopingspunten, maar een persoonlijke woonvolgorde is niet vastgesteld. CAZ-dossier 725 betreft D. Rahangmetan, geboren 1 januari 1917, periode 1952–1966; de inhoud heeft geen beschikbare digitale scans. Een latere verklaring vermeldt Zwolle.',ids:['S06','S25','S29','S30']}
-  };
-  const conflictsByEvent={E001:['K01'],E004:['K02'],E005:['K03'],E006:['K03'],E010:['K04'],E014:['K06'],E015:['K05'],E016:['K06'],E017:['K06'],E019:['K06'],E020:['K06'],E021:['K07'],E022:['K12'],E032:['K08','K10'],E034:['K09']};
-  function renderContext(e) {
-    const categories=[...new Set(e.topics)];
-    by('contextText').textContent=categories.map(t=>contexts[t].text).join('\n\n');
-    by('importanceText').textContent=e.evidence_level==='D'?'Deze vraag blijft zichtbaar zodat nieuw bewijs later kan worden toegevoegd. Zij wordt niet als vaststaand levensfeit weergegeven.':'Het document ondersteunt de vermelde registratie of verklaring. Het bewijst geen niet-genoemde patrouilles, gevechten of exacte transporttrajecten.';
-    let html='';
-    for(const id of conflictsByEvent[e.id]||[]) {
-      const c=data.conflicts.find(c=>c.id===id);
-      html+=`<article class="card legal"><h3>Bronverschil · ${escape(c.subject)}</h3><p>${escape(c.readings)}</p><p>${escape(c.resolution)}</p></article>`;
-    }
-    if(e.id==='E022')html+='<article class="card"><h3>Eenheidsniveau · Infanterie IV</h3><p>De gelezen secundaire korpsgeschiedenis onderscheidt het oude Inf. IV, opgeheven in maart 1948, en het opnieuw gevormde bataljon in het najaar van 1948 te Malang. Commandanten van het oude bataljon zijn geen bewezen commandanten van Daniël in Malang.</p><p>Compagnie-indeling, eigen patrouilles en operationele opdrachten van Daniël blijven open.</p></article>';
-    if(e.id==='E032'||e.id==='E034')html+='<article class="card"><h3>Het gezin op de Somersetshire</h3><p>De aankomstindex koppelt een echtgenote, twee zonen en twee dochters aan D. Rahangmetang. Vergelijking met de familiebronnen wijst op Orpa Oebra, Johannis, Justus/Jantje, Jacoba en Perentjina. De originele passagierslijstscan is nog niet ingezien.</p><p>Het foutieve legernummerveld in de index wordt niet als identificatie gebruikt. De persoonlijke documenten gebruiken 171301443.</p></article>';
-    html+=`<article class="card"><h3>Contextbronnen</h3>${[...new Set(categories.flatMap(t=>contexts[t].ids))].map(id=>{const s=sources.get(id);return `<p>${sourceLink(s)||escape(s.title)}</p>`;}).join('')}</article>`;
-    by('extraContext').innerHTML=html;
-    by('gallery').innerHTML='';
-    const loc=mapLocation(e);
-    by('places').innerHTML=`<li>${escape(loc?.label||'Locatie niet vastgesteld')}${loc?.coordinates?' · globaal kaartpunt; geen exact garnizoen':''}</li>`;
-  }
-  function select(e, keepTab=false, fromMarker=false) {
-    const preserveGroup=fromMarker&&expandedMarkers.includes(markers.get(e.id));
-    const zoom=preserveGroup&&map?map.getZoom():(e.location_id==='halong'?12:mapLocation(e)?.coordinate_precision==='island_approximate'?7:10);
-    current=e;by('detail').classList.add('open');document.body.classList.add('detail-open');
-    by('detail').scrollTop=0;by('pointnav').hidden=false;
-    by('dt').textContent=e.number+'. '+e.title;by('dd').textContent=dateLabel(e);
-    const b=badge(e);by('evidenceBadge').className='evidence '+b.cls;by('evidenceBadge').textContent=b.text;
-    by('storyText').textContent=e.notes||e.title;
-    by('proofSummary').textContent=`Bewijsniveau: ${labels[e.evidence_level]}. ${e.evidence_level==='B'?'Eenheidsgegevens in een periode van gedocumenteerd lidmaatschap; geen individueel actiebevel.':e.evidence_level==='C'?'Historisch beschreven gebeurtenis; Daniëls aanwezigheid of persoonlijke deelname niet bewezen.':e.source_ids.includes('S06')?'Daniëls eigen herinneringsverklaring; geen zelfstandig erkenningsbesluit gezien.':e.status==='bevestigd'?'Geregistreerd in de aangehaalde persoonlijke bron.':`Bewijskracht: ${e.status}.`}`;
-    const point=coordinates(e);
-    by('locationNote').textContent=point?(e.location_inferred?'Kaartplaats ontleend aan scheepscontext; het persoonlijke dienstblad noemt geen haven.':'Kaartpunt geeft de plaats of het gebied bij benadering weer, geen exacte verblijfplaats.'):'Geen voldoende gecontroleerde kaartcoördinaat. Deze gebeurtenis blijft in de tijdlijn zonder marker.';
-    by('routeNote').hidden=!e.topics.includes('voyage')&&!escapeEventIds.includes(e.id);
-    by('routeNote').textContent=escapeEventIds.includes(e.id)?'Ambon → Ceram → Tual volgens Daniëls latere verklaring (S06). De onderbroken lijn toont de plaatsvolgorde schematisch; het punt bij Ceram is alleen een oriëntatiepunt in het eilandgebied. Landingsplaats en precieze vaarroute zijn niet bewezen.':'De onderbroken Suezlijn is een vermoedelijk traject. Tussenstops en precieze vaarroutes zijn niet bewezen.';
-    by('quoteBox').hidden=!e.original_excerpt;
-    by('quoteLabel').textContent='Originele bronpassage';by('quoteText').textContent=e.original_excerpt||'';
-    by('quoteNote').textContent='Lees de volledige bron en bewijsgrens in de tab Bronnen.';
-    const img=e.source_ids.map(id=>data.source_images[id]).find(Boolean);
-    by('fragmentImg').hidden=!img;by('storySource').hidden=!img;
-    if(img){by('fragmentImg').src=img;by('fragmentImg').alt='Persoonlijk bronbeeld bij '+e.title;by('storySource').onclick=()=>openSource(img,e.title);by('fragmentImg').onclick=()=>openSource(img,e.title);}
-    else by('fragmentImg').removeAttribute('src');
-    renderContext(e);renderSources(e);
-    clearSelection();selectedMarker=markers.get(e.id)||null;
-    for(const [id,row] of rows){const active=id===e.id;row.classList.toggle('selected',active);row.setAttribute('aria-pressed',String(active));}
-    if(!rows.get(e.id)?.hidden)rows.get(e.id)?.scrollIntoView({block:'nearest'});
-    updateNavigation();
-    showTab(keepTab?document.querySelector('.tabs .active')?.dataset.tab||'story':'story');
-    if(isMobile())setPoints(false);
-    setTimeout(()=>{
-      if(current!==e||!map)return;map.invalidateSize();
-      if(escapeEventIds.includes(e.id)&&escapeRouteVisible()){
-        fitEscapeRoute();
-        if(point)reveal();
-      }else if(point){center(e,zoom);reveal();}
-    },100);
-  }
-  function updateNavigation() {
-    const i=current?visible.findIndex(e=>e.id===current.id):-1;
-    by('pointPos').textContent=i<0?'':`${i+1} van ${visible.length}`;
-    by('prevPoint').disabled=i<=0;by('nextPoint').disabled=i<0||i>=visible.length-1;
-  }
-  function browse(direction) {
-    const i=visible.findIndex(e=>e.id===current?.id)+direction;
-    if(i>=0&&i<visible.length)select(visible[i],true);
-  }
+  const data=window.KNIL_RESEARCH, main=document.getElementById('main');
+  const sources=new Map(data.sources.map(s=>[s.id,s])), locations=new Map(data.locations.map(l=>[l.id,l]));
+  const events=data.events, chapters=data.presentation.chapters;
+  const esc=value=>String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const kindNames={primary_scan:'Originele archiefscan',project_primary_copy:'Militair document uit het project',personal_testimony:'Persoonlijke verklaring',archive_index:'Archiefindex',institutional_context:'Institutionele context',secondary_unit_history:'Secundaire korpsgeschiedenis',research_context:'Historisch onderzoek',catalogue_only:'Cataloguslead · inhoud niet gelezen',primary_map:'Historische kaart',local_history:'Plaatselijke geschiedenis',secondary_index:'Secundaire index',secondary_context:'Secundaire context',retrospective_military_account:'Naoorlogse militaire reconstructie',project_primary_scan:'Archiefbeeld uit het project'};
+  const state={page:'loopbaan',chapter:-1,event:'E020',source:'S36',timeline:{query:'',chapter:'all',kind:'all',level:'all',confirmed:false},sourceFilters:{query:'',category:'all'},map:{chapter:'2',query:'',level:'all',confirmed:false,routes:true,place:null}};
+  let map=null, markerGroup=null, routeGroup=null, mapGroups=[], mapMarkers=new Map();
   const voyageRoute=[[-6.1,106.88],[-6.8,104.6],[-8.5,100],[-7,82],[11.9,50],[12.2,44],[16.9,41],[22,37.8],[27.6,34],[29.9,32.55],[30.3,32.45],[31.2,32.3],[33.2,28],[35,19],[37,9],[36,-5.7],[43,-10],[49,-5],[51.2,1.8],[52.5,4.55],[52.37,4.9]];
-  const escapeEventIds=['E007','E008','E009'];
-  // Ceram has no known landing site. Its route waypoint must never become a marker.
-  const escapeRoute=escapeEventIds.map(id=>{
-    const e=events.find(event=>event.id===id),waypoint=e.route_waypoint?.coordinates;
-    return waypoint?[waypoint[1],waypoint[0]]:coordinates(e);
-  });
-  function escapeRouteVisible(){
-    return by('showRoutes').checked&&escapeRoute.every(Boolean)&&escapeEventIds.every(id=>visible.some(e=>e.id===id));
+  const escapeIds=['E007','E008','E009'];
+  function chapterFor(e){if(e.id[0]==='C')return 1;if(e.id[0]==='B')return 2;const n=Number(e.id.slice(1));return n<=3?0:n<=13?1:n<=24?2:n<=34?3:4;}
+  function formatDate(value){if(/^\d{4}-\d\d-\d\d$/.test(value))return new Intl.DateTimeFormat('nl-NL',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(value+'T12:00:00Z'));if(/^\d{4}-\d\d$/.test(value))return new Intl.DateTimeFormat('nl-NL',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(value+'-01T12:00:00Z'));return value;}
+  function dateLabel(e){return !e.date?'Datum niet vastgesteld':typeof e.date==='object'?`${formatDate(e.date.start)} – ${formatDate(e.date.end)}`:formatDate(e.date);}
+  function kind(e){return e.evidence_level==='D'?'Onderzoeksvraag':e.source_ids.includes('S06')?'Eigen verklaring':e.evidence_level==='C'?'Historische context':e.evidence_level==='B'?'Eenheidscontext':'Persoonlijke registratie';}
+  function proof(e){if(e.evidence_level==='D')return 'Onderzoeksvraag; geen vastgesteld levensfeit.';if(e.source_ids.includes('S06'))return 'Persoonlijke verklaring; niet alle details zijn onafhankelijk bevestigd.';if(e.evidence_level==='B')return 'Eenheidscontext; geen bewijs van individuele deelname aan acties.';if(e.evidence_level==='C')return 'Historische context; bewijst geen persoonlijke aanwezigheid.';return e.status==='bevestigd'?'De vermelde registratie is gedocumenteerd in de persoonlijke bron.':'Lees de bronbeschrijving en beperkingen bij deze registratie.';}
+  function loc(e){return locations.get(e.map_location_id||e.location_id);}
+  function coords(e){const c=loc(e)?.coordinates;return c?[c[1],c[0]]:null;}
+  const link=(page,id,label,cls='textbutton')=>`<a class="${cls}" href="#${page}${id!==undefined&&id!==null?'/'+encodeURIComponent(id):''}">${esc(label)}</a>`;
+  const chapterOptions=(selected,all='Alle levensfasen')=>`<option value="all" ${selected==='all'?'selected':''}>${all}</option>`+chapters.map((c,i)=>`<option value="${i}" ${String(i)===selected?'selected':''}>${esc(c.years+' · '+c.title)}</option>`).join('');
+  const sourceCategory=s=>Number(s.id.slice(1))<=8?'personal':Number(s.id.slice(1))>=33?'archive':'history';
+  function sourceLinks(ids){return `<div class="source-reference-list">${[...new Set(ids)].map(id=>{const s=sources.get(id);return s?link('bronnen',id,`${id} · ${s.title}`):'';}).join('')}</div>`;}
+  function relatedSource(e){return e.source_ids.find(id=>data.source_details[id])||e.source_ids.find(id=>data.source_images[id])||e.source_ids[0];}
+  function move(page,id){const hash='#'+page+(id!==undefined&&id!==null?'/'+encodeURIComponent(id):'');if(location.hash===hash)route();else location.hash=hash;}
+  function route(){
+    const [raw='loopbaan',id]=location.hash.slice(1).split('/').map(decodeURIComponent);
+    state.page=['loopbaan','tijdlijn','kaart','bronnen','context','onderzoek'].includes(raw)?raw:'loopbaan';
+    if(state.page==='loopbaan')state.chapter=id!==undefined&&Number.isInteger(Number(id))&&Number(id)>=0&&Number(id)<chapters.length?Number(id):-1;
+    if(state.page==='tijdlijn'&&events.some(e=>e.id===id)){state.event=id;const e=events.find(e=>e.id===id);state.timeline={query:'',chapter:String(chapterFor(e)),kind:'all',level:'all',confirmed:false};}
+    if(state.page==='bronnen'&&sources.has(id)){state.source=id;state.sourceFilters={query:'',category:'all'};}
+    if(state.page==='kaart'&&events.some(e=>e.id===id)){const e=events.find(e=>e.id===id);state.map.chapter=String(chapterFor(e));state.map.query='';state.map.level='all';state.map.confirmed=false;state.map.place=e.map_location_id||e.location_id;}
+    render();window.scrollTo({top:0,behavior:'instant'});main.focus({preventScroll:true});
   }
-  function fitEscapeRoute(){
-    const [right,bottom]=detailCover();
-    map.fitBounds(L.latLngBounds(escapeRoute),{paddingTopLeft:[30,30],paddingBottomRight:[right+30,bottom+30],maxZoom:7,animate:false});
-  }
-  function rebuildRoutes() {
-    if(!map)return;routeGroup.clearLayers();
-    if(!by('showRoutes').checked)return;
-    let previous=null;
-    for(const e of visible) {
-      const point=coordinates(e);
-      if(!point||e.topics.includes('voyage')||e.evidence_level!=='A') {previous=null;continue;}
-      if(previous&&previous.point.toString()!==point.toString()&&previous.event.topics.some(t=>e.topics.includes(t))) {
-        const testimony=previous.event.status!=='bevestigd'||e.status!=='bevestigd';
-        L.polyline([previous.point,point],{color:colors[e.topics[0]],weight:3,dashArray:testimony?'5 8':'',opacity:.65}).bindTooltip(testimony?'Plaatsen uit persoonlijke verklaring · traject onzeker':'Geregistreerde plaatsen · schematische verbinding, geen bewezen traject').addTo(routeGroup);
-      }
-      previous={event:e,point};
-    }
-    if(escapeRouteVisible()) L.polyline(escapeRoute,{color:colors.occupation,weight:3,dashArray:'5 8',opacity:.75,researchRoute:'ambon-ceram-tual'}).bindTooltip('Ambon → Ceram → Tual · persoonlijke verklaring S06 · schematisch via eilandgebied; landingsplaats en vaarroute onbekend').addTo(routeGroup);
-    if(visible.some(e=>e.id==='E032')&&visible.some(e=>e.id==='E034')&&!by('confirmedOnly').checked) L.polyline(voyageRoute,{color:colors.voyage,weight:3,dashArray:'8 9',opacity:.7}).bindTooltip('Vermoedelijk traject via Suez · tussenstops niet bevestigd').addTo(routeGroup);
-  }
-  function applyFilters() {
-    const query=by('pointSearch').value.trim().toLocaleLowerCase('nl');
-    const topic=by('phaseFilter').value;const level=by('evidenceFilter').value;
-    visible=events.filter(e=>(!topic||e.topics.includes(topic))&&(!level||e.evidence_level===level)&&(!by('confirmedOnly').checked||e.status==='bevestigd')&&(!query||`${e.number} ${e.title} ${dateLabel(e)} ${e.unit||''} ${e.notes} ${e.id}`.toLocaleLowerCase('nl').includes(query)));
-    const ids=new Set(visible.map(e=>e.id));
-    for(const [id,row] of rows)row.hidden=!ids.has(id);
-    if(map){clearSelection();markerGroup.clearLayers();for(const e of visible){const m=markers.get(e.id);if(m)markerGroup.addLayer(m);}if(current&&ids.has(current.id))selectedMarker=markers.get(current.id)||null;rebuildRoutes();}
-    const count=visible.filter(e=>coordinates(e)).length;
-    by('resultCount').textContent=visible.length?`${visible.length} van ${events.length} gebeurtenissen · ${count} kaartpunten`:'Geen gebeurtenissen gevonden. Pas de filters aan.';
-    if(current&&!ids.has(current.id)){current=null;closeDetails();for(const row of rows.values()){row.classList.remove('selected');row.setAttribute('aria-pressed','false');}}
-    updateNavigation();
-  }
-  function fitAll() {
-    if(!map)return;
-    const points=visible.map(coordinates).filter(Boolean);
-    if(points.length)map.fitBounds(L.latLngBounds(points),{padding:[40,40],maxZoom:9,animate:false});
-  }
-  function initMap() {
-    if(!window.L||!L.markerClusterGroup){by('mapStatus').hidden=false;by('mapStatus').textContent='De kaart kon niet worden geladen. De tijdlijn, verhalen en bronnen blijven beschikbaar.';return;}
-    map=L.map('map').setView([-4.7,130],6);
-    const street=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap-bijdragers'});
-    const satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,maxNativeZoom:19,attribution:'Satellietbeelden © Esri, Maxar, Earthstar Geographics en partners'});
-    const topo=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,attribution:'Kaartgegevens © OpenStreetMap-bijdragers · kaartstijl © OpenTopoMap'});
-    const base={'Wegenkaart':street,'Satelliet':satellite,'Topografisch':topo};let saved;
-    try{saved=localStorage.getItem('opa-basemap');}catch{}
-    (base[saved]||street).addTo(map);L.control.layers(base,null,{position:'topright',collapsed:true}).addTo(map);
-    map.on('baselayerchange',e=>{try{localStorage.setItem('opa-basemap',e.name);}catch{}});
-    routeGroup=L.layerGroup().addTo(map);
-    markerGroup=L.markerClusterGroup({showCoverageOnHover:false,spiderfyOnMaxZoom:true,animate:false,spiderfyDistanceMultiplier:1.6,maxClusterRadius:42,iconCreateFunction:cluster=>L.divIcon({html:`<div><span>${cluster.getChildCount()} punten</span></div>`,className:'marker-cluster marker-cluster-small labeled-cluster',iconSize:L.point(64,40)})});
-    for(const e of events) {
-      const point=coordinates(e);if(!point)continue;
-      const m=L.marker(point,{title:e.number+'. '+e.title,keyboard:true,icon:L.divIcon({className:'mi',html:`<div class="num ${e.status!=='bevestigd'?'uncertain-point':''}" style="background:${colors[e.topics[0]]}">${e.number}</div>`,iconSize:[34,34],iconAnchor:[17,17]})}).on('click',()=>select(e,false,true));
-      markers.set(e.id,m);
-    }
-    markerGroup.on('spiderfied',e=>{expandedCluster=e.cluster;expandedMarkers=e.markers;highlight();});
-    markerGroup.on('unspiderfied',()=>{expandedCluster=null;expandedMarkers=[];});
-    markerGroup.addTo(map);applyFilters();
-    window.KNIL_APP={events,markers,map,markerGroup,routeGroup,get visible(){return visible;},get current(){return current;},select,applyFilters,voyageRoute};
-  }
-  for(const e of events) {
-    const row=document.createElement('button');row.type='button';row.className='event';row.dataset.eventId=e.id;row.setAttribute('aria-pressed','false');
-    const b=badge(e);row.innerHTML=`<span class="badge" style="background:${colors[e.topics[0]]}">${e.number}</span><div><b>${escape(e.title)}</b><small>${escape(dateLabel(e))}</small><span class="evidence ${b.cls}">${escape(b.text)}</span>${!coordinates(e)?'<small class="no-map">Geen gecontroleerd kaartpunt</small>':''}</div>`;
-    row.onclick=()=>select(e);rows.set(e.id,row);by('list').append(row);
-  }
-  by('prevPoint').onclick=()=>browse(-1);by('nextPoint').onclick=()=>browse(1);by('detailClose').onclick=closeDetails;
-  document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
-  for(const id of ['pointSearch','phaseFilter','evidenceFilter','confirmedOnly'])by(id).addEventListener(id==='pointSearch'?'input':'change',applyFilters);
-  by('showRoutes').onchange=rebuildRoutes;
-  by('pointsBtn').onclick=()=>setPoints(isMobile()?!by('left').classList.contains('open'):document.body.classList.contains('points-hidden'));
-  by('viewBtn').onclick=()=>applyLayout(isMobile()?'desktop':'mobile');
-  by('sheetSize').onclick=()=>{const expanded=by('detail').classList.toggle('expanded');by('sheetSize').textContent=expanded?'Meer kaart':'Meer lezen';by('sheetSize').setAttribute('aria-expanded',String(expanded));refreshMap();};
-  by('allRoute').onclick=()=>{by('pointSearch').value='';by('phaseFilter').value='';by('evidenceFilter').value='';by('confirmedOnly').checked=false;applyFilters();current=null;clearSelection();closeDetails();for(const row of rows.values()){row.classList.remove('selected');row.setAttribute('aria-pressed','false');}if(isMobile())setPoints(false);setTimeout(()=>{if(!current)fitAll();},120);};
-  let resizeTimer;addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(refreshMap,120);});
-  matchMedia('(max-width:850px)').addEventListener('change',e=>applyLayout(e.matches?'mobile':'desktop'));
-  by('historicalMap').href=data.historical_map_url;
-  by('reportLink').href=data.report_url;
-
-  // Source viewer: fit/native scale, zoom, drag, focus restoration and trapping.
-  const modal=by('sourceModal'),big=by('bigImg'),scroll=by('imageScroll');let trigger=null,fit=true;
-  function fitSource(){fit=true;scroll.classList.add('fit');big.style.width='auto';scroll.scrollLeft=0;scroll.scrollTop=0;}
+  function overview(){return `<div class="hero"><div><p class="eyebrow">Militair-historisch onderzoek</p><h1>De militaire loopbaan<br>van Daniël Rahangmetang.</h1><p class="lead">Zijn militaire dienst, plaatsingen, eenheden en overplaatsingen, gereconstrueerd aan de hand van dienstregistraties, archiefstukken en zijn eigen verklaring.</p><div class="actions">${link('loopbaan',1,'Begin bij zijn indiensttreding →','primary')}${link('tijdlijn',undefined,'Bekijk de tijdlijn','secondary')}</div></div><aside class="hero-aside"><p class="eyebrow">Zijn militaire dienst in het kort</p><dl><dt>Inlijving</dt><dd>24 augustus 1941 · Ambon</dd><dt>Legernummer</dt><dd>171301443</dd><dt>Militaire dienst</dt><dd>KNIL · later tijdelijk KL</dd><dt>Overtocht</dt><dd>Somersetshire · 1951</dd></dl></aside></div><div class="sectionline"><h2>De loopbaan in vijf onderdelen</h2><span class="small muted">Van achtergrond tot de periode na zijn diensttijd</span></div><div class="chaptergrid">${chapters.map((c,i)=>`<a class="chaptertile" href="#loopbaan/${i}"><span class="years">${esc(c.years)}</span><strong>${esc(c.title)}</strong><span class="places">${esc(c.places)}</span><span class="arrow">Lees hoofdstuk →</span></a>`).join('')}</div><div class="home-bottom"><div><h3>Een document zelf bekijken</h3><p>De relevante passage staat voorop. Het volledige origineel, de transcriptie en de herkomst blijven erbij.</p>${link('bronnen','S36','Bekijk een bron uit 1947 →')}</div><div><h3>Wat weten we nog niet?</h3><p>Bronverschillen en open vragen krijgen een eigen plek, met ruimte voor nieuw bewijs.</p>${link('onderzoek',undefined,'Bekijk het lopende onderzoek →')}</div></div>`;}
+  function chapterView(){if(state.chapter<0)return overview();const c=chapters[state.chapter],refs=c.source_ids;return `<div class="breadcrumb">${link('loopbaan',undefined,'Loopbaan')}<span>›</span><span>${esc(c.title)}</span></div><div class="reading"><aside class="chaptermenu" aria-label="Hoofdstukken">${chapters.map((c,i)=>`<a href="#loopbaan/${i}" ${i===state.chapter?'aria-current="page"':''}><small>${esc(c.years)}</small>${esc(c.title)}</a>`).join('')}</aside><article class="read-copy"><p class="eyebrow">Onderdeel ${state.chapter+1} · ${esc(c.years)}</p><h1>${esc(c.title)}</h1><p class="lead">${esc(c.places)}</p><p>${esc(c.body)}</p><div class="evidence-box"><h4>Wat de bronnen ons vertellen</h4><p>${esc(c.note)}</p><span class="small muted">${esc(c.source)}</span></div>${state.chapter===2?`<h3>De wereld om hem heen</h3><p>Zijn dienst op Sulawesi en Java valt in de Indonesische onafhankelijkheidsoorlog. Het historische onderzoek beschrijft de koloniale oorlog en het geweld tegen burgers. De beschikbare documenten bewijzen niet aan welke afzonderlijke acties Daniël deelnam.</p>${link('context','independence','Lees het historische kader →')}`:''}${state.chapter===2?unitsView():''}<details><summary>Bronnen bij dit onderdeel (${refs.length})</summary>${sourceLinks(refs)}</details><div class="evidence-link"><div><h4>Zelf verder kijken</h4><p>Geregistreerde datums, plaatsen en documenten bij dit onderdeel</p></div><div class="actions"><button class="secondary" type="button" data-chapter-timeline="${state.chapter}">Tijdlijn</button>${link('bronnen',['S01','S06','S36','S05','S25'][state.chapter],'Bron bekijken','primary')}</div></div><div class="actions chapter-browse">${state.chapter>0?link('loopbaan',state.chapter-1,'← Vorig onderdeel'):''}${state.chapter<4?link('loopbaan',state.chapter+1,'Volgend onderdeel →'):''}</div></article></div>`;}
+  function unitsView(){return `<details><summary>Militaire eenheden en geregistreerde indelingen (${data.units.length})</summary><div class="unit-list">${data.units.map(u=>`<article><h4>${esc(u.name)}</h4><p class="small muted">${esc(u.documented_or_inferred_period)}</p><p>${esc(u.notes)}</p>${sourceLinks(u.source_ids)}</article>`).join('')}</div></details>`;}
+  function filteredEvents(filter){const q=filter.query.trim().toLocaleLowerCase('nl');return events.filter(e=>(filter.chapter==='all'||chapterFor(e)===Number(filter.chapter))&&(filter.level==='all'||e.evidence_level===filter.level)&&(!filter.confirmed||e.status==='bevestigd')&&(!filter.kind||filter.kind==='all'||filter.kind==='personal'&&e.evidence_level==='A'||filter.kind==='context'&&['B','C'].includes(e.evidence_level)||filter.kind==='open'&&e.evidence_level==='D')&&(!q||`${e.id} ${e.title} ${e.unit||''} ${dateLabel(e)} ${e.notes} ${loc(e)?.label||''}`.toLocaleLowerCase('nl').includes(q)));}
+  function eventDetail(e){if(!e)return `<aside class="selected-event"><p>Geen gebeurtenissen gevonden. Pas de filters aan.</p></aside>`;const conflicts=(data.presentation.conflictsByEvent[e.id]||[]).map(id=>data.conflicts.find(c=>c.id===id)).filter(Boolean);return `<article class="selected-event" data-detail-event="${e.id}"><p class="eyebrow">Geselecteerde gebeurtenis</p><span class="badge">${esc(kind(e))}</span><h2>${esc(e.title)}</h2><p class="muted">${esc(dateLabel(e))}</p>${e.unit?`<p><strong>Eenheid:</strong> ${esc(e.unit)}</p>`:''}<p>${esc(e.notes||'Deze gebeurtenis is opgenomen met de onderstaande persoonlijke bronverwijzing.')}</p>${e.original_excerpt?`<h4>Oorspronkelijke passage</h4><blockquote>${esc(e.original_excerpt)}</blockquote>`:''}<p class="proof-note">${esc(proof(e))}</p><p class="small muted">${coords(e)?`${esc(loc(e).label)} · plaats bij benadering; geen exact verblijfadres`:'Geen voldoende gecontroleerd kaartpunt; de gebeurtenis blijft wel in de tijdlijn.'}</p><div class="actions">${link('bronnen',relatedSource(e),'Bekijk bronpassage →','primary')}${coords(e)?link('kaart',e.id,'Op de kaart','secondary'):''}</div><details><summary>Alle bronnen (${e.source_ids.length})</summary>${sourceLinks(e.source_ids)}</details>${conflicts.length?`<details><summary>Bronverschillen bij deze gebeurtenis</summary>${conflicts.map(c=>`<h4>${esc(c.subject)}</h4><p>${esc(c.readings)}</p><p>${esc(c.resolution)}</p>`).join('')}${link('onderzoek',undefined,'Bekijk alle bronverschillen →')}</details>`:''}</article>`;}
+  function timeline(){const f=state.timeline;return `<div class="viewhead"><div><p class="eyebrow">De datums van de militaire loopbaan</p><h1>De tijdlijn</h1><p class="muted">Gebeurtenissen per levensfase, met ruimte voor onzekere datums.</p></div><span class="small muted">${events.length} gebeurtenissen in het huidige onderzoek</span></div><form class="tools" onsubmit="return false"><label class="search-field">Zoek in de tijdlijn<input id="timelineSearch" type="search" placeholder="Plaats, eenheid of gebeurtenis" value="${esc(f.query)}"></label><label>Periode<select id="timelineChapter">${chapterOptions(f.chapter)}</select></label><label>Soort<select id="timelineKind"><option value="all">Alle gebeurtenissen</option><option value="personal" ${f.kind==='personal'?'selected':''}>Persoonlijke geschiedenis</option><option value="context" ${f.kind==='context'?'selected':''}>Historische en eenheidscontext</option><option value="open" ${f.kind==='open'?'selected':''}>Open vragen</option></select></label></form><details class="filter-details"><summary>Meer filtermogelijkheden</summary><div class="filter-row"><label>Bewijsniveau<select id="timelineLevel">${levelOptions(f.level)}</select></label><label class="check"><input id="timelineConfirmed" type="checkbox" ${f.confirmed?'checked':''}>Alleen bevestigde registraties</label><button class="secondary" type="button" data-reset-timeline>Wis filters</button></div></details><p class="small muted" id="timelineCount" role="status" aria-live="polite"></p><div class="timeline-layout"><div id="eventList"></div><div id="eventDetail"></div></div>`;}
+  function levelOptions(selected){return [['all','Alle bewijsniveaus'],['A','A · persoonlijke bron / verklaring'],['B','B · eenheidscontext'],['C','C · historische context'],['D','D · hypothese / onderzoeksvraag']].map(([id,label])=>`<option value="${id}" ${id===selected?'selected':''}>${label}</option>`).join('');}
+  function refreshTimeline(){const visible=filteredEvents(state.timeline);if(!visible.some(e=>e.id===state.event))state.event=visible[0]?.id||null;document.getElementById('timelineCount').textContent=`${visible.length} van ${events.length} gebeurtenissen`;document.getElementById('eventList').innerHTML=chapters.map((c,i)=>{const list=visible.filter(e=>chapterFor(e)===i);return list.length?`<section class="time-group"><h3>${esc(c.years+' · '+c.title)}</h3>${list.map(e=>`<button type="button" class="eventrow ${e.id===state.event?'active':''}" data-event="${e.id}" aria-pressed="${e.id===state.event}"><span class="date">${esc(dateLabel(e))}</span><span><span class="eventtitle">${esc(e.title)}</span><span class="kind">${esc(kind(e))}</span></span><span aria-hidden="true">›</span></button>`).join('')}</section>`:'';}).join('')||'<p>Geen gebeurtenissen gevonden. Pas de filters aan.</p>';document.getElementById('eventDetail').innerHTML=eventDetail(events.find(e=>e.id===state.event));}
+  function filteredSources(){const f=state.sourceFilters,q=f.query.trim().toLocaleLowerCase('nl');return data.sources.filter(s=>(f.category==='all'||sourceCategory(s)===f.category)&&(!q||`${s.id} ${s.title} ${s.note} ${s.archive_access||''} ${s.inventory||''} ${s.scan_file||''}`.toLocaleLowerCase('nl').includes(q)));}
+  function sourceView(){const f=state.sourceFilters;return `<div class="viewhead"><div><p class="eyebrow">Bronnen bij de militaire loopbaan</p><h1>Militaire bronnen</h1><p class="muted">Persoonlijke documenten, eenheidsrapporten en historische bronnen op één plek.</p></div><span class="small muted">${sources.size} bronnen · één vaste bronpresentatie</span></div><form class="tools" onsubmit="return false"><label class="search-field">Zoek een bron<input id="sourceSearch" type="search" placeholder="Document, onderwerp of bronnummer" value="${esc(f.query)}"></label><label>Collectie<select id="sourceCategory"><option value="all">Alle bronnen</option><option value="personal" ${f.category==='personal'?'selected':''}>Persoonlijke documenten</option><option value="archive" ${f.category==='archive'?'selected':''}>Archiefscans 1947</option><option value="history" ${f.category==='history'?'selected':''}>Historische bronnen en onderzoek</option></select></label></form><p class="small muted" id="sourceCount" role="status" aria-live="polite"></p><label class="mobile-source-label small" for="sourceSelect">Gekozen document</label><select class="mobile-source-select" id="sourceSelect"></select><div class="source-layout"><aside class="source-list" id="sourceList" aria-label="Beschikbare bronnen"></aside><article class="source-reader" id="sourceReader"></article></div>`;}
+  function sourceReader(s){if(!s)return '<p>Geen bronnen gevonden. Pas de zoekopdracht of collectie aan.</p>';const d=data.source_details[s.id],image=d?.crop||data.source_images[s.id],original=d?.original||data.source_images[s.id],sourceUrl=d?.source_url||s.original_url||s.url;const related=events.filter(e=>e.source_ids.includes(s.id));return `<span class="badge">${esc(d?'Eenheidscontext':kindNames[s.kind]||s.kind)}</span><h2>${esc(d?.title||s.title)}</h2><p class="small muted">${esc(s.id)} · ${s.archive_access?`Nationaal Archief · ${esc(s.archive_access)} / ${esc(s.inventory??'niet vastgesteld')}`:esc(kindNames[s.kind]||s.kind)}${d?` · bestand ${esc(d.id)} · gedrukte pagina ${esc(d.page)}`:s.scan_page?` · scan/pagina ${esc(s.scan_page)}`:''}</p>${image?`<figure class="scanframe"><button type="button" data-image="${esc(image)}" data-image-title="${esc(d?'Relevante uitsnede · '+d.title:s.title)}" aria-label="${esc(d?'Relevante uitsnede groter bekijken':'Bronbeeld groter bekijken')}"><img src="${esc(image)}" alt="${esc(d?'Relevante uitsnede uit scan '+d.id+': '+d.title:s.title)}"></button></figure><div class="actions image-actions"><span class="caption">${d?'Uitsnede op oorspronkelijke resolutie · geen kunstmatige vergroting':'Beschikbaar bronbeeld uit het project; zie herkomst en bewijsgrens'}</span><button class="textbutton" type="button" data-image="${esc(image)}" data-image-title="${esc(d?.title||s.title)}">Groter bekijken</button>${d?`<button class="textbutton" type="button" data-image="${esc(original)}" data-image-title="${esc('Volledig origineel · scan '+d.id)}">Volledig origineel</button>`:''}</div>`:`<div class="evidence-box"><h4>${s.kind==='catalogue_only'?'Alleen een onderzoekslead':'Geen lokale bronafbeelding'}</h4><p>${s.kind==='catalogue_only'?'De inventarisbeschrijving is bekeken; de dossierinhoud is niet gelezen.':'Deze bron is opgenomen als verwijzing. Er wordt geen vervangend beeld als origineel getoond.'}</p></div>`}${d?`<h4 class="section-heading">Transcriptie van de geselecteerde passage</h4><pre class="transcript">${esc(d.transcript)}</pre><div class="two-explain"><section><h4>Betekenis voor Daniël</h4><p>${esc(d.boundary)}</p></section><section><h4>Historisch kader</h4><p>${esc(d.context)}</p></section></div>`:`<div class="evidence-box"><h4>Bronbeschrijving en bewijsgrens</h4><p>${esc(s.note)}</p></div>`}<details><summary>Herkomst en exacte bronverwijzing</summary><p>${esc(s.title)}. ${s.archive_access?`Nationaal Archief, toegang ${esc(s.archive_access)}, inventarisnummer ${esc(s.inventory??'niet vastgesteld')}.`:''}${d?` Bestandsidentificatie NL-HaNA_2.13.132_1164_${esc(d.id)}; gedrukt blad ${esc(d.page)}. Origineel aangeleverd door de gebruiker en gecontroleerd op 21 oktober 2026. Geen aanvullende vrije reproductielicentie vastgesteld.`:''}</p><p>${esc(s.note)}</p>${sourceUrl?`<p><a href="${esc(sourceUrl)}" target="_blank" rel="noopener noreferrer">Open exacte bronverwijzing ↗</a></p>`:''}${d?'<p><a href="assets/archief/2.13.132-1164/manifest.json" target="_blank" rel="noopener">Bestandsherkomst, pixelcoördinaten en controlesommen ↗</a></p>':''}<p><a href="${data.rights_url}" target="_blank" rel="noopener">Reproductieverantwoording ↗</a></p></details>${related.length?`<details open><summary>Gebeurtenissen bij deze bron (${related.length})</summary><div class="source-reference-list">${related.map(e=>link('tijdlijn',e.id,dateLabel(e)+' · '+e.title)).join('')}</div></details>`:'<p class="small muted">Contextbron; niet gekoppeld aan een persoonlijke gebeurtenis.</p>'}`;}
+  function refreshSources(){const list=filteredSources();if(!list.some(s=>s.id===state.source))state.source=list[0]?.id||null;if(state.source)history.replaceState(null,'','#bronnen/'+state.source);document.getElementById('sourceCount').textContent=`${list.length} van ${sources.size} bronnen`;document.getElementById('sourceSelect').innerHTML=list.length?list.map(s=>`<option value="${s.id}" ${s.id===state.source?'selected':''}>${esc(s.id+' · '+s.title)}</option>`).join(''):'<option>Geen bronnen gevonden</option>';document.getElementById('sourceList').innerHTML=[['personal','Persoonlijke documenten'],['archive','Archiefscans 1947'],['history','Historische bronnen en onderzoek']].map(([id,label])=>{const group=list.filter(s=>sourceCategory(s)===id);return group.length?`<section><h3 class="source-group">${label}</h3>${group.map(s=>`<button type="button" data-source="${s.id}" class="${s.id===state.source?'active':''}" aria-pressed="${s.id===state.source}">${esc(s.title.replace(' — eenheidscontext',''))}<small>${s.id} · ${esc(kindNames[s.kind]||s.kind)}</small></button>`).join('')}</section>`:'';}).join('');document.getElementById('sourceReader').innerHTML=sourceReader(sources.get(state.source));}
+  function mapView(){const f=state.map;return `<div class="viewhead"><div><p class="eyebrow">Standplaatsen en overplaatsingen</p><h1>Militaire standplaatsen</h1><p class="muted">Eén plaats op de kaart, met de bijbehorende registraties samen.</p></div>${link('tijdlijn',undefined,'Datums bekijken','secondary')}</div><div class="tools"><label>Periode<select id="mapChapter">${chapterOptions(f.chapter)}</select></label><label class="search-field">Zoek een plaats of gebeurtenis<input id="mapSearch" type="search" placeholder="Bijvoorbeeld Malang" value="${esc(f.query)}"></label><label class="check"><input id="showRoutes" type="checkbox" ${f.routes?'checked':''}>Schematische verbindingen</label></div><details class="filter-details"><summary>Meer kaartfilters en uitleg</summary><div class="filter-row"><label>Bewijsniveau<select id="mapLevel">${levelOptions(f.level)}</select></label><label class="check"><input id="mapConfirmed" type="checkbox" ${f.confirmed?'checked':''}>Alleen bevestigde registraties</label></div><p class="small muted">Een persoonlijke verklaring is niet hetzelfde als een onafhankelijk bevestigde gebeurtenis. Kaartpunten geven een plaats of gebied bij benadering aan. Ceram heeft geen bewezen landingsplaats; een schematisch routepunt wordt niet als verblijfplaats getoond.</p></details><p id="mapCount" class="small muted" role="status" aria-live="polite"></p><div class="map-layout"><figure class="map-surface"><div id="map" aria-label="Kaart van geregistreerde plaatsen"></div><div id="mapStatus" role="status" hidden>De kaart kon niet worden geladen. Tijdlijn en bronnen blijven beschikbaar.</div><figcaption>Kaartpunten bij benadering. Doorgetrokken lijnen verbinden registraties schematisch; onderbroken lijnen tonen een verklaring of vermoedelijk traject. Geen bewezen reisroutes. <a href="${data.historical_map_url}" target="_blank" rel="noopener">Historische kaart Ambon ↗</a></figcaption></figure><aside><h2 class="places-heading">Plaatsen in deze selectie</h2><div id="placeList"></div><div id="placeDetail" class="map-detail"></div></aside></div><details id="unmappedSection"><summary id="unmappedSummary"></summary><div id="unmappedList" class="source-reference-list"></div></details>`;}
+  function initMap(){if(!window.L||!L.markerClusterGroup){document.getElementById('mapStatus').hidden=false;refreshMap();return;}map=L.map('map').setView([-4.7,122],5);const street=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap-bijdragers'}),satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,maxNativeZoom:19,attribution:'Satellietbeelden © Esri, Maxar, Earthstar Geographics en partners'}),topo=L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png',{maxZoom:17,attribution:'Kaartgegevens © OpenStreetMap-bijdragers · kaartstijl © OpenTopoMap'});const bases={Wegenkaart:street,Satelliet:satellite,Topografisch:topo};let saved;try{saved=localStorage.getItem('opa-basemap');}catch{}(bases[saved]||street).addTo(map);L.control.layers(bases,null,{collapsed:true}).addTo(map);map.on('moveend',highlightPlace);map.on('baselayerchange',e=>{try{localStorage.setItem('opa-basemap',e.name);}catch{}});markerGroup=L.markerClusterGroup({showCoverageOnHover:false,animate:false,maxClusterRadius:36,iconCreateFunction:cluster=>L.divIcon({className:'place-cluster',html:`<span>${cluster.getChildCount()} plaatsen</span>`,iconSize:[80,34]})}).addTo(map);routeGroup=L.layerGroup().addTo(map);refreshMap();}
+  function refreshMap(){const visible=filteredEvents(state.map),groups=new Map(),unmapped=[];for(const e of visible){if(!coords(e)){unmapped.push(e);continue;}const l=loc(e);if(!groups.has(l.id))groups.set(l.id,{location:l,events:[]});groups.get(l.id).events.push(e);}mapGroups=[...groups.values()];if(!groups.has(state.map.place))state.map.place=mapGroups[0]?.location.id||null;document.getElementById('mapCount').textContent=`${visible.length} gebeurtenissen · ${mapGroups.length} plaatsen op de kaart · ${unmapped.length} zonder gecontroleerd kaartpunt`;document.getElementById('placeList').innerHTML=mapGroups.map(g=>`<button type="button" class="placebutton ${g.location.id===state.map.place?'active':''}" data-place="${g.location.id}" aria-pressed="${g.location.id===state.map.place}">${esc(g.location.label)}<small>${g.events.length} ${g.events.length===1?'registratie':'registraties'}</small></button>`).join('')||'<p class="small">Geen gecontroleerde kaartplaatsen in deze selectie.</p>';document.getElementById('unmappedSection').hidden=!unmapped.length;document.getElementById('unmappedSummary').textContent=`Zonder gecontroleerd kaartpunt (${unmapped.length})`;document.getElementById('unmappedList').innerHTML=unmapped.map(e=>link('tijdlijn',e.id,dateLabel(e)+' · '+e.title)).join('');renderPlaceDetail();mapMarkers.clear();if(!map)return;markerGroup.clearLayers();routeGroup.clearLayers();for(const g of mapGroups){const c=g.location.coordinates;const marker=L.marker([c[1],c[0]],{title:g.location.label,icon:L.divIcon({className:'place-marker',html:'<span></span>',iconSize:[24,24],iconAnchor:[12,12]})}).bindTooltip(g.location.label).on('click',()=>selectPlace(g.location.id,true));markerGroup.addLayer(marker);mapMarkers.set(g.location.id,marker);}rebuildRoutes(visible);fitMap();highlightPlace();}
+  function rebuildRoutes(visible){if(!map)return;routeGroup.clearLayers();if(!state.map.routes)return;let previous=null;for(const e of visible){const point=coords(e);if(!point||['E032','E033','E034'].includes(e.id)||e.evidence_level!=='A'){previous=null;continue;}if(previous&&previous.point.toString()!==point.toString()&&chapterFor(previous.event)===chapterFor(e)){const testimony=previous.event.status!=='bevestigd'||e.status!=='bevestigd';L.polyline([previous.point,point],{color:testimony?'#a37535':'#285241',weight:2,dashArray:testimony?'5 8':undefined,opacity:.75}).bindTooltip(testimony?'Plaatsvolgorde uit persoonlijke verklaring · traject onbekend':'Geregistreerde plaatsen · schematisch, geen bewezen vervoer').addTo(routeGroup);}previous={point,event:e};}if(escapeIds.every(id=>visible.some(e=>e.id===id))){const route=escapeIds.map(id=>{const e=events.find(e=>e.id===id),c=e.route_waypoint?.coordinates;return c?[c[1],c[0]]:coords(e);});if(route.every(Boolean))L.polyline(route,{color:'#a37535',weight:3,dashArray:'5 8',researchRoute:'ambon-ceram-tual'}).bindTooltip('Ambon → Ceram → Tual · verklaring S06 · landingsplaats en vaarroute onbekend').addTo(routeGroup);}if(!state.map.confirmed&&['E032','E034'].every(id=>visible.some(e=>e.id===id)))L.polyline(voyageRoute,{color:'#a37535',weight:3,dashArray:'8 9',researchRoute:'suez'}).bindTooltip('Vermoedelijk traject via Suez · geen bewezen dagelijkse route of tussenstops').addTo(routeGroup);}
+  function fitMap(){if(!map)return;const points=mapGroups.map(g=>g.location.coordinates).map(c=>[c[1],c[0]]);routeGroup.eachLayer(layer=>{if(layer.getLatLngs)points.push(...layer.getLatLngs());});map.invalidateSize();if(points.length)map.fitBounds(L.latLngBounds(points),{padding:[35,35],maxZoom:9,animate:false});}
+  function renderPlaceDetail(){const group=mapGroups.find(g=>g.location.id===state.map.place);document.getElementById('placeDetail').innerHTML=group?`<h3>${esc(group.location.label)}</h3><p class="small muted">Plaats bij benadering · geen exacte kazerne of verblijfplaats</p><div class="place-events">${group.events.map(e=>`<article><p class="small muted">${esc(dateLabel(e))} · ${esc(kind(e))}</p>${link('tijdlijn',e.id,e.title)}${link('bronnen',relatedSource(e),'Bronpassage →')}</article>`).join('')}</div>`:'<p>De gebeurtenissen zonder kaartpunt staan hieronder en in de tijdlijn.</p>';}
+  function highlightPlace(){for(const [id,marker] of mapMarkers){const active=id===state.map.place;marker.getElement()?.classList.toggle('selected-place',active);marker.setZIndexOffset(active?1000:0);}}
+  function selectPlace(id,fromMap=false){state.map.place=id;document.querySelectorAll('[data-place]').forEach(b=>{const selected=b.dataset.place===id;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected));});renderPlaceDetail();highlightPlace();if(map&&!fromMap&&mapMarkers.has(id))map.setView(mapMarkers.get(id).getLatLng(),Math.max(map.getZoom(),8),{animate:false});if(fromMap&&matchMedia('(max-width:760px)').matches)document.getElementById('placeDetail').scrollIntoView({block:'start'});}
+  function historyView(){const rows=[{key:'occupation',years:'1942–1945',title:'Oorlog en Japanse bezetting',personal:'Zijn eigen verklaring beschrijft vlucht en gevangenschap. De algemene militaire rapporten vormen een andere bron dan zijn persoonlijke relaas.'},{key:'independence',years:'1945–1949',title:'De Indonesische onafhankelijkheidsoorlog',personal:'Zijn geregistreerde dienst op Sulawesi en Java valt in deze periode. Dat bewijst geen deelname aan een specifiek incident.'},{key:'voyage',years:'1950–1951',title:'Tijdelijke KL-dienst en overtocht',personal:'De persoonlijke reisregistratie, scheepscontext en aankomstindex blijven afzonderlijk herkenbaar.'}];return `<div class="viewhead"><div><p class="eyebrow">De historische context van zijn diensttijd</p><h1>Historische context</h1><p class="muted">Militaire geschiedenis en persoonlijke dienstgegevens, met hun eigen bronnen.</p></div></div><div class="history-grid">${rows.map(r=>{const c=data.presentation.contexts[r.key];return `<article class="history-item" id="context-${r.key}"><p class="eyebrow">${r.years}</p><h2>${r.title}</h2><p>${esc(c.text)}</p><p class="personal">${r.personal}</p><details><summary>Bronnen bij dit kader</summary>${sourceLinks(c.ids)}</details></article>`;}).join('')}</div><section class="context-extra"><h2>Eenheden, indelingen en wooncontext</h2>${unitsView()}${['military','personal','netherlands'].map(key=>{const c=data.presentation.contexts[key];return `<details><summary>${{military:'Militaire en administratieve wijzigingen',personal:'Persoonlijke achtergrond',netherlands:'Na de militaire dienst: Nederland'}[key]}</summary><p>${esc(c.text)}</p>${sourceLinks(c.ids)}</details>`;}).join('')}</section>`;}
+  function researchView(){return `<div class="viewhead"><div><p class="eyebrow">Een zorgvuldig en groeiend onderzoek</p><h1>Wat staat nog open?</h1><p class="muted">Onderzoeksvragen, bronverschillen en verantwoording bij elkaar.</p></div></div><section class="research-row"><div><span class="badge">Persoonlijk transport</span><p class="small muted">November 1947</p></div><div><h2>Met welk transport ging Daniël naar Oost-Java?</h2><p>Het stamboek en eenheidsrapport sluiten op elkaar aan, maar vormen geen individuele passagierslijst. Gezocht: inschepingslijsten, personeelsorders en transportoverzichten.</p>${sourceLinks(['S03','S36','S37','S38'])}</div></section><h2 class="section-heading">Hypotheses en vervolgvragen (${data.hypotheses.length})</h2>${data.hypotheses.map(h=>`<details><summary>${esc(h.claim)}</summary><p><strong>Huidige status:</strong> ${esc(h.status)}</p><p><strong>Nog nodig:</strong> ${esc(h.needed)}</p>${sourceLinks(h.source_ids)}</details>`).join('')}<h2 class="section-heading">Waar bronnen verschillen (${data.conflicts.length})</h2>${data.conflicts.map(c=>`<details data-conflict="${c.id}"><summary>${esc(c.subject)}</summary><p><strong>Lezingen:</strong> ${esc(c.readings)}</p><p><strong>Omgang met het verschil:</strong> ${esc(c.resolution)}</p></details>`).join('')}<h2 class="section-heading">Hoe dit onderzoek met bewijs omgaat</h2><p>Persoonlijke dienstregistraties, herinneringen, eenheidsactiviteiten en algemene geschiedenis blijven onderscheiden. Een cataloguslead is geen gelezen dossier. Een eigen verklaring is een persoonlijke bron, maar niet automatisch onafhankelijk bevestigd. Onzekere datums, afkortingen en onbekende locaties blijven zichtbaar.</p><div class="actions"><a class="secondary" href="${data.report_url}" target="_blank" rel="noopener">Volledig onderzoeksrapport ↗</a><a class="secondary" href="${data.rights_url}" target="_blank" rel="noopener">Reproductieverantwoording ↗</a><a class="secondary" href="research/archiefbronnen-1947.html">Archiefscans 1947 ↗</a></div>`;}
+  function render(){if(map){map.remove();map=null;markerGroup=null;routeGroup=null;mapMarkers.clear();}document.querySelectorAll('nav [data-page]').forEach(a=>{if(a.dataset.page===state.page)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});main.innerHTML=state.page==='loopbaan'?chapterView():state.page==='tijdlijn'?timeline():state.page==='kaart'?mapView():state.page==='bronnen'?sourceView():state.page==='context'?historyView():researchView();document.title=state.page==='loopbaan'&&state.chapter<0?'De militaire loopbaan van Daniël Rahangmetang':`${{loopbaan:chapters[state.chapter]?.title,tijdlijn:'Tijdlijn',kaart:'Militaire standplaatsen',bronnen:'Militaire bronnen',context:'Historische context',onderzoek:'Onderzoek'}[state.page]} · Daniël Rahangmetang`;if(state.page==='tijdlijn')refreshTimeline();if(state.page==='bronnen')refreshSources();if(state.page==='kaart')initMap();}
+  main.addEventListener('click',e=>{const button=e.target.closest('button');if(!button)return;if(button.dataset.event){state.event=button.dataset.event;history.replaceState(null,'','#tijdlijn/'+state.event);refreshTimeline();if(matchMedia('(max-width:760px)').matches)document.getElementById('eventDetail').scrollIntoView({block:'start'});}else if(button.dataset.source){state.source=button.dataset.source;refreshSources();}else if(button.dataset.place){selectPlace(button.dataset.place);}else if(button.dataset.image){openSource(button.dataset.image,button.dataset.imageTitle);}else if(button.dataset.chapterTimeline!==undefined){state.timeline={query:'',chapter:button.dataset.chapterTimeline,kind:'all',level:'all',confirmed:false};move('tijdlijn');}else if(button.hasAttribute('data-reset-timeline')){state.timeline={query:'',chapter:'all',kind:'all',level:'all',confirmed:false};render();}});
+  function filterChange(e){const el=e.target;const maps={timelineSearch:['timeline','query'],timelineChapter:['timeline','chapter'],timelineKind:['timeline','kind'],timelineLevel:['timeline','level'],timelineConfirmed:['timeline','confirmed'],sourceSearch:['sourceFilters','query'],sourceCategory:['sourceFilters','category'],mapChapter:['map','chapter'],mapSearch:['map','query'],mapLevel:['map','level'],mapConfirmed:['map','confirmed'],showRoutes:['map','routes']};const config=maps[el.id];if(!config)return;state[config[0]][config[1]]=el.type==='checkbox'?el.checked:el.value;if(config[0]==='timeline')refreshTimeline();else if(config[0]==='sourceFilters')refreshSources();else refreshMap();}
+  main.addEventListener('input',e=>{if(e.target.type==='search')filterChange(e);});main.addEventListener('change',e=>{if(e.target.id==='sourceSelect'){state.source=e.target.value;refreshSources();}else if(e.target.type!=='search')filterChange(e);});
+  // Native dialog supplies focus trapping and makes the rest of the page inert.
+  const modal=document.getElementById('sourceModal'),big=document.getElementById('bigImg'),scroll=document.getElementById('imageScroll');let trigger=null,fit=true,drag=null;
+  function fitSource(){fit=true;scroll.classList.add('fit');big.style.width='';scroll.scrollLeft=0;scroll.scrollTop=0;}
   function scale(){return big.naturalWidth?big.getBoundingClientRect().width/big.naturalWidth:1;}
-  function setScale(value,reset=false){const r=big.getBoundingClientRect();const x=(scroll.scrollLeft+scroll.clientWidth/2)/(r.width||1),y=(scroll.scrollTop+scroll.clientHeight/2)/(r.height||1);fit=false;scroll.classList.remove('fit');big.style.width=Math.max(1,big.naturalWidth*Math.min(4,Math.max(.05,value)))+'px';const next=big.getBoundingClientRect();scroll.scrollLeft=reset?0:x*next.width-scroll.clientWidth/2;scroll.scrollTop=reset?0:y*next.height-scroll.clientHeight/2;}
-  function openSource(src,title){if(!src)return;trigger=document.activeElement;by('modalTitle').textContent=title||'Bron';modal.classList.add('open');fitSource();big.onload=()=>{if(fit)fitSource();};big.src=src;document.querySelector('.app').inert=true;document.querySelector('.top').inert=true;by('modalClose').focus();}
-  function closeSource(){modal.classList.remove('open');document.querySelector('.app').inert=false;document.querySelector('.top').inert=false;trigger?.focus();}
-  by('zoomIn').onclick=()=>setScale(scale()*1.5);by('zoomOut').onclick=()=>setScale(scale()/1.5);by('zoomFit').onclick=fitSource;by('zoomNative').onclick=()=>setScale(1,true);by('modalClose').onclick=closeSource;
-  modal.onclick=e=>{if(e.target===modal)closeSource();};
-  let drag=null;scroll.onpointerdown=e=>{if(e.pointerType!=='mouse'||e.button!==0||fit)return;e.preventDefault();drag={x:e.clientX,y:e.clientY,left:scroll.scrollLeft,top:scroll.scrollTop};scroll.classList.add('dragging');scroll.setPointerCapture(e.pointerId);};scroll.onpointermove=e=>{if(drag){scroll.scrollLeft=drag.left+drag.x-e.clientX;scroll.scrollTop=drag.top+drag.y-e.clientY;}};scroll.onpointerup=scroll.onpointercancel=()=>{drag=null;scroll.classList.remove('dragging');};
-  document.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){if(modal.classList.contains('open'))closeSource();else if(by('detail').classList.contains('open'))closeDetails();else setPoints(false);}
-    if(e.key==='Tab'&&modal.classList.contains('open')){const buttons=[...modal.querySelectorAll('button')];const first=buttons[0],last=buttons.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
-  });
-  by('familyStory').onclick=()=>{
-    current=null;clearSelection();for(const row of rows.values()){row.classList.remove('selected');row.setAttribute('aria-pressed','false');}
-    by('detail').classList.add('open');document.body.classList.add('detail-open');by('pointnav').hidden=true;
-    by('dt').textContent='Daniël · het familieverhaal';by('dd').textContent='1917–1951 en het leven in Nederland';by('evidenceBadge').textContent='Gedocumenteerde levensloop met open vragen';by('evidenceBadge').className='evidence mixed';
-    by('storyText').textContent='Daniël kwam uit Ohoirenan op Kei-Besar en trouwde in september 1940 met Orpa Oebra. In augustus 1941 begon zijn militaire dienst op Ambon. Zijn eigen latere verklaring vertelt over gevangenschap, een vlucht per prauw via Ceram, achterblijven in Tual en gevangenschap in Weduar. De datums zijn niet allemaal onafhankelijk bevestigd.\n\nVanaf juli 1946 beschrijft zijn militaire administratie opeenvolgende plaatsingen op Ambon, in Makassar en Pare-Pare, en vervolgens in Oost-Java en Malang. In 1949 werd hij soldaat eerste klasse. De documenten bewijzen geen persoonlijke patrouilles of deelname aan specifieke incidenten tijdens de Indonesische onafhankelijkheidsoorlog.\n\nIn 1950 eindigde zijn KNIL-dienst en verrichtte hij tijdelijk dienst bij de Koninklijke Landmacht. Zijn vervolgblad registreert de Somersetshire-reis naar Nederland: vertrek 9 april 1951 en aankomst 15 mei. De aankomstindex koppelt een echtgenote en vier kinderen aan zijn gezin. Zijn eerste woonvolgorde in Nederland, waaronder Laarbrug en Eerde, blijft een onderzoeksvraag.';
-    by('proofSummary').textContent='Open een gebeurtenis in de tijdlijn voor de datum, oorspronkelijke passage en precieze bronverwijzing.';by('locationNote').textContent='';by('routeNote').hidden=true;by('quoteBox').hidden=true;by('fragmentImg').hidden=true;by('storySource').hidden=true;by('fragmentImg').removeAttribute('src');
-    renderContext({id:'overview',topics:['personal','occupation','military','independence','voyage','netherlands'],evidence_level:'C'});renderSources({source_ids:['S01','S02','S03','S04','S05','S06','S19','S24','S25']});showTab('story');if(isMobile())setPoints(false);by('detail').scrollTop=0;
-  };
-  applyLayout(layoutMode);applyFilters();initMap();
+  function setScale(value){fit=false;scroll.classList.remove('fit');big.style.width=Math.max(1,big.naturalWidth*Math.max(.05,Math.min(4,value)))+'px';}
+  function openSource(src,title){if(!src)return;trigger=document.activeElement;document.getElementById('modalTitle').textContent=title||'Bronafbeelding';big.alt=title||'Bronafbeelding';fitSource();big.onload=()=>{if(fit)fitSource();};big.src=src;modal.showModal();document.body.classList.add('viewer-open');document.getElementById('modalClose').focus();}
+  modal.addEventListener('close',()=>{document.body.classList.remove('viewer-open');trigger?.focus();});document.getElementById('modalClose').onclick=()=>modal.close();document.getElementById('zoomFit').onclick=fitSource;document.getElementById('zoomNative').onclick=()=>setScale(1);document.getElementById('zoomIn').onclick=()=>setScale(scale()*1.5);document.getElementById('zoomOut').onclick=()=>setScale(scale()/1.5);modal.addEventListener('click',e=>{if(e.target===modal)modal.close();});scroll.addEventListener('pointerdown',e=>{if(e.pointerType!=='mouse'||e.button!==0||fit)return;e.preventDefault();drag={x:e.clientX,y:e.clientY,left:scroll.scrollLeft,top:scroll.scrollTop};scroll.setPointerCapture(e.pointerId);});scroll.addEventListener('pointermove',e=>{if(drag){scroll.scrollLeft=drag.left+drag.x-e.clientX;scroll.scrollTop=drag.top+drag.y-e.clientY;}});for(const event of ['pointerup','pointercancel'])scroll.addEventListener(event,()=>{drag=null;});
+  window.addEventListener('hashchange',route);window.addEventListener('resize',()=>{map?.invalidateSize();});
+  window.KNIL_APP={events,sources,locations,state,chapterFor,dateLabel,kind,filteredEvents,filteredSources,coords,move,select(e){move('tijdlijn',e.id);},get map(){return map;},get markerGroup(){return markerGroup;},get routeGroup(){return routeGroup;},get mapGroups(){return mapGroups;},get markers(){return mapMarkers;},get visible(){return filteredEvents(state.page==='kaart'?state.map:state.timeline);},voyageRoute};
+  route();
 })();

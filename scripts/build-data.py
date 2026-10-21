@@ -7,6 +7,7 @@ DIRECTORY = ROOT / 'research/2026-10-12/data'
 names = ['events', 'sources', 'locations', 'units', 'conflicts', 'hypotheses', 'person', 'family-transport']
 data = {name.replace('-', '_'): json.loads((DIRECTORY / f'{name}.json').read_text(encoding='utf-8')) for name in names}
 data['revision'] = '2026-10-12'
+data['presentation'] = json.loads((ROOT / 'research/presentation.json').read_text(encoding='utf-8'))
 data['report_url'] = 'research/2026-10-12/RAPPORT.md'
 data['rights_url'] = 'research/2026-10-12/RECHTEN.md'
 data['historical_map_url'] = 'https://maps.lib.utexas.edu/maps/historical/ambon_1943.jpg'
