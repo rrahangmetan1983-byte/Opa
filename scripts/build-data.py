@@ -6,6 +6,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DIRECTORY = ROOT / 'research/2026-10-12/data'
 names = ['events', 'sources', 'locations', 'units', 'conflicts', 'hypotheses', 'person', 'family-transport']
 data = {name.replace('-', '_'): json.loads((DIRECTORY / f'{name}.json').read_text(encoding='utf-8')) for name in names}
+data['awards'] = json.loads((ROOT / 'research/onderscheidingen.json').read_text(encoding='utf-8'))
+
 data['revision'] = '2026-10-12'
 data['presentation'] = json.loads((ROOT / 'research/presentation.json').read_text(encoding='utf-8'))
 data['report_url'] = 'research/2026-10-12/RAPPORT.md'

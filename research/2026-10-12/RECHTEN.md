@@ -11,3 +11,8 @@ Voor JACAR is geen algemene reproductielicentie vastgesteld; er worden geen nieu
 De kaart behoudt bestaande OpenStreetMap-, Esri- en OpenTopoMap-lagen met attributie. De historische kaart is een verwijzing naar de gecontroleerde AGS-kaart en geen zonder toestemming nieuw gepubliceerde rasterlaag. De AGS-kaart van Tan Toey bewijst geen verblijf van Daniël in dat kamp.
 
 Eigen testscreenshots tonen de website; lokale PNG-bestanden blijven beschikbaar voor de oplevering. Een afzonderlijk HTML-bestand kan deze beelden als ingebedde testresultaten tonen.
+
+
+## Museumvoorbeelden onderscheidingen
+
+De twee afbeeldingen bovenaan tonen collectieobjecten van het Nationaal Militair Museum, niet de fysieke onderscheidingen van Daniël Rahangmetang. KNIL-demobilisatiespeld met zakje: object 056129, https://collectie.nmm.nl/nl/collectie/detail/231345/. Ereteken voor Orde en Vrede met vier gespen, van R. Jerphanion: object 113408, https://collectie.nmm.nl/nl/collectie/detail/268867/. De museumfoto’s zijn ongewijzigd opgeslagen; de kop toont alleen een kader rond het relevante voorwerp. Geen vrije reproductielicentie vastgesteld. Herkomst, oorspronkelijke beeld-URL, afmetingen en SHA-256 staan in research/onderscheidingen.json. De persoonlijke certificaten blijven bronnen S07 en S08.
