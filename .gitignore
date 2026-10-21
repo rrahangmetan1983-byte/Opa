@@ -2,3 +2,4 @@ research/2026-10-12/evidence/
 research/2026-10-12/sources/
 qa/screenshots/*.png
 qa/test-results.json
+qa/archive-test-results.json

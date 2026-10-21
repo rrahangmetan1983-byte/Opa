@@ -125,7 +125,7 @@
       return `<article class="card research-source" data-source-id="${escape(id)}"><h3>${escape(id)} · ${escape(s.title)}</h3><p>${escape(archive)}${s.scan_page?` · scan/pagina ${escape(s.scan_page)}`:''}</p><p class="source-note">${escape(sourceKind[s.kind]||s.kind)}</p>${img?`<button type="button" class="scan-button" data-source-image="${escape(id)}"><img loading="lazy" data-src="${escape(img)}" alt="${escape(s.title)}"><span>Bekijk dit bronbeeld groot</span></button>`:''}${sourceLink(s)}<p class="proof-limit">${escape(s.note)}</p>${s.kind==='catalogue_only'?'<p><b>Alleen onderzoekslead: de inhoud van het dossier is niet ingezien.</b></p>':''}</article>`;
     }).join('');
     by('sourceLinks').querySelectorAll('[data-source-image]').forEach(button=>button.onclick=()=>openSource(data.source_images[button.dataset.sourceImage],sources.get(button.dataset.sourceImage).title));
-    by('sourceLinks').insertAdjacentHTML('beforeend',`<p class="source-note"><a href="${data.rights_url}" target="_blank" rel="noopener">Verantwoording beeldgebruik</a> · Nieuwe archiefdownloads worden via de oorspronkelijke instelling geopend.</p>`);
+      by('sourceLinks').insertAdjacentHTML('beforeend',`<p class="source-note"><a href="${data.rights_url}" target="_blank" rel="noopener">Verantwoording beeldgebruik</a> · <a href="research/archiefbronnen-1947.html">Archiefscans 1947: originelen, uitsneden en transcripties</a></p>`);
   }
   const contexts={
     personal:{text:'Daniëls herkomst en gezin worden beschreven in zijn militaire persoonsgegevens. Administratieve geboorte- en huwelijksdatums verschillen soms van latere indexen.',ids:['S01','S04','S19']},

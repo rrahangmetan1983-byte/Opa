@@ -4,7 +4,7 @@ import json, subprocess
 
 root=Path(__file__).resolve().parents[1]
 folder=root/'research/2026-10-12/data'
-load=lambda name:json.loads((folder/(name+'.json')).read_text())
+load=lambda name:json.loads((folder/(name+'.json')).read_text(encoding='utf-8'))
 events,sources,locations=load('events'),load('sources'),load('locations')
 source_ids={s['id'] for s in sources};location_ids={l['id'] for l in locations}
 assert len(source_ids)==len(sources)

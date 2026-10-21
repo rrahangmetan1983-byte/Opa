@@ -1,0 +1,121 @@
+[
+  {
+    "id": "0032",
+    "original": "NL-HaNA_2.13.132_1164_0032.jpg",
+    "crop": "NL-HaNA_2.13.132_1164_0032-uitsnede.png",
+    "width": 1271,
+    "height": 2048,
+    "crop_box": [
+      70,
+      1010,
+      1240,
+      1195
+    ],
+    "sha256": "f7fd2eb2ce75cf7eea49c0736f2d885bc656ca41799265202a5dde961b07f989",
+    "source_url": "https://www.nationaalarchief.nl/onderzoeken/archief/2.13.132/invnr/1164/file/NL-HaNA_2.13.132_1164_0032",
+    "provenance": "Origineel gebruikersbestand uit chat Bronnenanalyse Infanterie IV; overgenomen op 21 oktober 2026.",
+    "rights": "Nationaal Archief; geen aanvullende licentie vastgesteld uit de aangeleverde scan. Zie RECHTEN.md."
+  },
+  {
+    "id": "0051",
+    "original": "NL-HaNA_2.13.132_1164_0051.jpg",
+    "crop": "NL-HaNA_2.13.132_1164_0051-uitsnede.png",
+    "width": 1273,
+    "height": 2048,
+    "crop_box": [
+      15,
+      1200,
+      1225,
+      1795
+    ],
+    "sha256": "86c58c17180f2fbcd19c233c82ff369a1872f7b4818abc8eedb3e17d3c5bbbaa",
+    "source_url": "https://www.nationaalarchief.nl/onderzoeken/archief/2.13.132/invnr/1164/file/NL-HaNA_2.13.132_1164_0051",
+    "provenance": "Origineel gebruikersbestand uit chat Bronnenanalyse Infanterie IV; overgenomen op 21 oktober 2026.",
+    "rights": "Nationaal Archief; geen aanvullende licentie vastgesteld uit de aangeleverde scan. Zie RECHTEN.md."
+  },
+  {
+    "id": "0052",
+    "original": "NL-HaNA_2.13.132_1164_0052.jpg",
+    "crop": "NL-HaNA_2.13.132_1164_0052-uitsnede.png",
+    "width": 1275,
+    "height": 2048,
+    "crop_box": [
+      380,
+      510,
+      1210,
+      810
+    ],
+    "sha256": "5e677d10f222654627f18855c4403cd7c62c8a8c1926d74fa159ea73d9ecc432",
+    "source_url": "https://www.nationaalarchief.nl/onderzoeken/archief/2.13.132/invnr/1164/file/NL-HaNA_2.13.132_1164_0052",
+    "provenance": "Origineel gebruikersbestand uit chat Bronnenanalyse Infanterie IV; overgenomen op 21 oktober 2026.",
+    "rights": "Nationaal Archief; geen aanvullende licentie vastgesteld uit de aangeleverde scan. Zie RECHTEN.md."
+  },
+  {
+    "id": "0250",
+    "original": "NL-HaNA_2.13.132_1164_0250.jpg",
+    "crop": "NL-HaNA_2.13.132_1164_0250-uitsnede.png",
+    "width": 1261,
+    "height": 2048,
+    "crop_box": [
+      70,
+      1275,
+      1170,
+      1635
+    ],
+    "sha256": "3543481742d763996e008c088f5511e419bea30a2f62408734e50ebbc2d2fe82",
+    "source_url": "https://www.nationaalarchief.nl/onderzoeken/archief/2.13.132/invnr/1164/file/NL-HaNA_2.13.132_1164_0250",
+    "provenance": "Origineel gebruikersbestand uit chat Bronnenanalyse Infanterie IV; overgenomen op 21 oktober 2026.",
+    "rights": "Nationaal Archief; geen aanvullende licentie vastgesteld uit de aangeleverde scan. Zie RECHTEN.md."
+  },
+  {
+    "id": "0251",
+    "original": "NL-HaNA_2.13.132_1164_0251.jpg",
+    "crop": "NL-HaNA_2.13.132_1164_0251-uitsnede.png",
+    "width": 1265,
+    "height": 2048,
+    "crop_box": [
+      375,
+      120,
+      980,
+      710
+    ],
+    "sha256": "dea4e59d6cc23bc294f40a0261648f0cdc653cb2d666f077272e732d378bad0f",
+    "source_url": "https://www.nationaalarchief.nl/onderzoeken/archief/2.13.132/invnr/1164/file/NL-HaNA_2.13.132_1164_0251",
+    "provenance": "Origineel gebruikersbestand uit chat Bronnenanalyse Infanterie IV; overgenomen op 21 oktober 2026.",
+    "rights": "Nationaal Archief; geen aanvullende licentie vastgesteld uit de aangeleverde scan. Zie RECHTEN.md."
+  },
+  {
+    "id": "0268",
+    "original": "NL-HaNA_2.13.132_1164_0268.jpg",
+    "crop": "NL-HaNA_2.13.132_1164_0268-uitsnede.png",
+    "width": 1274,
+    "height": 2048,
+    "crop_box": [
+      120,
+      130,
+      1220,
+      303
+    ],
+    "sha256": "8b13990c24be689214648e261616db949612dd5ecd279f68e544e6bba6865e5c",
+    "source_url": "https://www.nationaalarchief.nl/onderzoeken/archief/2.13.132/invnr/1164/file/NL-HaNA_2.13.132_1164_0268",
+    "provenance": "Origineel gebruikersbestand uit chat Bronnenanalyse Infanterie IV; overgenomen op 21 oktober 2026.",
+    "rights": "Nationaal Archief; geen aanvullende licentie vastgesteld uit de aangeleverde scan. Zie RECHTEN.md."
+  },
+  {
+    "id": "0270",
+    "original": "NL-HaNA_2.13.132_1164_0270.jpg",
+    "crop": "NL-HaNA_2.13.132_1164_0270-uitsnede.png",
+    "width": 1278,
+    "height": 2048,
+    "crop_box": [
+      175,
+      897,
+      900,
+      1095
+    ],
+    "sha256": "700b7d8686d263739429f9e287a03ce9ba12be9ce19b8cfa90e228e6dff224ab",
+    "source_url": "https://www.nationaalarchief.nl/onderzoeken/archief/2.13.132/invnr/1164/file/NL-HaNA_2.13.132_1164_0270",
+    "provenance": "Origineel gebruikersbestand uit chat Bronnenanalyse Infanterie IV; overgenomen op 21 oktober 2026.",
+    "rights": "Nationaal Archief; geen aanvullende licentie vastgesteld uit de aangeleverde scan. Zie RECHTEN.md."
+  }
+]
