@@ -21,4 +21,3 @@ html{scroll-behavior:auto}body{margin:0;background:#f6f4ed;color:#233b33;font-fa
 @media(max-width:450px){#military-site .chaptergrid{grid-template-columns:1fr}#military-site .tools label{flex:1 1 100%}#military-site .tools .search-field{min-width:0}#military-site .eventrow{grid-template-columns:80px minmax(0,1fr) 12px}#military-site .eventrow .date{font-size:11px}#military-site .two-explain{grid-template-columns:1fr}#military-site h1{font-size:31px}#military-site .selected-event{padding:20px}#map{height:340px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 @media(max-width:760px){#military-site .textbutton{min-height:44px;display:inline-flex;align-items:center}#military-site .source-reference-list a{min-height:44px;display:flex;align-items:center}#military-site .chaptermenu a{min-height:44px}}
-
