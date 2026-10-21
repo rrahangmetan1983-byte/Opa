@@ -27,8 +27,11 @@ data['source_images'] = {
 }
 # Family-supplied archive originals are published with their own provenance manifest.
 archive_manifest = ROOT / 'assets/archief/2.13.132-1164/manifest.json'
+archive_text = {r['id']: r for r in json.loads((ROOT / 'research/archiefbronnen-1947.json').read_text(encoding='utf-8'))}
+data['source_details'] = {}
 for i, image in enumerate(json.loads(archive_manifest.read_text(encoding='utf-8')), 33):
     data['source_images'][f'S{i:02}'] = 'assets/archief/2.13.132-1164/' + image['original']
+    data['source_details'][f'S{i:02}'] = {**archive_text[image['id']], 'crop': 'assets/archief/2.13.132-1164/' + image['crop'], 'original': data['source_images'][f'S{i:02}'], 'source_url': image['source_url']}
 for s in data['sources']:
     s.pop('local_path', None)
 for f in data['family_transport']:

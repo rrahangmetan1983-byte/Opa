@@ -119,12 +119,15 @@
   }
   function renderSources(e) {
     by('sourceGallery').innerHTML='';
-    by('sourceLinks').innerHTML=e.source_ids.map(id=>{
-      const s=sources.get(id),img=data.source_images[id];
+    const orderedSources=[...e.source_ids].sort((a,b)=>Number(!!data.source_details?.[b])-Number(!!data.source_details?.[a]));
+    by('sourceLinks').innerHTML=orderedSources.map(id=>{
+      const s=sources.get(id),img=data.source_images[id],detail=data.source_details?.[id];
       const archive=s.archive_access?`Nationaal Archief · ${s.archive_access} · inv. ${s.inventory??'niet vastgesteld'}`:'Archiefgegevens: '+(sourceKind[s.kind]||s.kind);
+      if(detail)return `<article class="card research-source archive-source" data-source-id="${escape(id)}"><h3>${escape(id)} · ${escape(s.title)}</h3><p>${escape(archive)} · bestand ${escape(detail.id)} · gedrukte pagina ${escape(detail.page)}</p><p class="source-note">Eenheidscontext · geen bewijs van persoonlijke deelname</p><button type="button" class="scan-button crop-button" data-archive-crop="${escape(id)}"><img loading="lazy" data-src="${escape(detail.crop)}" alt="Relevante uitsnede: ${escape(detail.title)}"><span>Open relevante uitsnede groot</span></button><p class="source-note">Uitsnede op oorspronkelijke resolutie; geen kunstmatige vergroting.</p><h4>Transcriptie</h4><pre class="source-transcript">${escape(detail.transcript)}</pre><h4>Historisch kader</h4><p>${escape(detail.context)}</p><p class="proof-limit"><strong>Betekenis voor Daniël:</strong> ${escape(detail.boundary)}</p><p><button type="button" class="original-source-button" data-source-image="${escape(id)}">Bekijk volledig origineel</button></p><p><a href="${escape(detail.source_url)}" target="_blank" rel="noopener">Nationaal Archief · exacte bron ↗</a></p><p><a href="${escape(s.url)}" target="_blank" rel="noopener">Volledige bronpresentatie en herkomst ↗</a></p></article>`;
       return `<article class="card research-source" data-source-id="${escape(id)}"><h3>${escape(id)} · ${escape(s.title)}</h3><p>${escape(archive)}${s.scan_page?` · scan/pagina ${escape(s.scan_page)}`:''}</p><p class="source-note">${escape(sourceKind[s.kind]||s.kind)}</p>${img?`<button type="button" class="scan-button" data-source-image="${escape(id)}"><img loading="lazy" data-src="${escape(img)}" alt="${escape(s.title)}"><span>Bekijk dit bronbeeld groot</span></button>`:''}${sourceLink(s)}<p class="proof-limit">${escape(s.note)}</p>${s.kind==='catalogue_only'?'<p><b>Alleen onderzoekslead: de inhoud van het dossier is niet ingezien.</b></p>':''}</article>`;
     }).join('');
     by('sourceLinks').querySelectorAll('[data-source-image]').forEach(button=>button.onclick=()=>openSource(data.source_images[button.dataset.sourceImage],sources.get(button.dataset.sourceImage).title));
+    by('sourceLinks').querySelectorAll('[data-archive-crop]').forEach(button=>button.onclick=()=>openSource(data.source_details[button.dataset.archiveCrop].crop,'Relevante uitsnede · '+sources.get(button.dataset.archiveCrop).title));
       by('sourceLinks').insertAdjacentHTML('beforeend',`<p class="source-note"><a href="${data.rights_url}" target="_blank" rel="noopener">Verantwoording beeldgebruik</a> · <a href="research/archiefbronnen-1947.html">Archiefscans 1947: originelen, uitsneden en transcripties</a></p>`);
   }
   const contexts={

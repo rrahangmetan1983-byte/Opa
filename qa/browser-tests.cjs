@@ -21,7 +21,7 @@ async function main(){
   for(const id of ids){
     await page.evaluate(id=>KNIL_APP.select(KNIL_APP.events.find(e=>e.id===id)),id);
     await page.locator('[data-tab="sources"]').click();
-    const expected=await page.evaluate(id=>KNIL_APP.events.find(e=>e.id===id).source_ids,id);
+    const expected=await page.evaluate(id=>[...KNIL_APP.events.find(e=>e.id===id).source_ids].sort((a,b)=>Number(!!KNIL_RESEARCH.source_details?.[b])-Number(!!KNIL_RESEARCH.source_details?.[a])),id);
     const actual=await page.locator('[data-source-id]').evaluateAll(rows=>rows.map(r=>r.dataset.sourceId));
     check(JSON.stringify(actual)===JSON.stringify(expected),id+' precise source links');
     check(await page.locator('#dt').textContent(),id+' title renders');
@@ -104,6 +104,33 @@ async function main(){
     }),`${width}x${height} full escape route remains above/beside reading panel`);
     if(width===390)await mobile.screenshot({path:path.join(output,'ambon-ceram-tual-mobile.png')});
     await mobile.close();
+  }
+  // Archive cards show the exact crop and full interpretation directly in Sources.
+  for(const width of [1280,390]){
+    await page.setViewportSize({width,height:900});
+    for(const [eventId,sourceIds] of [['E020',['S36','S37']],['E021',['S38','S39']]]){
+      await page.evaluate(id=>KNIL_APP.select(KNIL_APP.events.find(e=>e.id===id)),eventId);
+      await page.locator('[data-tab="sources"]').click();
+      check(await page.locator('#sourceLinks > article').first().getAttribute('data-source-id')===sourceIds[0],'Relevant crop appears first');
+      for(const id of sourceIds){
+        const card=page.locator(`[data-source-id="${id}"]`);
+        check(await card.locator('.source-transcript').textContent().then(t=>t.length>50),'Inline transcription '+id);
+        const crop=card.locator('[data-archive-crop]');await crop.scrollIntoViewIfNeeded();
+        await crop.locator('img').evaluate(i=>i.decode());
+        check(await crop.locator('img').getAttribute('src').then(src=>src.endsWith('-uitsnede.png')),'Crop is the main source image '+id);
+        await crop.click();
+        await page.locator('#bigImg').evaluate(i=>i.decode());
+        check(await page.locator('#bigImg').getAttribute('src').then(src=>src.endsWith('-uitsnede.png')),'Crop opens in viewer '+id);
+        await page.locator('#modalClose').click();
+        await card.locator('[data-source-image]').click();
+        await page.locator('#bigImg').evaluate(i=>i.decode());
+        check(await page.locator('#bigImg').getAttribute('src').then(src=>src.endsWith('.jpg')),'Original remains accessible '+id);
+        await page.locator('#modalClose').click();
+      }
+      check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Sources panel fits screen '+width);
+      await page.locator(`[data-source-id="${sourceIds[0]}"]`).evaluate(el=>el.scrollIntoView({block:'start'}));
+      await page.screenshot({path:path.join(output,`inline-sources-${eventId}-${width}.png`)});
+    }
   }
   const broken=await page.locator('img[src]:not(.leaflet-tile)').evaluateAll(imgs=>imgs.filter(i=>i.complete&&!i.naturalWidth).map(i=>i.src));check(broken.length===0,'No broken loaded source images: '+broken.join(', '));
   const tileState=await page.locator('.leaflet-tile').evaluateAll(imgs=>({loaded:imgs.filter(i=>i.complete&&i.naturalWidth).length,failed:imgs.filter(i=>i.complete&&!i.naturalWidth).length}));
