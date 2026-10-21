@@ -153,7 +153,10 @@
     "title": "Ceram als tussenroute",
     "location_id": "seram",
     "route_waypoint": {
-      "coordinates": [129, -3.1],
+      "coordinates": [
+        129,
+        -3.1
+      ],
       "coordinate_precision": "island_schematic",
       "notes": "Globaal oriëntatiepunt in het eilandgebied, uitsluitend om de genoemde volgorde Ambon–Ceram–Tual schematisch te tekenen. Geen landingsplaats, verblijfplaats of bewezen vaartraject."
     },
@@ -398,7 +401,9 @@
     "status": "bevestigd",
     "source_ids": [
       "S02",
-      "S03"
+      "S03",
+      "S36",
+      "S37"
     ],
     "original_excerpt": "Overgegaan bij Terr.tvs-Tpn. Co.Oost-Java te Soerabaia t.n.i.",
     "notes": "t.n.i. vermoedelijk ter nadere indeling; geen Indonesische TNI-aansluiting. Datum21, niet1 november."
@@ -415,7 +420,9 @@
     "evidence_level": "A",
     "status": "bevestigd",
     "source_ids": [
-      "S03"
+      "S03",
+      "S38",
+      "S39"
     ],
     "original_excerpt": "Overgegaan bij Inf. XXIII M.C. (blijft in adm. bij Tpn.Co.O.Java)",
     "notes": "M.C. waarschijnlijk mitrailleurcompagnie, niet IIe compagnie. Nieuwe geografische standplaats niet genoemd."

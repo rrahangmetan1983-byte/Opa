@@ -29,6 +29,8 @@ jobs:
       - name: Validate sources, chronology and original images
         run: |
           python qa/validate-data.py
+          pip install Pillow
+          python qa/validate-archive.py
           python scripts/build-data.py
           git diff --exit-code -- data/research.js
           node --check app.js
@@ -36,11 +38,13 @@ jobs:
         run: |
           python -m http.server 8765 --bind 127.0.0.1 > /tmp/knil-http.log 2>&1 &
           node qa/browser-tests.cjs
+          node qa/archive-browser-tests.cjs
       - name: Verify published website
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: |
           python qa/wait-for-pages.py
           KNIL_TEST_URL=https://rrahangmetan1983-byte.github.io/Opa/ node qa/browser-tests.cjs
+          KNIL_TEST_URL=https://rrahangmetan1983-byte.github.io/Opa/ node qa/archive-browser-tests.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -48,4 +52,5 @@ jobs:
           path: |
             qa/screenshots/*.png
             qa/test-results.json
+            qa/archive-test-results.json
           retention-days: 14
