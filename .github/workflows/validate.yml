@@ -1,4 +1,4 @@
-name: Validate family archive
+name: Validate military career website
 
 on:
   pull_request:

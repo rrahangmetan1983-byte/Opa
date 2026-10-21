@@ -1,0 +1,202 @@
+{
+  "revision": "2026-10-21",
+  "chapters": [
+    {
+      "years": "1917–1940",
+      "title": "Persoonlijke achtergrond",
+      "places": "Kei-Besar · Ohoirenan",
+      "body": "Daniël werd in 1917 geboren in Ohoirenan op Kei-Besar. De bronnen verschillen over zijn precieze geboortedag. Zijn militaire persoonsgegevens noemen zes jaar Maleise school. Op 20 september 1940 trouwde hij volgens het uittreksel met Orpa Oebra.",
+      "note": "Het geboortejaar en de familiegegevens zijn gedocumenteerd. De dag van zijn geboorte blijft een bronverschil.",
+      "source": "Persoonsgegevens en gezin · S01, S04",
+      "source_ids": [
+        "S01",
+        "S04",
+        "S07"
+      ]
+    },
+    {
+      "years": "1941–1945",
+      "title": "Indiensttreding en oorlog",
+      "places": "Ambon · Ceram · Tual · Weduar",
+      "body": "In augustus 1941 begon Daniëls militaire dienst op Ambon. In een latere verklaring vertelt hij over gevangenschap bij Halong, een vlucht per prauw via Ceram en het achterblijven in Tual. Hij beschrijft ook zijn opsluiting in Tual en overbrenging naar Weduar.",
+      "note": "Dit deel berust vooral op zijn eigen verklaring. Niet alle datums en omstandigheden zijn onafhankelijk bevestigd. De Japanse aanval op Tual en zijn persoonlijke arrestatie worden afzonderlijk behandeld.",
+      "source": "Eigen verklaring · S06; historische context · S09–S18",
+      "source_ids": [
+        "S02",
+        "S03",
+        "S06",
+        "S09",
+        "S11",
+        "S12",
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17",
+        "S18"
+      ]
+    },
+    {
+      "years": "1946–1950",
+      "title": "Plaatsingen en eenheden",
+      "places": "Makassar · Pare-Pare · Oost-Java",
+      "body": "Vanaf juli 1946 vermeldt Daniëls dienststaat opnieuw indelingen op Ambon. Daarna volgen Makassar, Pare-Pare en Oost-Java. In oktober 1948 wordt hij bij 2-Inf. IV te Malang geregistreerd. Niet iedere nieuwe eenheidsnaam betekent een verhuizing: sommige regels beschrijven een reorganisatie of administratieve wijziging.",
+      "note": "Zijn persoonlijke dienststaat registreert de overgang naar Oost-Java op 21 november 1947. Een eenheidsrapport meldt het vertrek van 7-Inf. XV uit Pare-Pare op 22 november. Die twee datums blijven naast elkaar staan.",
+      "source": "Dienststaat en eenheidsrapport · S02, S03, S36",
+      "source_ids": [
+        "S02",
+        "S03",
+        "S05",
+        "S23",
+        "S24",
+        "S26",
+        "S33",
+        "S34",
+        "S35",
+        "S36",
+        "S37",
+        "S38",
+        "S39"
+      ]
+    },
+    {
+      "years": "1950–1951",
+      "title": "KL-dienst en overtocht",
+      "places": "Somersetshire · Nederland",
+      "body": "Vanaf 24 juli 1950 verrichtte Daniël tijdelijk dienst bij de Koninklijke Landmacht. Het vervolgblad van zijn dienstregistratie noemt vertrek naar Nederland met de Somersetshire op 9 april 1951 en aankomst op 15 mei. De aankomstindex koppelt een echtgenote en vier kinderen aan zijn gezin. De vergelijking met de persoonlijke gezinsgegevens ondersteunt die koppeling.",
+      "note": "De index is geen scan van de originele passagierslijst. Inschepingsdag, haven en precieze scheepsroute worden niet als persoonlijk bewezen gepresenteerd.",
+      "source": "Vervolgblad en aankomstindex · S05, S19–S22",
+      "source_ids": [
+        "S05",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S31",
+        "S32"
+      ]
+    },
+    {
+      "years": "Vanaf 1951",
+      "title": "Na de militaire dienst",
+      "places": "Woonoorden · Zwolle",
+      "body": "Laarbrug en Eerde zijn aanknopingspunten voor het onderzoek naar het leven van Daniël en zijn gezin in Nederland. Een latere verklaring noemt een adres in Zwolle. Een persoonlijke, aaneengesloten woonchronologie is nog niet vastgesteld.",
+      "note": "De volgorde van de woonoorden blijft open. De inventaris verwijst naar een persoonsdossier, maar de inhoud is nog niet onderzocht.",
+      "source": "Eigen verklaring en woonoordonderzoek · S06, S25, S29",
+      "source_ids": [
+        "S06",
+        "S25",
+        "S29",
+        "S30"
+      ]
+    }
+  ],
+  "contexts": {
+    "personal": {
+      "text": "Daniëls herkomst en gezin worden beschreven in zijn militaire persoonsgegevens. Administratieve geboorte- en huwelijksdatums verschillen soms van latere indexen.",
+      "ids": [
+        "S01",
+        "S04",
+        "S19"
+      ]
+    },
+    "occupation": {
+      "text": "Ambon werd eind januari 1942 door Japan aangevallen. NFIS-rapporten, Australische militaire stukken en een naoorlogse Japanse reconstructie beschrijven de verdediging en capitulatie. Het rapport over Tual plaatst de Japanse bezetting op 30 juli. Deze bronnen bevestigen Daniëls persoonlijke gevangenneming of exacte vluchtroute niet zelfstandig.",
+      "ids": [
+        "S09",
+        "S11",
+        "S12",
+        "S13",
+        "S15",
+        "S16",
+        "S17",
+        "S18"
+      ]
+    },
+    "military": {
+      "text": "De naoorlogse plaatsingen laten een reeks militaire en administratieve wijzigingen zien. “Overgegaan” bewijst de geregistreerde indeling. Reorganisatie of een ander compagnienummer op dezelfde plaats bewijst geen afzonderlijk vervoer.",
+      "ids": [
+        "S02",
+        "S03",
+        "S05",
+        "S26"
+      ]
+    },
+    "independence": {
+      "text": "Daniëls dienst op Sulawesi en Oost-Java viel in de Indonesische onafhankelijkheidsoorlog. Nederland trachtte het koloniale gezag te herstellen; Indonesië verdedigde zijn onafhankelijkheid. NIOD/KITLV/NIMH beschrijven structureel extreem Nederlands geweld en gevolgen voor burgers. Geen specifiek incident wordt zonder individueel bewijs aan Daniël toegeschreven.",
+      "ids": [
+        "S24",
+        "S26"
+      ]
+    },
+    "voyage": {
+      "text": "Het persoonlijke vervolgblad noemt de Somersetshire: vertrek 9 april en aankomst 15 mei 1951. De scheepscontext noemt Jakarta/Tanjung Priok, maar vertrekdatums verschillen. De index koppelt een echtgenote en vier kinderen aan zijn gezin. De oorspronkelijke passagierslijstscan en het scheepsjournaal zijn nog niet ingezien. Het traject via Suez blijft een aannemelijke reconstructie.",
+      "ids": [
+        "S05",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S31",
+        "S32"
+      ]
+    },
+    "netherlands": {
+      "text": "Laarbrug en Eerde zijn belangrijke aanknopingspunten, maar een persoonlijke woonvolgorde is niet vastgesteld. CAZ-dossier 725 betreft D. Rahangmetan, geboren 1 januari 1917, periode 1952–1966; de inhoud heeft geen beschikbare digitale scans. Een latere verklaring vermeldt Zwolle.",
+      "ids": [
+        "S06",
+        "S25",
+        "S29",
+        "S30"
+      ]
+    }
+  },
+  "conflictsByEvent": {
+    "E001": [
+      "K01"
+    ],
+    "E004": [
+      "K02"
+    ],
+    "E005": [
+      "K03"
+    ],
+    "E006": [
+      "K03"
+    ],
+    "E010": [
+      "K04"
+    ],
+    "E014": [
+      "K06"
+    ],
+    "E015": [
+      "K05"
+    ],
+    "E016": [
+      "K06"
+    ],
+    "E017": [
+      "K06"
+    ],
+    "E019": [
+      "K06"
+    ],
+    "E020": [
+      "K06"
+    ],
+    "E021": [
+      "K07"
+    ],
+    "E022": [
+      "K12"
+    ],
+    "E032": [
+      "K08",
+      "K10"
+    ],
+    "E034": [
+      "K09"
+    ]
+  }
+}

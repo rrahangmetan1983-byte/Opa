@@ -1,141 +1,92 @@
-// Run with: node qa/browser-tests.cjs. Requires Playwright and Chromium.
+// Full interaction coverage for the approved six-part military career website.
 const {chromium}=require('playwright');
-const assert=require('node:assert/strict');
-const fs=require('node:fs');
-const path=require('node:path');
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const base=process.env.KNIL_TEST_URL||'http://127.0.0.1:8765/';
 const output=path.join(__dirname,'screenshots');fs.mkdirSync(output,{recursive:true});
-let checks=0;
-function check(condition,message){assert.ok(condition,message);checks++;}
+let checks=0;const check=(ok,message)=>{assert.ok(ok,message);checks++};
 async function main(){
-  const proxy=process.env.HTTPS_PROXY||process.env.https_proxy||process.env.HTTP_PROXY||process.env.http_proxy;
-  const browser=await chromium.launch({executablePath:process.env.KNIL_CHROMIUM||(fs.existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined),headless:true,args:['--no-sandbox'],proxy:proxy?{server:proxy,bypass:'127.0.0.1,localhost'}:undefined});
-  const errors=[];
-  const page=await browser.newPage({viewport:{width:1280,height:800}});
-  page.on('pageerror',e=>errors.push(e.message));
-  await page.goto(base,{waitUntil:'networkidle'});
-  check(await page.evaluate(()=>KNIL_APP.events.length===41),'Complete timeline loads');
-  check(await page.locator('.event').count()===41,'41 event rows');
-  // Every event renders its own sources, including events without a map point.
-  const ids=await page.evaluate(()=>KNIL_APP.events.map(e=>e.id));
-  for(const id of ids){
-    await page.evaluate(id=>KNIL_APP.select(KNIL_APP.events.find(e=>e.id===id)),id);
-    await page.locator('[data-tab="sources"]').click();
-    const expected=await page.evaluate(id=>[...KNIL_APP.events.find(e=>e.id===id).source_ids].sort((a,b)=>Number(!!KNIL_RESEARCH.source_details?.[b])-Number(!!KNIL_RESEARCH.source_details?.[a])),id);
-    const actual=await page.locator('[data-source-id]').evaluateAll(rows=>rows.map(r=>r.dataset.sourceId));
-    check(JSON.stringify(actual)===JSON.stringify(expected),id+' precise source links');
-    check(await page.locator('#dt').textContent(),id+' title renders');
+ const browser=await chromium.launch({headless:true,executablePath:process.env.KNIL_CHROMIUM||(fs.existsSync('/usr/bin/chromium')?'/usr/bin/chromium':undefined),args:['--no-sandbox']});
+ const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(base,{waitUntil:'networkidle'});
+ const go=async(hash)=>{await page.evaluate(hash=>location.hash=hash,hash);await page.waitForFunction(hash=>location.hash===hash,hash);};
+ const resetTimeline=async()=>{if(await page.locator('.filter-details').getAttribute('open')===null)await page.locator('.filter-details summary').click();await page.locator('[data-reset-timeline]').click();};
+ const data=await page.evaluate(()=>({events:KNIL_RESEARCH.events,sources:KNIL_RESEARCH.sources,units:KNIL_RESEARCH.units,conflicts:KNIL_RESEARCH.conflicts,hypotheses:KNIL_RESEARCH.hypotheses}));
+ check(data.events.length===41&&data.sources.length===39,'All historical records retained');
+ check(await page.evaluate(()=>KNIL_APP.chapterFor(KNIL_APP.events.find(e=>e.id==='E025'))===3),'Temporary KL service belongs to the 1950–1951 section');
+ check(await page.evaluate(()=>KNIL_APP.chapterFor(KNIL_APP.events.find(e=>e.id==='E022'))===2),'Malang placement belongs to the postwar units section');
+ check(await page.locator('h1').textContent().then(t=>t.includes('militaire loopbaan')),'Approved military description');
+ check(await page.locator('.chaptertile').count()===5,'Five career sections');
+ check(!await page.locator('#military-site').innerText().then(t=>t.toLowerCase().includes('familiearchief')),'No family archive branding');
+ await page.screenshot({path:path.join(output,'career-home-desktop.png'),fullPage:true});
+ for(let i=0;i<5;i++){await go('#loopbaan/'+i);check(await page.locator('h1').count()===1,'Chapter has one heading '+i);check(await page.locator('.read-copy .evidence-box').count()===1,'Chapter explains evidence '+i);}
+ await page.locator('[data-chapter-timeline]').click();check(await page.locator('#timelineChapter').inputValue()==='4','Chapter links to its own filtered timeline');
+ await resetTimeline();
+ check(await page.locator('[data-event]').count()===41,'All timeline rows');
+ for(const e of data.events){
+  await page.locator(`[data-event="${e.id}"]`).click();
+  check(await page.locator('[data-detail-event]').getAttribute('data-detail-event')===e.id,'Event selection '+e.id);
+  const ids=await page.locator('#eventDetail .source-reference-list a[href^="#bronnen/"]').evaluateAll(links=>links.map(a=>a.hash.split('/')[1]));
+  check(JSON.stringify(ids)===JSON.stringify(e.source_ids),'Exact source associations '+e.id);
+  check(await page.locator('#eventDetail .proof-note').textContent().then(t=>t.length>15),'Evidence limit '+e.id);
+ }
+ for(const [kind,levels] of [['personal',['A']],['context',['B','C']],['open',['D']]]){await page.locator('#timelineKind').selectOption(kind);const actual=await page.locator('[data-event]').evaluateAll(rows=>rows.map(row=>KNIL_RESEARCH.events.find(e=>e.id===row.dataset.event).evidence_level));check(actual.length>0&&actual.every(l=>levels.includes(l)),'Timeline kind filter '+kind);}
+ await page.locator('#timelineKind').selectOption('all');
+ await page.locator('.filter-details summary').click();
+ for(const level of ['A','B','C','D']){await page.locator('#timelineLevel').selectOption(level);const actual=await page.locator('[data-event]').evaluateAll(rows=>rows.map(row=>KNIL_RESEARCH.events.find(e=>e.id===row.dataset.event).evidence_level));check(actual.length>0&&actual.every(l=>l===level),'Timeline evidence filter '+level);}
+ await page.locator('#timelineLevel').selectOption('all');await page.locator('#timelineConfirmed').check();check(await page.locator('[data-event]').evaluateAll(rows=>rows.every(row=>KNIL_RESEARCH.events.find(e=>e.id===row.dataset.event).status==='bevestigd')),'Confirmed-only means confirmed');
+ await page.locator('#timelineConfirmed').uncheck();await page.locator('#timelineSearch').fill('zzzzzz');check(await page.locator('[data-event]').count()===0,'Empty search clears selection');
+ await page.locator('#timelineSearch').fill('M.C.');check(await page.locator('[data-event]').count()>0,'Search handles military abbreviations');await resetTimeline();
+ await go('#tijdlijn/E020');await page.locator('#eventDetail a.primary').click();check(await page.locator('#sourceReader h2').textContent().then(t=>t.includes('22 november')),'Relevant crop is the direct event source');
+ for(const s of data.sources){
+  await go('#bronnen/'+s.id);check(await page.locator('#sourceSelect').inputValue()===s.id,'Direct source navigation '+s.id);
+  check(await page.locator('#sourceReader').textContent().then(t=>t.includes(s.note)),'Complete source note '+s.id);
+  for(const img of await page.locator('#sourceReader img').all()){await img.evaluate(i=>i.decode());check(await img.evaluate(i=>i.naturalWidth>0&&!!i.alt),'Actual source image loads '+s.id);}
+ }
+ for(let i=33;i<=39;i++){
+  const id='S'+i;await go('#bronnen/'+id);
+  check(await page.locator('#sourceReader .transcript').textContent().then(t=>t.length>50),'Archive transcription '+id);
+  check(await page.locator('#sourceReader .scanframe img').getAttribute('src').then(s=>s.endsWith('-uitsnede.png')),'Archive crop is primary '+id);
+  const opener=page.locator('#sourceReader .image-actions button').first();await opener.click();await page.locator('#bigImg').evaluate(i=>i.decode());
+  check(await page.locator('#sourceModal').evaluate(d=>d.open),'Crop dialog opens '+id);
+  await page.locator('#zoomNative').click();check(await page.locator('#bigImg').evaluate(i=>Math.abs(i.getBoundingClientRect().width-i.naturalWidth)<1),'Native pixels '+id);
+  await page.keyboard.press('Escape');check(await opener.evaluate(b=>document.activeElement===b),'Focus restored '+id);
+  await page.locator('#sourceReader .image-actions button').last().click();await page.locator('#bigImg').evaluate(i=>i.decode());check(await page.locator('#bigImg').getAttribute('src').then(s=>s.endsWith('.jpg')),'Original accessible '+id);await page.locator('#modalClose').click();
+ }
+ await page.locator('#sourceCategory').selectOption('archive');check(await page.locator('#sourceSelect option').count()===7,'All seven scans discoverable');await page.locator('#sourceSearch').fill('zzzzzz');check(await page.locator('#sourceReader').textContent().then(t=>t.includes('Geen bronnen')),'Source empty state');
+ await page.locator('#sourceSearch').fill('');await page.locator('#sourceCategory').selectOption('all');check(await page.locator('#sourceSelect option').count()===39,'All 39 sources discoverable');
+ await go('#bronnen/S36');await page.screenshot({path:path.join(output,'career-sources-desktop.png'),fullPage:true});
+ await go('#context');check(await page.locator('.history-item').count()===3,'Three distinct historical contexts');check(await page.locator('.unit-list article').count()===data.units.length,'All unit reconstructions preserved');
+ await go('#onderzoek');check(await page.locator('[data-conflict]').count()===data.conflicts.length,'Every conflict preserved');check(await page.locator('details').count()>=data.hypotheses.length+data.conflicts.length,'All hypotheses and conflicts accessible');
+ await go('#kaart');await page.waitForFunction(()=>!!KNIL_APP.map);
+ check(await page.evaluate(()=>KNIL_APP.mapGroups.length===new Set(KNIL_APP.visible.filter(e=>KNIL_APP.coords(e)).map(e=>e.map_location_id||e.location_id)).size),'One marker per location');
+ check(await page.evaluate(()=>KNIL_APP.markerGroup.getLayers().length===KNIL_APP.mapGroups.length),'Markers match grouped places');
+ await page.locator('#mapChapter').selectOption('1');
+ const escape=()=>page.evaluate(()=>{const line=KNIL_APP.routeGroup.getLayers().find(l=>l.options.researchRoute==='ambon-ceram-tual');return line?{points:line.getLatLngs().map(p=>[p.lat,p.lng]),dash:line.options.dashArray,text:line.getTooltip().getContent()}:null;});
+ check((await escape())?.points.length===3,'Escape route retains Ceram orientation');check(!await page.evaluate(()=>KNIL_APP.markers.has('seram')),'No invented Ceram landing marker');
+ const route=await escape();check(!!route.dash&&route.text.includes('onbekend'),'Escape uncertainty is explicit');
+ await page.locator('#showRoutes').uncheck();check(await page.evaluate(()=>KNIL_APP.routeGroup.getLayers().length===0),'Routes toggle clears all lines');await page.locator('#showRoutes').check();
+ await page.locator('.filter-details summary').click();await page.locator('#mapConfirmed').check();check(!await escape(),'Confirmed filter excludes testimony route');await page.locator('#mapConfirmed').uncheck();
+ await page.locator('#mapChapter').selectOption('3');check(await page.evaluate(()=>KNIL_APP.routeGroup.getLayers().some(l=>l.options.researchRoute==='suez')),'Suez remains a labelled hypothesis');
+ await page.locator('#mapSearch').fill('zzzzzz');check(await page.evaluate(()=>KNIL_APP.markerGroup.getLayers().length===0&&KNIL_APP.routeGroup.getLayers().length===0),'Empty map filter removes points and routes');await page.locator('#mapSearch').fill('');
+ await page.locator('#mapChapter').selectOption('2');await page.locator('[data-place="malang"]').click();check(await page.locator('#placeDetail h3').textContent().then(t=>t.includes('Malang')),'Places panel selection');check(await page.locator('#placeDetail .place-events article').count()>1,'Same-place administrative events are grouped');
+ await page.waitForTimeout(350);await page.screenshot({path:path.join(output,'career-map-desktop.png'),fullPage:true});
+ const tileState=await page.locator('.leaflet-tile').evaluateAll(imgs=>({loaded:imgs.filter(i=>i.complete&&i.naturalWidth).length,failed:imgs.filter(i=>i.complete&&!i.naturalWidth).length}));
+ // Responsive pages use document scrolling, a compact source picker, and real maps.
+ for(const [width,height] of [[1024,900],[390,844],[360,740],[844,390]]){
+  await page.setViewportSize({width,height});
+  for(const view of ['loopbaan','tijdlijn','kaart','bronnen/S36','context','onderzoek']){
+   await go('#'+view);check(await page.locator('main h1').count()===1,'Single heading '+view+' '+width);
+   check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'No page overflow '+view+' '+width);
   }
-  await page.locator('#allRoute').click();await page.waitForTimeout(150);
-  const escapeState=()=>page.evaluate(()=>{
-    const route=KNIL_APP.routeGroup.getLayers().find(l=>l.options.researchRoute==='ambon-ceram-tual');
-    return route?{points:route.getLatLngs().map(p=>[p.lat,p.lng]),dash:route.options.dashArray,tooltip:route.getTooltip().getContent()}:null;
-  });
-  const escape=await escapeState();
-  check(escape?.points.length===3&&escape.points[0][1]<129&&escape.points[1][1]===129&&escape.points[2][1]>132,'Escape line connects Ambon through Ceram to Tual');
-  check(!!escape.dash&&escape.tooltip.includes('S06')&&escape.tooltip.includes('onbekend'),'Escape line labels testimony and uncertain route');
-  check(!await page.evaluate(()=>KNIL_APP.markers.has('E008')),'Ceram orientation does not invent a landing marker');
-  await page.evaluate(()=>KNIL_APP.select(KNIL_APP.events.find(e=>e.id==='E008')));await page.waitForTimeout(200);
-  check(await page.evaluate(()=>{
-    const route=KNIL_APP.routeGroup.getLayers().find(l=>l.options.researchRoute==='ambon-ceram-tual');
-    return route.getLatLngs().every(p=>KNIL_APP.map.getBounds().contains(p));
-  }),'Ceram selection frames the whole escape route');
-  check(await page.locator('#routeNote').isVisible()&&await page.locator('#routeNote').textContent().then(t=>t.includes('Landingsplaats')),'Escape detail explains geographic uncertainty');
-  await page.screenshot({path:path.join(output,'ambon-ceram-tual.png')});
-  await page.locator('#showRoutes').uncheck();check(!await escapeState(),'Connections toggle hides escape line');
-  await page.locator('#showRoutes').check();
-  await page.locator('#confirmedOnly').check();check(!await escapeState(),'Confirmed-only hides testimony route');
-  await page.locator('#confirmedOnly').uncheck();
-  await page.locator('#pointSearch').fill('E007');check(!await escapeState(),'Filtered-out escape events hide their connection');
-  await page.locator('#allRoute').click();
-  for(const topic of ['personal','military','occupation','independence','voyage','netherlands']){
-    await page.locator('#phaseFilter').selectOption(topic);
-    const state=await page.evaluate(()=>({visible:KNIL_APP.visible.length,rows:[...document.querySelectorAll('.event')].filter(r=>!r.hidden).length,markers:KNIL_APP.markerGroup.getLayers().length,expected:KNIL_APP.visible.filter(e=>KNIL_APP.markers.has(e.id)).length}));
-    check(state.visible>0&&state.visible===state.rows,topic+' list filter');check(state.markers===state.expected,topic+' marker filter');
+  if(width<761){
+   await go('#bronnen/S36');check(await page.locator('#sourceSelect').isVisible(),'Compact mobile document selector');check(!await page.locator('#sourceList').isVisible(),'Long source list does not precede mobile reader');await page.locator('#sourceSelect').selectOption('S38');check(await page.locator('#sourceReader h2').textContent().then(t=>t.includes('XXIII')),'Mobile source selection');
+   await page.locator('#sourceReader .scanframe button').click();await page.locator('#bigImg').evaluate(i=>i.decode());check(await page.locator('#sourceModal').evaluate(d=>d.getBoundingClientRect().width<=innerWidth),'Mobile source viewer fits');await page.locator('#modalClose').click();
+   await go('#tijdlijn');await resetTimeline();await page.locator('[data-event="E020"]').click();check(await page.locator('#eventDetail').evaluate(el=>{const r=el.getBoundingClientRect();return r.top>=-2&&r.top<innerHeight;}),'Mobile event selection brings reading area into view');
+   await go('#bronnen/S36');await page.screenshot({path:path.join(output,`career-sources-${width}.png`),fullPage:true});
   }
-  await page.locator('#phaseFilter').selectOption('');
-  for(const level of ['A','B','C','D']){
-    await page.locator('#evidenceFilter').selectOption(level);check(await page.evaluate(level=>KNIL_APP.visible.length>0&&KNIL_APP.visible.every(e=>e.evidence_level===level),level),level+' evidence filter');
-  }
-  await page.locator('#evidenceFilter').selectOption('');
-  await page.locator('#pointSearch').fill('E015');await page.locator('[data-event-id="E015"]').click();
-  check(await page.locator('#dt').textContent().then(t=>t.includes('XXIe')),'Correct battalion');check(await page.locator('#dd').textContent().then(t=>t.includes('24 september')),'Preferred original date');
-  check(await page.locator('#prevPoint').isDisabled()&&await page.locator('#nextPoint').isDisabled(),'Navigation follows filtered list');
-  await page.locator('[data-tab="context"]').click();check(await page.locator('#extraContext').textContent().then(t=>t.includes('14sep')),'Conflicting reading preserved');
-  await page.locator('#allRoute').click();await page.waitForTimeout(200);
-  await page.locator('#confirmedOnly').check();check(await page.evaluate(()=>KNIL_APP.visible.every(e=>e.status==='bevestigd')),'Confirmed-only filter');
-  await page.locator('#confirmedOnly').uncheck();await page.locator('#pointSearch').fill('zzzzzz');check(await page.evaluate(()=>KNIL_APP.visible.length===0&&KNIL_APP.markerGroup.getLayers().length===0),'Empty results clear markers');
-  await page.locator('#allRoute').click();await page.waitForTimeout(200);
-  check(await page.evaluate(()=>KNIL_APP.voyageRoute.some(([lat,lng])=>lat>29&&lat<32&&lng>32&&lng<33)),'Suez-oriented presumed voyage');
-  await page.locator('#pointSearch').fill('E035');await page.locator('[data-event-id="E035"]').click();
-  check(await page.evaluate(()=>!KNIL_APP.markers.has('E035')),'No fabricated Laarbrug marker');check(await page.locator('#locationNote').textContent().then(t=>t.includes('Geen voldoende')),'Unknown location explanation');
-  await page.locator('#allRoute').click();await page.waitForTimeout(200);
-  await page.evaluate(()=>KNIL_APP.select(KNIL_APP.events.find(e=>e.id==='E022')));await page.waitForTimeout(250);
-  await page.locator('[data-tab="sources"]').click();await page.locator('[data-source-image="S03"]').click();
-  await page.locator('#bigImg').evaluate(img=>img.decode());
-  check(await page.locator('#modalClose').evaluate(e=>e===document.activeElement),'Modal focuses close button');
-  await page.locator('#zoomNative').click();const native=await page.locator('#bigImg').evaluate(img=>img.getBoundingClientRect().width);
-  await page.locator('#zoomIn').click();check(await page.locator('#bigImg').evaluate(img=>img.getBoundingClientRect().width)>native,'Zoom grows image');
-  await page.locator('#zoomFit').click();check(await page.locator('#imageScroll').evaluate(el=>el.classList.contains('fit')),'Fit restores image');
-  await page.keyboard.press('Escape');check(!await page.locator('#sourceModal').evaluate(e=>e.classList.contains('open')),'Escape closes modal');
-  check(await page.locator('[data-source-image="S03"]').evaluate(e=>e===document.activeElement),'Focus restored');
-  await page.locator('[data-tab="context"]').click();await page.locator('#detail').evaluate(e=>e.scrollTop=0);await page.screenshot({path:path.join(output,'desktop.png')});
-  await page.locator('#familyStory').click();check(await page.locator('#storyText').textContent().then(t=>t.includes('Orpa')),'Family narrative');
-  for(const [width,height] of [[360,740],[390,844],[430,932],[844,390]]){
-    const mobile=await browser.newPage({viewport:{width,height},isMobile:true,hasTouch:true});mobile.on('pageerror',e=>errors.push(e.message));await mobile.goto(base,{waitUntil:'networkidle'});
-    await mobile.locator('#pointsBtn').click();await mobile.locator('#pointSearch').fill('E022');await mobile.locator('[data-event-id="E022"]').click();await mobile.waitForTimeout(300);
-    const state=await mobile.evaluate(()=>{
-      const d=document.querySelector('#detail'),m=document.querySelector('.selected-marker'),dr=d.getBoundingClientRect(),mr=m?.getBoundingClientRect();
-      return {overflow:document.documentElement.scrollWidth>innerWidth,detailOverflow:d.scrollWidth>d.clientWidth,visible:!!mr&&mr.left>=0&&mr.right<=innerWidth&&mr.top>=document.querySelector('.top').getBoundingClientRect().bottom&&mr.bottom<=innerHeight&&(dr.width<innerWidth*.9?mr.right<=dr.left:mr.bottom<=dr.top),selected:document.querySelectorAll('.selected-marker').length};
-    });
-    check(!state.overflow&&!state.detailOverflow,`${width}x${height} no overflow`);check(state.visible&&state.selected===1,`${width}x${height} marker accessible`);
-    await mobile.locator('[data-tab="sources"]').click();await mobile.locator('[data-source-image="S03"]').click();await mobile.locator('#bigImg').evaluate(img=>img.decode());check(await mobile.locator('#modalClose').isVisible(),'Mobile source viewer');await mobile.keyboard.press('Escape');
-    await mobile.locator('[data-tab="context"]').click();await mobile.locator('#detail').evaluate(e=>e.scrollTop=0);if(width===390||width===844)await mobile.screenshot({path:path.join(output,width===390?'mobile.png':'landscape.png')});
-    await mobile.locator('#sheetSize').click();check(await mobile.locator('#sheetSize').getAttribute('aria-expanded')==='true','Expanded reading panel');
-    await mobile.locator('#sheetSize').click();await mobile.locator('#allRoute').click();
-    await mobile.evaluate(()=>KNIL_APP.select(KNIL_APP.events.find(e=>e.id==='E008')));await mobile.waitForTimeout(200);
-    check(await mobile.evaluate(()=>{
-      const route=KNIL_APP.routeGroup.getLayers().find(l=>l.options.researchRoute==='ambon-ceram-tual');
-      const rect=document.querySelector('#map').getBoundingClientRect(),detail=document.querySelector('#detail').getBoundingClientRect();
-      return route.getLatLngs().every(p=>{
-        const pixel=KNIL_APP.map.latLngToContainerPoint(p),x=pixel.x+rect.left,y=pixel.y+rect.top;
-        return x>=rect.left&&x<=rect.right&&y>=rect.top&&y<=rect.bottom&&(detail.width<innerWidth*.9?x<detail.left:y<detail.top);
-      });
-    }),`${width}x${height} full escape route remains above/beside reading panel`);
-    if(width===390)await mobile.screenshot({path:path.join(output,'ambon-ceram-tual-mobile.png')});
-    await mobile.close();
-  }
-  // Archive cards show the exact crop and full interpretation directly in Sources.
-  for(const width of [1280,390]){
-    await page.setViewportSize({width,height:900});
-    for(const [eventId,sourceIds] of [['E020',['S36','S37']],['E021',['S38','S39']]]){
-      await page.evaluate(id=>KNIL_APP.select(KNIL_APP.events.find(e=>e.id===id)),eventId);
-      await page.locator('[data-tab="sources"]').click();
-      check(await page.locator('#sourceLinks > article').first().getAttribute('data-source-id')===sourceIds[0],'Relevant crop appears first');
-      for(const id of sourceIds){
-        const card=page.locator(`[data-source-id="${id}"]`);
-        check(await card.locator('.source-transcript').textContent().then(t=>t.length>50),'Inline transcription '+id);
-        const crop=card.locator('[data-archive-crop]');await crop.scrollIntoViewIfNeeded();
-        await crop.locator('img').evaluate(i=>i.decode());
-        check(await crop.locator('img').getAttribute('src').then(src=>src.endsWith('-uitsnede.png')),'Crop is the main source image '+id);
-        await crop.click();
-        await page.locator('#bigImg').evaluate(i=>i.decode());
-        check(await page.locator('#bigImg').getAttribute('src').then(src=>src.endsWith('-uitsnede.png')),'Crop opens in viewer '+id);
-        await page.locator('#modalClose').click();
-        await card.locator('[data-source-image]').click();
-        await page.locator('#bigImg').evaluate(i=>i.decode());
-        check(await page.locator('#bigImg').getAttribute('src').then(src=>src.endsWith('.jpg')),'Original remains accessible '+id);
-        await page.locator('#modalClose').click();
-      }
-      check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Sources panel fits screen '+width);
-      await page.locator(`[data-source-id="${sourceIds[0]}"]`).evaluate(el=>el.scrollIntoView({block:'start'}));
-      await page.screenshot({path:path.join(output,`inline-sources-${eventId}-${width}.png`)});
-    }
-  }
-  const broken=await page.locator('img[src]:not(.leaflet-tile)').evaluateAll(imgs=>imgs.filter(i=>i.complete&&!i.naturalWidth).map(i=>i.src));check(broken.length===0,'No broken loaded source images: '+broken.join(', '));
-  const tileState=await page.locator('.leaflet-tile').evaluateAll(imgs=>({loaded:imgs.filter(i=>i.complete&&i.naturalWidth).length,failed:imgs.filter(i=>i.complete&&!i.naturalWidth).length}));
-  check(errors.length===0,'No browser exceptions: '+errors.join('; '));
-  fs.writeFileSync(path.join(__dirname,'test-results.json'),JSON.stringify({base,checks,errors,passed:true,tileState},null,2));
-  console.log(`PASS: ${checks} browser assertions; all events, filters, sources, map selection, Suez route, modal, keyboard, desktop and four mobile viewports.`);await browser.close();
+ }
+ check(errors.length===0,'No browser exceptions: '+errors.join('; '));
+ fs.writeFileSync(path.join(__dirname,'test-results.json'),JSON.stringify({base,checks,errors,passed:true,tileState},null,2));
+ console.log(`PASS: ${checks} assertions; six sections, 41 events, 39 sources, seven crops, image viewer, grouped map, historical uncertainty and responsive layouts.`);await browser.close();
 }
 main().catch(e=>{console.error(e);process.exit(1)});

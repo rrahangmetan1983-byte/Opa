@@ -36,8 +36,8 @@ async function main(){
     await page.screenshot({path:path.join(__dirname,'screenshots',`archive-${width}.png`),fullPage:true});
     await page.locator('#scan-0250').evaluate(el=>el.scrollIntoView({block:'start'}));
     await page.screenshot({path:path.join(__dirname,'screenshots',`archive-detail-${width}.png`)});
-    await page.locator('nav a').click();await page.waitForLoadState();
-    check(await page.locator('#map').count()===1,'Return to main map works');
+    await page.locator('nav a').first().click();await page.waitForLoadState();
+    check(await page.locator('nav [data-page="loopbaan"]').count()===1,'Return to military career website works');
     results.push({width,passed:true});await page.close();
   }
   await browser.close();

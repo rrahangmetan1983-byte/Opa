@@ -41,6 +41,15 @@ assert by_id['E027']['date']=='1950-07-25'
 assert by_id['E035']['evidence_level']=='D' and by_id['E036']['evidence_level']=='D'
 assert len(load('family-transport'))==6
 assert len(load('legacy-events'))==24
+presentation=json.loads((root/'research/presentation.json').read_text(encoding='utf-8'))
+assert len(presentation['chapters'])==5
+for chapter in presentation['chapters']:
+    assert chapter['source_ids'] and set(chapter['source_ids'])<=source_ids
+for context in presentation['contexts'].values():
+    assert set(context['ids'])<=source_ids
+assert set(presentation['conflictsByEvent'])<={e['id'] for e in events}
+conflict_ids={c['id'] for c in load('conflicts')}
+assert all(set(ids)<=conflict_ids for ids in presentation['conflictsByEvent'].values())
 for path in subprocess.check_output(['git','ls-tree','-r','--name-only','89af319c68fe631de8f48ec3a3cdc15bf2994948'],cwd=root,text=True).splitlines():
     if path.startswith('assets/'):
         old=subprocess.check_output(['git','show',f'89af319c68fe631de8f48ec3a3cdc15bf2994948:{path}'],cwd=root)

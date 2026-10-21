@@ -1,5 +1,5 @@
 {
-  "name": "opa-knil-family-archive",
+  "name": "daniel-rahangmetang-militaire-loopbaan",
   "private": true,
   "scripts": {
     "build:data": "python scripts/build-data.py",

@@ -5,7 +5,7 @@ import urllib.request
 from pathlib import Path
 
 base = 'https://rrahangmetan1983-byte.github.io/Opa/'
-paths = ['index.html', 'app.js', 'data/research.js']
+paths = ['index.html', 'app.js', 'styles.css', 'data/research.js']
 expected = {p: hashlib.sha256(Path(p).read_bytes()).digest() for p in paths}
 deadline = time.monotonic() + 240
 while time.monotonic() < deadline:
