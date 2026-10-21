@@ -22,7 +22,7 @@ async function main(){
         check(await img.evaluate(i=>i.naturalWidth>0&&i.naturalHeight>0&&!!i.alt),'Image loads and has alt text');
       }
       check(await section.locator('pre').textContent().then(t=>t.length>50),'Transcription present');
-      check(await section.locator('.warning').textContent().then(t=>t.includes('Daniël')||t.includes('Daniëls')),'Personal evidence limit present');
+      check(await section.innerText().then(t=>t.includes('Historisch kader')&&!t.includes('Betekenis voor Daniël')),'Historical context without working assessment');
       const popupPromise=page.waitForEvent('popup');
       await section.locator('figure').nth(1).locator('figcaption a').click();
       const popup=await popupPromise;await popup.waitForLoadState();

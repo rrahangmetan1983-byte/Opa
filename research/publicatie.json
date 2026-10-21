@@ -1,0 +1,194 @@
+{
+  "event_texts": {
+    "E001": "Daniël werd in 1917 geboren in Ohoirenan op Kei-Besar.",
+    "E002": "Zijn militaire persoonsgegevens vermelden zes jaar Maleise school en Ohoirenan als laatste woonplaats.",
+    "E003": "Daniël trouwde op 20 september 1940 in Ohoirenan met Orpa Oebra.",
+    "E004": "Op 24 augustus 1941 werd Daniël ingelijfd bij het IIe Depot Bataljon Infanterie op Ambon.",
+    "C001": "Japanse troepen landden op 31 januari 1942 op Ambon. Dit is de militaire achtergrond van deze periode.",
+    "E005": "In zijn eigen verklaring vertelt Daniël dat hij bij Halong op Ambon gevangen werd genomen.",
+    "E006": "Volgens zijn verklaring werden Indonesische militairen begin februari vrijgelaten.",
+    "E007": "Daniël beschrijft een vlucht per prauw vanaf Ambon, via Ceram, met Australië als beoogde bestemming.",
+    "E008": "Ceram vormde volgens zijn verklaring een tussenpunt tijdens de vlucht per prauw.",
+    "E009": "De groep bereikte Tual. Daniël vertelt dat hij daar achterbleef toen de anderen verder reisden.",
+    "E010": "In zijn verklaring beschrijft Daniël hoe hij zich in Tual meldde en werd opgesloten.",
+    "C002": "Japan bezette Tual op 30 juli 1942. Deze gebeurtenis geeft het historische kader bij zijn relaas over Tual.",
+    "E011": "Daniël vertelt dat hij vanuit Tual naar een kamp van de Kimpitai in Weduar werd overgebracht.",
+    "E012": "Volgens zijn verklaring eindigde zijn gevangenschap in Weduar na de Japanse capitulatie.",
+    "E014": "Op 10 juli 1946 meldde Daniël zich bij het L.O.C. op Ambon en werd daar ingedeeld.",
+    "E015": "Een reorganisatie bracht hem op 24 september 1946 onder bij het XXIe Bataljon Infanterie op Ambon.",
+    "E016": "Op zijn dienstblad volgt de overgang naar het XVIIe Bataljon te Makassar.",
+    "E017": "Daarna werd Daniël ingedeeld bij het XVe Bataljon te Pare-Pare.",
+    "E018": "Bij Infanterie XV ging Daniël een vrijwillige verbintenis voor drie jaar aan.",
+    "E019": "Zijn dienststaat vermeldt de reorganisatie naar 7-Inf. XV.",
+    "E020": "Op 21 november 1947 vermeldt zijn dienstblad de overgang naar de territoriale troepen van Oost-Java.",
+    "E021": "Op 1 december 1947 werd Daniël ingedeeld bij Inf. XXIII M.C.",
+    "E022": "In oktober 1948 werd Daniël bij 2-Inf. IV te Malang geplaatst.",
+    "B001": "Infanterie IV werd in het najaar van 1948 opnieuw gevormd in Malang. Deze eenheidsgeschiedenis sluit aan bij de plaatsing op zijn dienstblad.",
+    "E023": "Daniël werd bevorderd tot soldaat eerste klasse.",
+    "E024": "In mei 1950 werd hem eervol ontslag met een KDV-gratificatie toegestaan.",
+    "E025": "Na zijn KNIL-dienst trad Daniël tijdelijk in dienst van de Koninklijke Landmacht.",
+    "E026": "De verklaring van 24 juli 1950 verleende Daniël het recht het KNIL-demobilisatie-insigne te dragen.",
+    "E027": "Zijn dienstblad vermeldt op 25 juli 1950 eervol ontslag uit het KNIL wegens opheffing.",
+    "E028": "In augustus 1950 volgde de overgang naar 5-Inf. XXIII te Malang.",
+    "E029": "In september 1950 volgde de overgang naar 2-Inf. XXIII te Malang.",
+    "E030": "Vervolgens werd Daniël ingedeeld bij het DGK te Soerabaia.",
+    "E032": "Zijn persoonlijke dienstblad vermeldt het vertrek naar Nederland per Somersetshire op 9 april 1951.",
+    "E034": "Op 15 mei 1951 vermeldt zijn dienstblad de aankomst in Nederland en de beëindiging van zijn tijdelijke KL-dienst.",
+    "E037": "Een latere eigen verklaring van Daniël vermeldt een woonadres in Zwolle."
+  },
+  "chapters": [
+    {
+      "years": "1917–1940",
+      "title": "Persoonlijke achtergrond",
+      "places": "Kei-Besar · Ohoirenan",
+      "source": "Persoonsgegevens en gezin · S01, S04",
+      "source_ids": [
+        "S01",
+        "S04",
+        "S07"
+      ],
+      "body": "Daniël werd in 1917 geboren in Ohoirenan op Kei-Besar. Zijn militaire persoonsgegevens vermelden zes jaar Maleise school en Ohoirenan als laatste woonplaats. Daniël trouwde op 20 september 1940 in Ohoirenan met Orpa Oebra."
+    },
+    {
+      "years": "1941–1945",
+      "title": "Indiensttreding en oorlog",
+      "places": "Ambon · Ceram · Tual · Weduar",
+      "source": "Eigen verklaring · S06; historische context · S09–S18",
+      "source_ids": [
+        "S02",
+        "S03",
+        "S06",
+        "S09",
+        "S11",
+        "S12",
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17",
+        "S18"
+      ],
+      "body": "In augustus 1941 begon Daniëls militaire dienst op Ambon. In zijn eigen verklaring vertelt hij over gevangenschap bij Halong, een vlucht per prauw via Ceram naar Tual en zijn overbrenging naar Weduar."
+    },
+    {
+      "years": "1946–1950",
+      "title": "Plaatsingen en eenheden",
+      "places": "Makassar · Pare-Pare · Oost-Java",
+      "source": "Dienststaat en eenheidsrapport · S02, S03, S36",
+      "source_ids": [
+        "S02",
+        "S03",
+        "S05",
+        "S23",
+        "S24",
+        "S26",
+        "S33",
+        "S34",
+        "S35",
+        "S36",
+        "S37",
+        "S38",
+        "S39"
+      ],
+      "body": "Vanaf juli 1946 volgen indelingen op Ambon, Makassar, Pare-Pare en Oost-Java. In oktober 1948 werd Daniël bij 2-Inf. IV te Malang geplaatst. De dienstbladen laten ook reorganisaties en wijzigingen van zijn militaire indeling zien."
+    },
+    {
+      "years": "1950–1951",
+      "title": "KL-dienst en overtocht",
+      "places": "Somersetshire · Nederland",
+      "source": "Vervolgblad en aankomstindex · S05, S19–S22",
+      "source_ids": [
+        "S05",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S31",
+        "S32"
+      ],
+      "body": "Na het KNIL volgde tijdelijke dienst bij de Koninklijke Landmacht. Zijn dienstblad noemt de overtocht per Somersetshire naar Nederland: vertrek op 9 april en aankomst op 15 mei 1951."
+    },
+    {
+      "years": "Vanaf 1951",
+      "title": "Na de militaire dienst",
+      "places": "Woonoorden · Zwolle",
+      "source": "Eigen verklaring en woonoordonderzoek · S06, S25, S29",
+      "source_ids": [
+        "S06",
+        "S25",
+        "S29",
+        "S30"
+      ],
+      "body": "Na de overtocht lag Daniëls verdere leven in Nederland. Een latere verklaring vermeldt een woonadres in Zwolle."
+    }
+  ],
+  "contexts": {
+    "occupation": {
+      "text": "Ambon werd eind januari 1942 door Japan aangevallen. Militaire rapporten beschrijven de verdediging en capitulatie. Op 30 juli 1942 bezette Japan Tual. Daniëls eigen verklaring vertelt over zijn vlucht en gevangenschap in deze oorlogsjaren.",
+      "ids": [
+        "S09",
+        "S11",
+        "S12",
+        "S13",
+        "S15",
+        "S16",
+        "S17",
+        "S18"
+      ]
+    },
+    "independence": {
+      "text": "Daniëls dienst op Sulawesi en Oost-Java viel in de Indonesische onafhankelijkheidsoorlog. Nederland trachtte het koloniale gezag te herstellen; Indonesië verdedigde zijn onafhankelijkheid. Het onderzoek van NIOD, KITLV en NIMH beschrijft het structurele extreme Nederlandse geweld en de gevolgen voor burgers.",
+      "ids": [
+        "S24",
+        "S26"
+      ]
+    },
+    "voyage": {
+      "text": "Na het KNIL volgde tijdelijke dienst bij de Koninklijke Landmacht. Zijn dienstblad noemt de overtocht per Somersetshire naar Nederland: vertrek op 9 april en aankomst op 15 mei 1951.",
+      "ids": [
+        "S05",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S31",
+        "S32"
+      ]
+    },
+    "personal": {
+      "text": "Daniël werd in 1917 geboren in Ohoirenan op Kei-Besar. Zijn militaire persoonsgegevens vermelden zes jaar Maleise school en Ohoirenan als laatste woonplaats. Daniël trouwde op 20 september 1940 in Ohoirenan met Orpa Oebra.",
+      "ids": [
+        "S01",
+        "S04",
+        "S19"
+      ]
+    },
+    "military": {
+      "text": "De naoorlogse dienstbladen vermelden achtereenvolgens militaire plaatsingen, reorganisaties en veranderingen van eenheid op Ambon, Sulawesi en Oost-Java.",
+      "ids": [
+        "S02",
+        "S03",
+        "S05",
+        "S26"
+      ]
+    },
+    "netherlands": {
+      "text": "Na de overtocht lag Daniëls verdere leven in Nederland. Een latere verklaring vermeldt een woonadres in Zwolle.",
+      "ids": [
+        "S06",
+        "S25",
+        "S29",
+        "S30"
+      ]
+    }
+  },
+  "archive_contexts": {
+    "0032": "De militaire analyse beschrijft het optreden van Inf XV en Inf XVII in Zuid-Celebes vanuit het perspectief van de koloniale legerleiding. Termen als ‘bendes’ en ‘verzetspartij’ zijn overgenomen uit het oorspronkelijke rapport.",
+    "0051": "Het verslag bespreekt stemming, verlof, legering, bevordering en voeding bij verschillende militaire onderdelen in Zuid-Celebes.",
+    "0052": "Deze passage beschrijft het isolement en de voorzieningen van het garnizoen Toli-Toli in Noord-Celebes. TOLI2 is de schrijfwijze in het rapport.",
+    "0250": "Het rapport over de dislocatie op 27 november 1947 vermeldt het vertrek van 7-Inf XV uit Pare-Pare naar Soerabaja op 22 november. PARE2 betekent Pare-Pare; ex betekent vanuit en n/ betekent naar.",
+    "0251": "Het overzicht van 29 november geeft de staf, compagnieën en kleinere onderdelen van Inf XV met hun plaatsnamen en kaartverwijzingen.",
+    "0268": "Het dislocatiebericht vermeldt dat Inf XXIII op 29 en 30 november scheepsgewijs naar Soerabaja vertrok.",
+    "0270": "De distributielijst laat zien aan welke militaire instanties en onderdelen het rapport werd verzonden."
+  }
+}
