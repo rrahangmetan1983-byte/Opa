@@ -1,0 +1,38 @@
+[
+  {
+    "id": "S07",
+    "title": "Demobilisatie-insigne KNIL",
+    "short": "Demobilisatie-insigne KNIL",
+    "image": "assets/onderscheidingen/knil-zakje.jpg",
+    "museum": "https://collectie.nmm.nl/nl/collectie/detail/231345/",
+    "photo": "https://collectie.nmm.nl/media/adlib/056129.jpg",
+    "inventory": "056129",
+    "description": "De verklaring van 24 juli 1950 verleent Daniël Rahangmetang het recht dit insigne te dragen, als erkenning voor trouwe en waardige dienst tijdens de Tweede Wereldoorlog en na de capitulatie van Japan. Het insigne toont een KNIL-hoed boven een gekruiste klewang en karabijn.",
+    "boundary": "Het certificaat bevestigt het draagrecht. Het bewijst geen specifieke gevechtshandeling of het bezit van het hier afgebeelde museumexemplaar.",
+    "reference": "https://vereniging-sro.nl/wp-content/uploads/2025/06/Decorare-11-maart-2004.pdf",
+    "sha256": "f5325df59f44e9621e6969598de948e885d267d938eb133c292334e576ea40c3",
+    "dimensions": [
+      750,
+      1132
+    ],
+    "credit": "Nationaal Militair Museum, object 056129; museumvoorbeeld, niet opa’s eigen voorwerp. Geen vrije reproductielicentie vastgesteld."
+  },
+  {
+    "id": "S08",
+    "title": "Ereteken voor Orde en Vrede",
+    "short": "Orde en Vrede · 1946–1949",
+    "image": "assets/onderscheidingen/ereteken-vier-gespen-museum.jpg",
+    "museum": "https://collectie.nmm.nl/nl/collectie/detail/268867/",
+    "photo": "https://collectie.nmm.nl/media/adlib/113408.jpg",
+    "inventory": "113408",
+    "description": "Zijn certificaat kent het Ereteken voor Orde en Vrede toe met de vier jaargespen 1946, 1947, 1948 en 1949. De onderscheiding was bestemd voor militairen met ten minste drie maanden daadwerkelijke dienst in Nederlands-Indië of de aangrenzende zeegebieden binnen de vastgestelde periode. Jaargespen verwezen naar jaren waarin aan militaire acties was deelgenomen.",
+    "boundary": "De toekenning en vier gespen staan op zijn persoonlijke certificaat. Dit benoemt geen afzonderlijke gevechten en is geen bewijs van individuele dapperheid. De ogenschijnlijke certificatiedatum 12 februari 1949 naast de gesp 1949 blijft een onderzoeksvraag.",
+    "reference": "https://www.defensie.nl/onderwerpen/o/onderscheidingen/ereteken-voor-orde-en-vrede",
+    "sha256": "9d802739c2a8e680bddda873c625f12b278573889d57d4cf6c360d0e7ad96c62",
+    "dimensions": [
+      750,
+      1140
+    ],
+    "credit": "Nationaal Militair Museum, object 113408; museumvoorbeeld, niet opa’s eigen voorwerp. Geen vrije reproductielicentie vastgesteld."
+  }
+]

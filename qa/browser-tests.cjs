@@ -10,6 +10,21 @@ async function main(){
  await page.goto(base,{waitUntil:'networkidle'});
  const go=async(hash)=>{await page.evaluate(hash=>location.hash=hash,hash);await page.waitForFunction(hash=>location.hash===hash,hash);};
  const resetTimeline=async()=>{if(await page.locator('.filter-details').getAttribute('open')===null)await page.locator('.filter-details summary').click();await page.locator('[data-reset-timeline]').click();};
+ for(const width of [1440,390,360]){
+  await page.setViewportSize({width,height:900});
+  for(const id of ['S07','S08']){
+   const button=page.locator(`[data-award="${id}"]`);
+   check(await button.isVisible(),'Header award visible '+id+' '+width);
+   check(await button.locator('img').evaluate(img=>img.complete&&img.naturalWidth>=750),'Museum image loads '+id);
+   await button.click();await page.waitForFunction(()=>document.getElementById('bigImg').complete&&document.getElementById('bigImg').naturalWidth>0);
+   check(await page.locator('#bigImg').getAttribute('src')===await page.evaluate(id=>KNIL_RESEARCH.source_images[id],id),'Correct personal certificate '+id);
+   check(await page.locator('#awardExplanation').isVisible(),'Award explanation visible '+id);
+   check(await page.locator('#awardExplanation').innerText().then(t=>t.includes(id==='S07'?'24 juli 1950':'1946, 1947, 1948 en 1949')),'Personal award evidence '+id);
+   await page.locator('#modalClose').click();check(await button.evaluate(b=>document.activeElement===b),'Award focus restored '+id);
+  }
+  check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Header fits '+width);
+ }
+ await page.setViewportSize({width:1440,height:1000});
  const data=await page.evaluate(()=>({events:KNIL_RESEARCH.events,sources:KNIL_RESEARCH.sources,units:KNIL_RESEARCH.units,conflicts:KNIL_RESEARCH.conflicts,hypotheses:KNIL_RESEARCH.hypotheses}));
  check(data.events.length===41&&data.sources.length===39,'All historical records retained');
  check(await page.evaluate(()=>KNIL_APP.chapterFor(KNIL_APP.events.find(e=>e.id==='E025'))===3),'Temporary KL service belongs to the 1950–1951 section');
