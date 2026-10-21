@@ -55,3 +55,20 @@ for path in subprocess.check_output(['git','ls-tree','-r','--name-only','89af319
         old=subprocess.check_output(['git','show',f'89af319c68fe631de8f48ec3a3cdc15bf2994948:{path}'],cwd=root)
         assert (root/path).read_bytes()==old,path
 print(f'PASS: {len(events)} events; all source/location links; chronology; four evidence levels; six transport records; 24 legacy records; 23 original images unchanged.')
+
+# The public bundle preserves the chronology but excludes the working backlog.
+bundle=(root/'data/research.js').read_text(encoding='utf-8')
+public=json.loads(bundle.split('window.KNIL_RESEARCH = ',1)[1].rstrip().rstrip(';'))
+assert {e['id'] for e in public['events']}=={e['id'] for e in events if e['evidence_level']!='D'}
+assert not {'hypotheses','conflicts','report_url'} & public.keys()
+assert 'conflictsByEvent' not in public['presentation']
+public_sources={s['id'] for s in public['sources']}
+for event in public['events']:
+    original=by_id[event['id']]
+    for key in ['date','title','unit','location_id','original_excerpt']:
+        assert event[key]==original[key],(event['id'],key)
+    assert event['notes'] and set(event['source_ids'])<=public_sources
+assert all('note' not in source and source['kind']!='catalogue_only' for source in public['sources'])
+assert all('boundary' not in detail for detail in public['source_details'].values())
+assert len(public['source_details'])==7
+print(f'PASS: public reading copy: {len(public["events"])} events, {len(public_sources)} sources; working questions excluded; original dates, titles and locations retained.')

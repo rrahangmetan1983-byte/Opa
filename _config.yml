@@ -1,0 +1,12 @@
+# Only the public reading experience is deployed by GitHub Pages.
+exclude:
+  - qa
+  - scripts
+  - research/2026-10-12/data
+  - research/2026-10-12/RAPPORT.md
+  - research/presentation.json
+  - research/archiefbronnen-1947.json
+  - research/onderscheidingen.json
+  - node_modules
+  - package.json
+  - package-lock.json
